@@ -54,7 +54,7 @@ void IR_Thread(void *pvParameters)
             if (_pilote_config_ptr != NULL) {
                 if (!_transmit_started &&                       // If transmit not started,
                     _pilote_config_ptr->enabled &&              // device and IR are both enabled
-                    (_pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR != 0)) {
+                    (_pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR) != 0) {
 
                     if (IR_GenerateFrame() != ERR_OK) {         // Create a frame
                         // Create frame error

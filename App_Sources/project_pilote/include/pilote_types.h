@@ -118,8 +118,20 @@ typedef enum {
 typedef enum {
     PILOTE_MES_OPERATION_START,
     PILOTE_MES_OPERATION_STOP,
-    PILOTE_MES_OPERATION_MODIFY
+    PILOTE_MES_OPERATION_MODIFY,
+    PILOTE_MES_OPERATION_ASK_FOR_CONFIG,
+    PILOTE_MES_OPERATION_SENDBACK_CONFIG
 } PiloteMesOperation;
+
+// Is this safe? Other solutions?
+typedef void* PiloteMesContent;
+
+typedef enum {
+    PILOTE_MES_TARGET_ENABLE,
+    PILOTE_MES_TARGET_MODE,
+    PILOTE_MES_TARGET_CODE
+    //TODO
+} PiloteMesOperationTarget;
 
 /**
  * -------------------------------------------------------------------------------------

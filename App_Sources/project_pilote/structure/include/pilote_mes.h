@@ -26,9 +26,11 @@
  *  PiloteMessagePackage structure. A message USB/UDP/http/etc package, for IN or OUT
  */
 typedef struct {
-    PiloteMesDirection      direction;  // Recv: from PC to MCU; Send: from MCU to PC
-    PiloteMesType           mes_type;
-    PiloteMesOperation      operation;
+    PiloteMesDirection          direction;  // Recv: from PC to MCU; Send: from MCU to PC
+    PiloteMesType               mes_type;
+    PiloteMesOperation          operation;
+    PiloteMesOperationTarget    target;
+    PiloteMesContent            mes_content;
 } PiloteMessagePackage;
 
 /**
@@ -36,6 +38,5 @@ typedef struct {
  *                                          APIs
  * -------------------------------------------------------------------------------------------
  */
-
 
 #endif /* PILOTE_MES_H_ */

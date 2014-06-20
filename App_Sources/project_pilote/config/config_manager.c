@@ -25,7 +25,8 @@ void ConfigThread(void *pvParameters)
     (void)pvParameters;                                         // Suppress unused variable warning
     extern xQueueHandle mbox_pilote_config;                     // Global message queue
     extern xQueueHandle mbox_pilote_recv;
-    //extern xQueueHandle mbox_pilote_send;
+    extern xQueueHandle mbox_pilote_send;
+
     bool configuring = FALSE;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
     PiloteMessagePackage *pilote_mes_package_ptr;               // To receive a message
@@ -41,7 +42,8 @@ void ConfigThread(void *pvParameters)
             ;
     }
     while (mbox_pilote_config == NULL ||
-           mbox_pilote_recv   == NULL) {                        // Wait for mailbox being created
+           mbox_pilote_recv   == NULL ||
+           mbox_pilote_send   == NULL) {                        // Wait for mailboxes being created
         vTaskDelay(FREE_RTOS_DELAY_50MS);
     }
     // Start IR by default
@@ -123,12 +125,8 @@ void ConfigThread(void *pvParameters)
                 while (1)
                     ;
             }
-        } /*else {
-            // If timeout
-            if (!configuring && uxQueueMessagesWaiting(mbox_pilote_config) == MBOX_ZERO_ITEM) {
-                // Do unblock IR, only when we are not configuring and IR is blocked
-                xQueueSend(mbox_pilote_config, (void*)&(pilote_config_ptr), MBOX_ZERO_TIMEOUT); // Without TIME_OUT
-            }
-        }*/
+        } else {
+            // If timeout do nothing
+        }
     }
 }
