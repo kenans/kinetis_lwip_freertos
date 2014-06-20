@@ -29,7 +29,7 @@ void ConfigThread(void *pvParameters)
 
     bool configuring = FALSE;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
-    PiloteMessagePackage *pilote_mes_package_ptr;               // To receive a message
+    PiloteMessagePackage *pilote_mes_package_ptr;               // To handle a received message package
 
     if (PiloteConfigInit(pilote_config_ptr) != ERR_OK) {        // Initialization
         // Error occurs
@@ -46,12 +46,14 @@ void ConfigThread(void *pvParameters)
            mbox_pilote_send   == NULL) {                        // Wait for mailboxes being created
         vTaskDelay(FREE_RTOS_DELAY_50MS);
     }
+    /**
     // Start IR by default
     if (xQueueSend(mbox_pilote_config, (void*)&(pilote_config_ptr), MBOX_ZERO_TIMEOUT) != pdTRUE) {
         // Start IR error
         while (1)
             ;
     }
+    */
     while (1) {
         /**
          * TODO
@@ -68,48 +70,42 @@ void ConfigThread(void *pvParameters)
          */
         if (xQueueReceive(mbox_pilote_recv, &pilote_mes_package_ptr, MBOX_TIMEOUT_500MS) == pdTRUE) {
             // If got a message
-            if (pilote_mes_package_ptr != NULL) {               // Make sure nothing wrong
+            if (pilote_mes_package_ptr != NULL) {                   // Make sure nothing wrong
                 if (pilote_mes_package_ptr->direction == PILOTE_MES_RECV) {
                     switch (pilote_mes_package_ptr->operation) {
-                    case PILOTE_MES_OPERATION_START:
-                        if (!configuring) {
-                            configuring = TRUE;
-                            xQueueReset(mbox_pilote_config);    // Block IR here
-                        }
-                        break;
-                    case PILOTE_MES_OPERATION_STOP:
-                        if (configuring) {
-                            configuring = FALSE;
-                            xQueueSend(mbox_pilote_config,
-                                      (void*)&(pilote_config_ptr),
-                                      MBOX_ZERO_TIMEOUT);       // Unblock IR here
-                        }
-                        break;
-                    case PILOTE_MES_OPERATION_MODIFY:
-                        break;
-                    default:
-                        // Should never get here
-                        break;
-                    }
-
-                    if (configuring) {
-                        switch (pilote_mes_package_ptr->mes_type) {
-                        case PILOTE_MES_TYPE_USB:
+                        case PILOTE_MES_OPERATION_START:            // USB connected
+                            if (!configuring) {
+                                configuring = TRUE;
+                                xQueueReset(mbox_pilote_config);    // Block IR here
+                            }
                             break;
-                        case PILOTE_MES_TYPE_UDP:
+                        case PILOTE_MES_OPERATION_STOP:             // USB disconnected
+                            if (configuring) {
+                                configuring = FALSE;
+                            }
                             break;
-                        case PILOTE_MES_TYPE_HTTP:
+                        case PILOTE_MES_OPERATION_MODIFY:           // Modify configuration data
+                            // Do nothing here
+                            break;
+                        case PILOTE_MES_OPERATION_ASK_FOR_CONFIG:   // Load configuration require
+                            // Do nothing here
                             break;
                         default:
                             // Should never get here
                             break;
-                        }
+                    }
 
-                        // Test :
-                        uint8_t i = 0;
-                        for (i = 0; i < 5 ; i++) {
-                            while (AS1_SendChar((AS1_TComData)"TEST\n"[i]) != ERR_OK)
-                                ;
+                    if (configuring) {
+                        switch (pilote_mes_package_ptr->mes_type) {
+                            case PILOTE_MES_TYPE_USB:
+                                break;
+                            case PILOTE_MES_TYPE_UDP:
+                                break;
+                            case PILOTE_MES_TYPE_HTTP:
+                                break;
+                            default:
+                                // Should never get here
+                                break;
                         }
 
                         // If no problem, write something to EEPROM??
@@ -126,7 +122,14 @@ void ConfigThread(void *pvParameters)
                     ;
             }
         } else {
-            // If timeout do nothing
+            // If timeout
+            if (!configuring && uxQueueMessagesWaiting(mbox_pilote_config) == MBOX_ZERO_ITEM) {
+                xQueueSend(mbox_pilote_config,
+                          (void*)&(pilote_config_ptr),
+                          MBOX_ZERO_TIMEOUT);       // Unblock IR here
+            } else {
+
+            }
         }
     }
 }
