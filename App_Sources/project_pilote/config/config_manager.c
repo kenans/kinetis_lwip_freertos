@@ -145,7 +145,11 @@ void ConfigThread(void *pvParameters)
             if (!configuring && uxQueueMessagesWaiting(mbox_pilote_config) == MBOX_ZERO_ITEM) {
                 // TODO
                 // If no problem, write something to EEPROM
-
+                if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
+                    while (1) {
+                        // Save EEPROM error
+                    }
+                }
                 // Check data consistency!
 
                 // If still no problem, OK, else try to roll back transaction

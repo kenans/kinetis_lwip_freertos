@@ -13,8 +13,8 @@
  * -------------------------------------------------------------------------------------------
  */
 /*
- *  This file defines access to a non-volatile memory component. While which kind of component
- *  being used is undefined.
+ *  This file defines access to a non-volatile memory component. However using which kind of
+ *  component is undefined.
  *  Some compile options can be set, if want to enable/disable some functions.
  *
  *  A 24AA1026 EEPROM is used now. This component uses a I2C bus. No timeout is used in both
@@ -42,7 +42,7 @@
  *  If USE_EEPROM==0, disables access to EEPROM, so PiloteSaveConfig() and PiloteLoadConfig()
  *  will always return ERR_OK without doing anything.
  */
-#define USE_EEPROM      0
+#define USE_EEPROM      1
 #define USE_24AA1026    1
 
 /**
