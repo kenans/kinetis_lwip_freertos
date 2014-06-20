@@ -99,10 +99,10 @@ void IR_TransmitThread(void *pvParameters)
                     source_mode = _pilote_config_ptr->source_mode;
                     first_time_start = FALSE;
                 } else {
+                    while (1) {
                     // Configuration error
                     // Should avoid this while configuring
-                    while (1)
-                        ;
+                    }
                 }
             }
             switch (source_mode) {
@@ -110,9 +110,9 @@ void IR_TransmitThread(void *pvParameters)
                     last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
                     for (i = 0; i < nums_of_frames ; i++) {
                         if (IR_SendFrame() != ERR_OK) {
+                            while (1) {
                             // IR error
-                            while (1)
-                                ;
+                            }
                         }
                     }
                     vTaskDelayUntil(&last_wake_time, time_between_frames/portTICK_PERIOD_MS);

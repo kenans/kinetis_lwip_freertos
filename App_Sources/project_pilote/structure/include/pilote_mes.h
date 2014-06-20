@@ -30,7 +30,8 @@ typedef struct {
     PiloteMesType               mes_type;
     PiloteMesOperation          operation;
     PiloteMesOperationTarget    target;
-    PiloteMesContent            mes_content;
+    void                        *mes_content_ptr;
+    uint32_t                    mes_content;
 } PiloteMessagePackage;
 
 /**

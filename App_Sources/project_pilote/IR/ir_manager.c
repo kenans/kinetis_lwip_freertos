@@ -32,16 +32,16 @@ void IR_Thread(void *pvParameters)
     extern xQueueHandle mbox_pilote_config;                         // Global message queue
 
     if (IR_InitFrame() != ERR_OK) {
-        // Initialization error
-        while (1)
-            ;
+        while (1) {
+            // Initialization error
+        }
     }
 
     // Start IR_TransmitThread
     if (xTaskCreate(IR_TransmitThread, "ir_tranmit", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, NULL) != pdPASS) {
-        // Error, often out of heap size. Should never get hear.
-        while(1)
-            ;
+        while(1) {
+            // Error, often out of heap size. Should never get hear.
+        }
     }
 
     while (mbox_pilote_config == NULL) {                            // Wait for mailbox being created
@@ -57,17 +57,17 @@ void IR_Thread(void *pvParameters)
                     (_pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR) != 0) {
 
                     if (IR_GenerateFrame() != ERR_OK) {         // Create a frame
+                        while (1) {
                         // Create frame error
-                        while (1)
-                            ;
+                        }
                     }
                     if (IR_StartTransmit(
                             _ir_frame,
                             IR_FRAME_COUNT,
                             _pilote_config_ptr)!= ERR_OK) {     // Start transmit
+                        while (1) {
                         // Start transmit error
-                        while (1)
-                            ;
+                        }
                     }
                     _transmit_started = TRUE;                   // Set transmitting
                 } else {
@@ -76,17 +76,17 @@ void IR_Thread(void *pvParameters)
                     vTaskDelay(FREE_RTOS_DELAY_500MS);
                 }
             } else {
+                while (1) {
                 // Error: got NULL message. Should never get here
-                while (1)
-                    ;
+                }
             }
         } else {
             // If timeout
             if (_transmit_started) {                                // Should stop transmitting if is running
                 if (IR_StopTransmit() != ERR_OK) {
+                    while (1) {
                     // Stop transmit error
-                    while (1)
-                        ;
+                    }
                 }
                 _transmit_started = FALSE;                          // Clear _transmit_started
             }

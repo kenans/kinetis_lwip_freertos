@@ -65,7 +65,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\config\config_manager.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\structure\pilote_config.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\structure\pilote_mes.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\usb\usb_cdc.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\usb\usb_config.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\tools\crc.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\Generated_Code\AS1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\Generated_Code\ASerialLdd1.c</PathName>
@@ -123,7 +123,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\include\pilote_types.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\structure\include\pilote_config.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\structure\include\pilote_mes.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\usb\include\usb_cdc.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\project_pilote\usb\include\usb_config.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\App_Sources\tools\inlcude\crc.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\Generated_Code\AS1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\PiloteV5_0.1\Generated_Code\ASerialLdd1.h</PathName>

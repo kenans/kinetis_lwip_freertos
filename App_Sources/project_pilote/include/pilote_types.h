@@ -129,7 +129,9 @@ typedef void* PiloteMesContent;
 typedef enum {
     PILOTE_MES_TARGET_ENABLE,
     PILOTE_MES_TARGET_MODE,
-    PILOTE_MES_TARGET_CODE
+    PILOTE_MES_TARGET_CODE,
+    PILOTE_MES_TARGET_TIME_BT_FRAMES,
+    PILOTE_MES_TARGET_NUMS_OF_FRAMES
     //TODO
 } PiloteMesOperationTarget;
 
