@@ -9,6 +9,7 @@
 #define USB_CDC_H_
 
 #include "common.h"
+#include "pilote_config.h"
 #include "pilote_mes.h"
 
 void USB_Task(void *pvParameters);

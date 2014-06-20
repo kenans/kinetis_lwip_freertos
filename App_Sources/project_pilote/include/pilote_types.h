@@ -177,6 +177,7 @@ typedef enum {
  */
 #define MBOX_ZERO_ITEM            0x00U
 #define MBOX_ZERO_TIMEOUT         FREE_RTOS_NONE_DELAY
+#define MBOX_TIMEOUT_INFINIT      portMAX_DELAY
 #define MBOX_TIMEOUT_1S           FREE_RTOS_DELAY_1S
 #define MBOX_TIMEOUT_500MS        FREE_RTOS_DELAY_500MS
 #define MBOX_TIMEOUT_50MS         FREE_RTOS_DELAY_50MS

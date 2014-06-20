@@ -96,7 +96,6 @@ void ConfigThread(void *pvParameters)
                                     _mes_pkg_send.direction = PILOTE_MES_SEND;
                                     _mes_pkg_send.mes_type  = PILOTE_MES_TYPE_USB;
                                     _mes_pkg_send.operation = PILOTE_MES_OPERATION_SENDBACK_CONFIG;
-                                    _mes_pkg_send.mes_content = 0;
                                     _mes_pkg_send.mes_content_ptr = (void*)pilote_config_ptr;
                                     // Then send back the message package
                                     xQueueSend(mbox_pilote_send, &_mes_pkg_send, MBOX_TIMEOUT_50MS);
@@ -106,10 +105,19 @@ void ConfigThread(void *pvParameters)
                                     switch (_mes_pkg_recv.target) {
                                     // Firstly parse the target, then modify the data
                                     case PILOTE_MES_TARGET_ENABLE:
+                                        pilote_config_ptr->enabled = (bool)_mes_pkg_recv.mes_content;
                                         break;
-                                    case PILOTE_MES_TARGET_ENABLE:
+                                    case PILOTE_MES_TARGET_CODE:
+                                        pilote_config_ptr->code = (uint16_t)_mes_pkg_recv.mes_content;
                                         break;
-                                    case PILOTE_MES_TARGET_ENABLE:
+                                    case PILOTE_MES_TARGET_MODE:
+                                        pilote_config_ptr->mode = _mes_pkg_recv.mes_content;
+                                        break;
+                                    case PILOTE_MES_TARGET_NUMS_OF_FRAMES:
+                                        pilote_config_ptr->nums_of_frames = (uint8_t)_mes_pkg_recv.mes_content;
+                                        break;
+                                    case PILOTE_MES_TARGET_TIME_BT_FRAMES:
+                                        pilote_config_ptr->time_between_frames = _mes_pkg_recv.mes_content;
                                         break;
                                     default:
                                         break;
