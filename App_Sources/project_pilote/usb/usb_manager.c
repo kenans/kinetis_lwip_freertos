@@ -5,7 +5,7 @@
  *      Author: OrpheoXlite
  */
 
-#include "usb_config.h"
+#include "usb_manager.h"
 
 static uint8_t              _cdc_buffer[USB1_DATA_BUFF_SIZE];
 static uint8_t              _in_buffer[USB1_DATA_BUFF_SIZE];

@@ -22,7 +22,7 @@
  */
 #include "config_manager.h"
 #include "ir_manager.h"
-#include "usb_config.h"
+#include "usb_manager.h"
 
 
 /**
