@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PEproject>
   <Header>
-    <Name>PiloteV5_0.1</Name>
+    <Name>Pilote_V5</Name>
     <SavedBy>OrpheoXlite</SavedBy>
-    <ModificationStamp>19</ModificationStamp>
-    <Date>2014-06-20</Date>
+    <ModificationStamp>20</ModificationStamp>
+    <Date>2014-06-23</Date>
     <IDE>Eclipse IDE</IDE>
     <PEversion>1.9.2.RT6b1416-0656</PEversion>
   </Header>

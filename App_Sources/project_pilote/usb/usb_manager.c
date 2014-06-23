@@ -1,5 +1,5 @@
 /*
- * usb_cdc.c
+ * usb_manager.c
  *
  *  Created on: 28 mai 2014
  *      Author: OrpheoXlite
