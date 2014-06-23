@@ -23,24 +23,26 @@
  */
 /**
  *  Pilote configurations structure. Use to keep the configuration settings of a pilote.
+ *
+ *  Attention: Storage of Kinetis is little-endian mode.
  */
 typedef struct {
     bool                enabled;
     PiloteMode          mode;
-    PiloteOutputMode    output_mode;    // Sur quelle sortie envoie des signaux
-    PiloteSourceMode    source_mode;    // Quand est ce qu'on envoie des signaux
+    PiloteOutputMode    output_mode;                                // Sur quelle sortie envoie des signaux
+    PiloteSourceMode    source_mode;                                // Quand est ce qu'on envoie des signaux
     PiloteVideoMode     video_mode;
     PiloteTokenRing     token_ring;
-    uint16_t            code;
+    uint16_t            code;                                       // Little Endian
     uint8_t             group;
     uint8_t             nums_of_frames;
     uint8_t             udp_id[PILOTE_UDP_ID_COUNT];
     uint8_t             udp_data[PILOTE_UDP_DATA_COUNT];
-    uint8_t             command_param[PILOTE_COMMAND_PARAM_COUNT];  // CMD1,2
-    uint16_t            command_data;   // Volume/ PARAM3,4  sauf PLAY
-    PiloteTimeMs        time_between_frames;    // >100ms
-    PiloteTimeMs        delay_source;       //
-    PiloteTimeMs        delay_output;       //
+    uint8_t             command_param[PILOTE_COMMAND_PARAM_COUNT];  // command_param[0]=CMD1;command_param[1]=CMD2;
+    uint16_t            command_data;                               // Little Endian: Volume/ PARAM3,4  sauf PLAY
+    PiloteTimeMs        time_between_frames;                        // >100ms
+    PiloteTimeMs        delay_source;                               //
+    PiloteTimeMs        delay_output;                               //
 
     PiloteTimeMs        start_time;
     PiloteTimeMs        end_time;

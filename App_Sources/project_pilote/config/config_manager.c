@@ -37,6 +37,14 @@ void ConfigThread(void *pvParameters)
             // Initialization error
         }
     }
+#define REWRITE_EEPROM 0                                        // If anything changed, should rewrite the EEPROM
+#if REWRITE_EEPROM==1
+    if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
+        while (1) {
+            // Save EEPROM error
+        }
+    }
+#endif  // if REWRITE_EEPROM==1
     if (PiloteLoadConfig(pilote_config_ptr) != ERR_OK) {        // Load configurations from EEPROM
         while (1) {
             // Load EEPROM error

@@ -29,8 +29,8 @@ void USB_Task(void *pvParameters)
     while (1) {
         while(CDC1_App_Task(_cdc_buffer, sizeof(_cdc_buffer)) == ERR_BUSOFF) {
             // USB not connected, so device not enumerated
-            if (_running) {                                                 // If it's the
-                _running=FALSE;
+            if (_running) {                                                 // First time disconnect USB
+                _running=FALSE;                                             // Send config END message
                 mes_pkg_recv.direction = PILOTE_MES_RECV;
                 mes_pkg_recv.mes_type = PILOTE_MES_TYPE_USB;
                 mes_pkg_recv.operation = PILOTE_MES_OPERATION_STOP;
@@ -39,16 +39,16 @@ void USB_Task(void *pvParameters)
             vTaskDelay(500/portTICK_PERIOD_MS);
         }
 
-        if (!_running) {
-            _running = TRUE;
+        if (!_running) {                                                    // First time connect USB
+            _running = TRUE;                                                // Send config START message
             mes_pkg_recv.direction = PILOTE_MES_RECV;
             mes_pkg_recv.mes_type = PILOTE_MES_TYPE_USB;
             mes_pkg_recv.operation = PILOTE_MES_OPERATION_START;
             xQueueSend(mbox_pilote_recv, &mes_pkg_recv, 0);
         }
 
-        if (CDC1_GetCharsInRxBuf() != 0) {
-            for (i = 0; i < sizeof(_in_buffer); i++) {
+        if (CDC1_GetCharsInRxBuf() != 0) {                                  // If there is some data transfered
+            for (i = 0; i < sizeof(_in_buffer); i++) {                      // Copy them to a local buffer
                 if (CDC1_GetChar(&_in_buffer[i]) == ERR_OK) {
                     in_buf_not_empty = TRUE;
                 } else {
@@ -56,7 +56,7 @@ void USB_Task(void *pvParameters)
                 }
             }
 
-            if (in_buf_not_empty) {
+            if (in_buf_not_empty) {                                         // Does the local buffer have some data?
                 // Is the received frame valid?
                 for (i = 0; i < sizeof(_in_buffer)-9; i++) {
                     if (_in_buffer[i+0] == '$' &&
@@ -147,16 +147,8 @@ void USB_Task(void *pvParameters)
                 }
                 in_buf_not_empty = FALSE;
             }
-
-//            i = 0;
-//            while(i < sizeof(_in_buffer)-1 &&
-//                  CDC1_GetChar(&_in_buffer[i]) == ERR_OK) {
-//                i++;
-//            }
-//            _in_buffer[i] = '\0';
-//            (void)CDC1_SendString((unsigned char*)"echo: ");
-
         }
+        // If USB connected but no data transfered
         vTaskDelay(50/portTICK_PERIOD_MS);
     }
 }

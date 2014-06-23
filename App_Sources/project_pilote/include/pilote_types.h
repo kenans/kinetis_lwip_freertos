@@ -44,7 +44,7 @@ typedef unsigned int uint32_t;
  *                   Structure PiloteConfigurations
  * -----------------------------------------------------------------------------
  */
-#define PILOTE_UDP_ID_COUNT        5U
+#define PILOTE_UDP_ID_COUNT        4U
 #define PILOTE_UDP_DATA_COUNT      50U
 #define PILOTE_COMMAND_PARAM_COUNT 2U
 
@@ -90,7 +90,7 @@ typedef enum {
     PILOTE_VIDEO_NTSC
 } PiloteVideoMode;
 
-typedef int PiloteTimeMs;
+typedef signed int PiloteTimeMs;
 typedef uint8_t PiloteWeekday;
 #define PILOTE_WEEKDAY_OFF         0x00U
 #define PILOTE_WEEKDAY_SUNDAY      0x01U

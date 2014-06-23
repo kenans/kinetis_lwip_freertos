@@ -142,26 +142,30 @@ static err_t IR_GenerateFrame(void)
         // Start Byte
         _ir_frame[0] = IR_FRAME_START;
         // Fill with frame except START and CKS
+        /**
+         * Attention:
+         *      IR transmit protocol is Big-Endian mode, while the storage of Kinetis is Little-Endian mode.
+         */
         switch (_pilote_config_ptr->mode) {
             case PILOTE_TRIGGER:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];
-                _ir_frame[2] = _pilote_config_ptr->command_param[1];
+                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
+                _ir_frame[2] = _pilote_config_ptr->command_param[1];                // CMD2
                 _ir_frame[3] = IR_FRAME_CMD_DATA_1;
                 _ir_frame[4] = IR_FRAME_CMD_DATA_2;
-                _ir_frame[5] = (uint8_t)((_pilote_config_ptr->code>>8U)&0x00FFU);
+                _ir_frame[5] = (uint8_t)((_pilote_config_ptr->code>>8U)&0x00FFU);   //
                 _ir_frame[6] = (uint8_t)(_pilote_config_ptr->code&0x00FFU);
                 _ir_frame[7] = _pilote_config_ptr->group;
                 break;
             case PILOTE_SYNCHRO:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];
+                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
                 _ir_frame[2] = (uint8_t)((_pilote_config_ptr->code>>8U)&0x00FFU);
                 _ir_frame[3] = (uint8_t)(_pilote_config_ptr->code&0x00FFU);
                 // TODO
                 _ir_frame[7] = _pilote_config_ptr->group;
                 break;
             case PILOTE_COMMAND:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];
-                _ir_frame[2] = _pilote_config_ptr->command_param[1];
+                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
+                _ir_frame[2] = _pilote_config_ptr->command_param[1];                // CMD2
                 _ir_frame[3] = IR_FRAME_CMD_DATA_1;
                 _ir_frame[4] = IR_FRAME_CMD_DATA_2;
                 _ir_frame[5] = (uint8_t)((_pilote_config_ptr->command_data>>8U)&0x00FFU);
