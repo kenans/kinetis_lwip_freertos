@@ -77,7 +77,7 @@ err_t PiloteConfigInit(PiloteConfigurations *pilote_config);
 /**
  *
  */
-#define PiloteConfigEnable(pilote_config) do{(pilote_config)->enabled=TRUE}while(0)
-#define PiloteConfigDisable(pilote_config) do{(pilote_config)->enabled=FALSE}while(0)
+#define PiloteConfigEnable(pilote_config) do{pilote_config.enabled=TRUE;}while(0)
+#define PiloteConfigDisable(pilote_config) do{pilote_config.enabled=FALSE;}while(0)
 
 #endif /* PILOTE_CONFIG_H_ */

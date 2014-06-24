@@ -26,6 +26,9 @@ void USB_Task(void *pvParameters)
     PiloteMessagePackage mes_pkg_recv;                                      // Mes package for recv mbox
     PiloteMessagePackage mes_pkg_send;                                      // Mes package for send mbox
 
+    PiloteInitRecvMesPackage(mes_pkg_recv);                                 // Initialization mes_pkg_recv
+    PiloteInitSendMesPackage(mes_pkg_send);                                 // Initialization mes_pkg_send
+
     while (1) {
         while(CDC1_App_Task(_cdc_buffer, sizeof(_cdc_buffer)) == ERR_BUSOFF) {
             // USB not connected, so device not enumerated

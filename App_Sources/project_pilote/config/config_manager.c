@@ -32,11 +32,15 @@ void ConfigThread(void *pvParameters)
     bool configuring = FALSE;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
 
-    if (PiloteConfigInit(pilote_config_ptr) != ERR_OK) {        // Initialization
+    if (PiloteConfigInit(pilote_config_ptr) != ERR_OK) {        // Initialization pilote_config
         while (1) {
             // Initialization error
         }
     }
+
+    PiloteInitRecvMesPackage(_mes_pkg_recv);                    // Initialization mes_pkg_recv
+    PiloteInitSendMesPackage(_mes_pkg_send);                    // Initialization mes_pkg_send
+
 #define REWRITE_EEPROM 0                                        // If anything changed, should rewrite the EEPROM
 #if REWRITE_EEPROM==1
     if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
@@ -45,6 +49,7 @@ void ConfigThread(void *pvParameters)
         }
     }
 #endif  // if REWRITE_EEPROM==1
+
     if (PiloteLoadConfig(pilote_config_ptr) != ERR_OK) {        // Load configurations from EEPROM
         while (1) {
             // Load EEPROM error
