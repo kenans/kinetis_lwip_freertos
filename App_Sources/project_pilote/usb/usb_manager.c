@@ -14,7 +14,7 @@ static uint8_t              _cdc_buffer[USB1_DATA_BUFF_SIZE];
 static bool                 _running = FALSE;
 static uint8_t              _in_buffer[USB_IN_BUFFER_COUNT];
 
-#define USB_OLD_FRAME   1
+#define USB_OLD_FRAME   0
 #if USB_OLD_FRAME==1
 static uint8_t              _temp[16];
 #endif  // if USB_OLD_FRAME==1
@@ -64,8 +64,7 @@ void USB_Task(void *pvParameters)
             err_t error = ERR_OK;
             uint8_t i = 0;
             bool in_buf_not_empty = FALSE;
-            // Do copy
-            // TODO
+            // Copy from CDC buffer to a local USB buffer: _in_buffer
             for (i = 0; i < sizeof(_in_buffer); i++) {                      // Copy them to a local buffer
                 if (CDC1_GetChar(&_in_buffer[i]) == ERR_OK) {
                     in_buf_not_empty = TRUE;
@@ -74,18 +73,17 @@ void USB_Task(void *pvParameters)
                 }
             }
             // If local buffer not empty, search for valid frame
-            // TODO
             if (in_buf_not_empty) {
-                for (i = 0; i < sizeof(_in_buffer)-PILOTE_USB_PROTOCOL_FRAME_COUNT; i++) {
+                for (i = 0; i < sizeof(_in_buffer)-PILOTE_USB_PROTOCOL_FRAME_COUNT+1 ; i++) {
+                    // If find a valid frame
                     if (_in_buffer[i+0]  == '$' &&
                         _in_buffer[i+2]  == '#' &&
                         _in_buffer[i+4]  == '#' &&
                         _in_buffer[i+9]  == '#' &&
                         _in_buffer[i+11] == '$') {
-                        // Parse the frame, form the message package
-                        // TODO
+                        // First parse the frame and generate the message package
                         error = UsbManagerParseFrame(&_in_buffer[i], &mes_pkg_recv);
-
+                        // Then if no error, send message package; if error, reply MASTER
                         if (error == ERR_OK) {
                             // Send the message package to mbox_recv, if mbox full, block and wait
                             xQueueSend(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
@@ -269,10 +267,10 @@ static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_
      *      Target enumeration in the protocol and in the software should be the same.
      */
     mes_pkg_recv->target = frame[3];                      // Byte3 : Target enumeration.
-    mes_pkg_recv->data = (frame[5])    +                  // Byte5~8 : Data, transfered in little-endian mode.
-                         (frame[6]<<8) +
-                         (frame[7]<<16)+
-                         (frame[8]<<24);
+    mes_pkg_recv->data = (uint32_t)(((frame[5]&0xffU) +   // Byte5~8 : Data, transfered in little-endian mode.
+                                    ((frame[6]<<8)&0xff00U) +
+                                    ((frame[7]<<16)&0xff0000U)+
+                                    ((frame[8]<<24))&0xff000000U));
 
     return error;
 }
@@ -315,6 +313,7 @@ static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePacka
             return ERR_COMMON;
         }
         frame_cks[1] = mes_pkg_send->operation;
+        // Little endian mode
         frame_cks[2] = (uint8_t)(mes_pkg_send->data&0x000000FFU);
         frame_cks[3] = (uint8_t)((mes_pkg_send->data&0x0000FF00U)>>8);
         frame_cks[4] = (uint8_t)((mes_pkg_send->data&0x00FF0000U)>>16);

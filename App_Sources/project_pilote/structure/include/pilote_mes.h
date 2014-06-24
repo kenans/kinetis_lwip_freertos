@@ -30,8 +30,8 @@ typedef struct {
     PiloteMesType               mes_type;               // USB/UDP/HTTP
     PiloteMesOperation          operation;              // Start/End/Read/Modify/Reply
     PiloteMesTarget             target;                 //
-    int32_t                     data;            // Message value
-    void                        *data_ptr;       // A pointer to the message value if is needed
+    uint32_t                    data;                   // Message value
+    void                        *data_ptr;              // A pointer to the message value if is needed
 } PiloteMessagePackage;
 
 /**
