@@ -31,7 +31,7 @@ typedef struct {
     PiloteMesOperation          operation;              // Start/End/Read/Modify/Reply
     PiloteMesTarget             target;                 //
     uint32_t                    data;                   // Message value
-    void                        *data_ptr;              // A pointer to the message value if is needed
+    //void                        *data_ptr;              // A pointer to the message value if is needed
 } PiloteMessagePackage;
 
 /**

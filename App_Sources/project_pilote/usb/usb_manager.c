@@ -12,7 +12,24 @@
  * Only used in this file
  */
 // Methods
-static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv);
+//static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv);
+static err_t UsbManagerParseFrame(const uint8_t *frame,
+                                  PiloteMesOperation *operation,
+                                  PiloteMesTarget *target,
+                                  uint32_t *data);
+static err_t UsbManagerCreateFrame(uint8_t *frame,
+                                   const err_t error_frame,
+                                   const PiloteMesOperation operation,
+                                   const PiloteMesTarget target,
+                                   const uint32_t data);
+static err_t PackRecvMessage(PiloteMessagePackage *mes_pkg_recv,
+                             const PiloteMesOperation operation,
+                             const PiloteMesTarget target,
+                             const uint32_t data);
+static err_t UnpackSendMessage(const PiloteMessagePackage *mes_pkg_send,
+                               PiloteMesOperation *operation,
+                               PiloteMesTarget *target,
+                               uint32_t *data);
 static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePackage *mes_pkg_send);
 // Variables
 static uint8_t _cdc_buffer[USB1_DATA_BUFF_SIZE];    // Buffer needed by USB CDC
@@ -157,6 +174,9 @@ void USB_Task(void *pvParameters)
             uint8_t i = 0;
             uint8_t temp = 0;
             uint8_t temp_frame[PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT];
+            PiloteMesOperation operation;
+            PiloteMesTarget target;
+            uint32_t data;
             // Copy from CDC buffer to a local USB buffer: _local_buf
             while (!LocalBuf_IsFull()) {
                 if (CDC1_GetChar(&temp) == ERR_OK) {
@@ -180,29 +200,58 @@ void USB_Task(void *pvParameters)
                     // If a valid frame, copy it out and remove it from the frame
                     for (i = 0; i < PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT; i++) {
                         temp_frame[i] = LocalBuf_Get();
+//                        temp_frame[i] = LocalBuf_Peek();
+//                        LocalBuf_Remove();
                     }
-                    // First parse the frame and generate the message package
-                    error = UsbManagerParseFrame(temp_frame, &mes_pkg_recv);
+                    // Firstly parse the frame
+                    error = UsbManagerParseFrame(temp_frame, &operation, &target, &data);
+                    if (error==ERR_MEM) {
+                        while (1) {
+                            // Parse frame memory error, should never get here
+                        }
+                    }
                     // Then if no error, send message package; if error, reply MASTER
                     if (error == ERR_OK) {
+                        // Pack the mes_pkg_recv from data just parsed
+                        if (PackRecvMessage(&mes_pkg_recv, operation, target, data) != ERR_OK) {
+                            while (1) {
+                                // Pack mes_pkg_recv error, should never get here
+                            }
+                        }
                         // Send the message package to mbox_recv, if mbox full, block and wait
                         xQueueSend(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
                         // Receive message package in mbox_send, if mbox empty, block and wait
                         xQueueReceive(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                        // Unpack the mes_pkg_send just received
+                        if (UnpackSendMessage(&mes_pkg_send, &operation, &target, &data) != ERR_OK) {
+                            while (1) {
+                                // Unpack mes_pkg_send error, should never get here
+                            }
+                        }
+                        // Create the send back frame
+                        if (UsbManagerCreateFrame(temp_frame, error, operation, target, data) != ERR_OK) {
+                            while (1) {
+                                // Create send back frame error, should never get here
+                            }
+                        }
                         // Send back a response to MASTER
-                        if (mes_pkg_send.mes_type == PILOTE_MES_TYPE_USB) {
-                            if (UsbManagerSendbackFrame(error, &mes_pkg_send) != ERR_OK) {
-                                while (1) {
-                                    // Send back frame error, should never get here.
-                                }
+                        if (CDC1_SendBlock(temp_frame, PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT) != ERR_OK) {
+                            while (1) {
+                                // Send back frame error, should never get here
                             }
                         }
                     } else if (error == ERR_CKS || error == ERR_FATAL) {
                         // If any error, send back response error
-                        // TODO
-                        if (UsbManagerSendbackFrame(error, NULL) != ERR_OK) {
+                        // Create the send back frame
+                        if (UsbManagerCreateFrame(temp_frame, error, operation, target, data) != ERR_OK) {
                             while (1) {
-                                // Send back frame error, should never get here.
+                                // Create send back frame error, should never get here
+                            }
+                        }
+                        // Send back a response to MASTER
+                        if (CDC1_SendBlock(temp_frame, PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT) != ERR_OK) {
+                            while (1) {
+                                // Send back frame error, should never get here
                             }
                         }
                     }
@@ -323,10 +372,18 @@ void USB_Task(void *pvParameters)
 /**
  *
  */
-static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv)
+//static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv)
+static err_t UsbManagerParseFrame(const uint8_t *frame,
+                                  PiloteMesOperation *operation,
+                                  PiloteMesTarget *target,
+                                  uint32_t *data)
 {
     err_t error = ERR_OK;
     uint8_t frame_cks[6];
+
+    if (frame == NULL) {
+        return ERR_MEM;
+    }
 
     // Is checksum correct?
     frame_cks[0] = frame[1];
@@ -345,10 +402,10 @@ static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_
     // Parse command
     switch (frame[1]) {
         case 0x80:                          // Byte1 = 0x80 (128) : Read a configuration
-            mes_pkg_recv->operation = PILOTE_MES_OPERATION_READ_CONFIG;
+            *operation = PILOTE_MES_OPERATION_READ_CONFIG;
            break;
         case 0x81:                          // Byte1 = 0x81 (129) : Modify a configuration
-            mes_pkg_recv->operation = PILOTE_MES_OPERATION_MODIFY;
+            *operation = PILOTE_MES_OPERATION_MODIFY;
             break;
         default:
             return ERR_FATAL;               // Byte1 cannot be recognized
@@ -358,15 +415,79 @@ static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_
      * Attention:
      *      Target enumeration in the protocol and in the software should be the same.
      */
-    mes_pkg_recv->target = frame[3];                      // Byte3 : Target enumeration.
-    mes_pkg_recv->data = (uint32_t)((frame[5]&0xffU) +   // Byte5~8 : Data, transfered in little-endian mode.
-                                    ((frame[6]<<8)&0xff00U) +
-                                    ((frame[7]<<16)&0xff0000U)+
-                                    ((frame[8]<<24)&0xff000000U));
+    *target = frame[3];                      // Byte3 : Target enumeration.
+    *data = (uint32_t)((frame[5]&0xffU) +   // Byte5~8 : Data, transfered in little-endian mode.
+                       ((frame[6]<<8)&0xff00U) +
+                       ((frame[7]<<16)&0xff0000U)+
+                       ((frame[8]<<24)&0xff000000U));
 
     return error;
 }
 
+/**
+ *
+ */
+static err_t UsbManagerCreateFrame(uint8_t *frame,
+                                   const err_t error_frame,
+                                   const PiloteMesOperation operation,
+                                   const PiloteMesTarget target,
+                                   const uint32_t data)
+{
+    err_t error = ERR_OK;
+    uint8_t cks = 0;
+    uint8_t frame_cks[6];
+
+    // Parse msg_pkg_send and create frame_cks for CRC
+    if (frame == NULL) {
+        return ERR_MEM;
+    }
+    if (error_frame == ERR_OK) {                    // ERR_OK
+        if (operation == PILOTE_MES_OPERATION_REPLY_CONFIG) {
+            frame_cks[0] = 0x00U;
+        } else if (operation == PILOTE_MES_OPERATION_REPLY_MODIFY) {
+            frame_cks[0] = 0x01U;
+        } else {
+            return ERR_COMMON;                      // operation not recognized
+        }
+        frame_cks[1] = target;
+        // Little endian mode
+        frame_cks[2] = (uint8_t)(data&0x000000FFU);
+        frame_cks[3] = (uint8_t)((data&0x0000FF00U)>>8);
+        frame_cks[4] = (uint8_t)((data&0x00FF0000U)>>16);
+        frame_cks[5] = (uint8_t)((data&0xFF000000U)>>24);
+    } else {
+        if (error_frame == ERR_CKS) {
+            frame_cks[0] = 0x02U;                   // ERR_CKS
+        } else if (error_frame == ERR_FATAL) {
+            frame_cks[0] = 0x03U;                   // ERR_FATAL
+        } else {
+            return ERR_COMMON;                      // error_frame not recognized
+        }
+        frame_cks[1] = 0U;
+        frame_cks[2] = 0U;
+        frame_cks[3] = 0U;
+        frame_cks[4] = 0U;
+        frame_cks[5] = 0U;
+    }
+    // Get CRC result
+    cks = GetCRC8(frame_cks, 6);
+
+    // Create a frame to send
+    frame[0]  = '$';
+    frame[1]  = frame_cks[0];
+    frame[2]  = '#';
+    frame[3]  = frame_cks[1];
+    frame[4]  = '#';
+    frame[5]  = frame_cks[2];
+    frame[6]  = frame_cks[3];
+    frame[7]  = frame_cks[4];
+    frame[8]  = frame_cks[5];
+    frame[9]  = '#';
+    frame[10] = cks;
+    frame[11] = '$';
+
+    return error;
+}
 /**
  *
  */
@@ -404,7 +525,7 @@ static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePacka
         } else {
             return ERR_COMMON;
         }
-        frame_cks[1] = mes_pkg_send->operation;
+        frame_cks[1] = mes_pkg_send->target;
         // Little endian mode
         frame_cks[2] = (uint8_t)(mes_pkg_send->data&0x000000FFU);
         frame_cks[3] = (uint8_t)((mes_pkg_send->data&0x0000FF00U)>>8);
@@ -432,6 +553,50 @@ static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePacka
     // Finally send back the frame
     if (CDC1_SendBlock(frame_send, 12) != ERR_OK)
         return ERR_COMMON;
+
+    return error;
+}
+
+/**
+ *
+ */
+static err_t PackRecvMessage(PiloteMessagePackage *mes_pkg_recv,
+                             const PiloteMesOperation operation,
+                             const PiloteMesTarget target,
+                             const uint32_t data)
+{
+    err_t error = ERR_OK;
+
+    if (mes_pkg_recv==NULL) {
+        return ERR_MEM;
+    }
+    mes_pkg_recv->operation = operation;
+    mes_pkg_recv->target = target;
+    mes_pkg_recv->data = data;
+
+    return error;
+}
+
+/**
+ *
+ */
+static err_t UnpackSendMessage(const PiloteMessagePackage *mes_pkg_send,
+                               PiloteMesOperation *operation,
+                               PiloteMesTarget *target,
+                               uint32_t *data)
+{
+    err_t error = ERR_OK;
+
+    if (mes_pkg_send == NULL) {
+        return ERR_MEM;
+    }
+    if (mes_pkg_send->mes_type!=PILOTE_MES_TYPE_USB ||
+        mes_pkg_send->direction!=PILOTE_MES_SEND) {
+        return ERR_COMMON;
+    }
+    *operation = mes_pkg_send->operation;
+    *target = mes_pkg_send->target;
+    *data = mes_pkg_send->data;
 
     return error;
 }
