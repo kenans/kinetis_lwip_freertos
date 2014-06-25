@@ -12,7 +12,6 @@
  * Only used in this file
  */
 // Methods
-//static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv);
 static err_t UsbManagerParseFrame(const uint8_t *frame,
                                   PiloteMesOperation *operation,
                                   PiloteMesTarget *target,
@@ -30,7 +29,6 @@ static err_t UnpackSendMessage(const PiloteMessagePackage *mes_pkg_send,
                                PiloteMesOperation *operation,
                                PiloteMesTarget *target,
                                uint32_t *data);
-static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePackage *mes_pkg_send);
 // Variables
 static uint8_t _cdc_buffer[USB1_DATA_BUFF_SIZE];    // Buffer needed by USB CDC
 // --------------------------------- Local ring buffer -----------------------------------------------
@@ -56,7 +54,6 @@ static uint8_t _end = 0;                            // end id
 // ---------------------------------------------------------------------------------------------------
 /**
  * Compile options
- *      0 : Use new frame but no ring buffer
  *      -1: Use new frame with ring buffer
  *      1 : Use old frame but no ring buffer
  */
@@ -106,68 +103,7 @@ void USB_Task(void *pvParameters)
             xQueueSend(mbox_pilote_recv, &mes_pkg_recv, 0);
         }
 
-#if USB_OLD_FRAME==0
-        // Every 50ms, if Rx not empty, copy all the items from Rx to local USB buffer;
-        if (CDC1_GetCharsInRxBuf() != 0) {
-            err_t error = ERR_OK;
-            uint8_t i = 0;
-            bool in_buf_not_empty = FALSE;
-            // Copy from CDC buffer to a local USB buffer: _local_buf
-            for (i = 0; i < sizeof(_local_buf); i++) {                      // Copy them to a local buffer
-                if (CDC1_GetChar(&_local_buf[i]) == ERR_OK) {
-                    in_buf_not_empty = TRUE;
-                } else {
-                    break;
-                }
-            }
-            // If local buffer not empty, search for valid frame
-            if (in_buf_not_empty) {
-                for (i = 0; i < sizeof(_local_buf)-PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT+1 ; i++) {
-                    // If find a valid frame
-                    if (_local_buf[i+0]  == '$' &&
-                        _local_buf[i+2]  == '#' &&
-                        _local_buf[i+4]  == '#' &&
-                        _local_buf[i+9]  == '#' &&
-                        _local_buf[i+11] == '$') {
-                        // First parse the frame and generate the message package
-                        error = UsbManagerParseFrame(&_local_buf[i], &mes_pkg_recv);
-                        // Then if no error, send message package; if error, reply MASTER
-                        if (error == ERR_OK) {
-                            // Send the message package to mbox_recv, if mbox full, block and wait
-                            xQueueSend(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
-                            // Receive message package in mbox_send, if mbox empty, block and wait
-                            xQueueReceive(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
-                            // Send back a response to MASTER
-                            if (mes_pkg_send.mes_type == PILOTE_MES_TYPE_USB) {
-                                if (UsbManagerSendbackFrame(error, &mes_pkg_send) != ERR_OK) {
-                                    while (1) {
-                                        // Send back frame error, should never get here.
-                                    }
-                                }
-                            }
-                        } else if (error == ERR_CKS || error == ERR_FATAL) {
-                            // If any error, send back response error
-                            // TODO
-                            if (UsbManagerSendbackFrame(error, NULL) != ERR_OK) {
-                                while (1) {
-                                    // Send back frame error, should never get here.
-                                }
-                            }
-                        }
-                        i = i + PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT - 1;
-                    }
-                }
-                // Clear input buffer
-                for (i = 0; i < sizeof(_local_buf); i++) {
-                    _local_buf[i] = 0;
-                }
-                in_buf_not_empty = FALSE;
-            }
-        } else {
-            // If USB connected but no data transfered
-            vTaskDelay(50/portTICK_PERIOD_MS);
-        }
-#elif USB_OLD_FRAME==-1
+#if USB_OLD_FRAME==-1
         // Every 50ms, if Rx not empty, copy all the items from Rx to local USB buffer;
         if (CDC1_GetCharsInRxBuf() != 0) {
             err_t error = ERR_OK;
@@ -200,8 +136,6 @@ void USB_Task(void *pvParameters)
                     // If a valid frame, copy it out and remove it from the frame
                     for (i = 0; i < PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT; i++) {
                         temp_frame[i] = LocalBuf_Get();
-//                        temp_frame[i] = LocalBuf_Peek();
-//                        LocalBuf_Remove();
                     }
                     // Firstly parse the frame
                     error = UsbManagerParseFrame(temp_frame, &operation, &target, &data);
@@ -370,9 +304,8 @@ void USB_Task(void *pvParameters)
 }
 
 /**
- *
+ *  Parse the incoming USB frame.
  */
-//static err_t UsbManagerParseFrame(uint8_t *frame, PiloteMessagePackage *mes_pkg_recv)
 static err_t UsbManagerParseFrame(const uint8_t *frame,
                                   PiloteMesOperation *operation,
                                   PiloteMesTarget *target,
@@ -425,7 +358,7 @@ static err_t UsbManagerParseFrame(const uint8_t *frame,
 }
 
 /**
- *
+ *  Create an USB frame to send
  */
 static err_t UsbManagerCreateFrame(uint8_t *frame,
                                    const err_t error_frame,
@@ -488,77 +421,9 @@ static err_t UsbManagerCreateFrame(uint8_t *frame,
 
     return error;
 }
-/**
- *
- */
-static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePackage *mes_pkg_send)
-{
-    err_t error = ERR_OK;
-    uint8_t cks = 0;
-    uint8_t frame_cks[6];
-    uint8_t frame_send[12];
-
-    // Parse msg_pkg_send and create frame_cks for CRC
-    if (mes_pkg_send == NULL) {
-        if (error_frame == ERR_OK) {
-            return ERR_MEM;
-        } else if (error_frame == ERR_CKS) {
-            frame_cks[0] = 0x02U;                       // ERR_CKS
-        } else if (error_frame == ERR_FATAL) {
-            frame_cks[0] = 0x03U;                       // ERR_FATAL
-        } else {
-            return ERR_COMMON;
-        }
-        frame_cks[1] = 0U;
-        frame_cks[2] = 0U;
-        frame_cks[3] = 0U;
-        frame_cks[4] = 0U;
-        frame_cks[5] = 0U;
-    } else {
-        if (error_frame != ERR_OK) {
-            return ERR_COMMON;
-        }
-        if (mes_pkg_send->operation == PILOTE_MES_OPERATION_REPLY_CONFIG) {
-            frame_cks[0] = 0x00U;
-        } else if (mes_pkg_send->operation == PILOTE_MES_OPERATION_REPLY_MODIFY) {
-            frame_cks[0] = 0x01U;
-        } else {
-            return ERR_COMMON;
-        }
-        frame_cks[1] = mes_pkg_send->target;
-        // Little endian mode
-        frame_cks[2] = (uint8_t)(mes_pkg_send->data&0x000000FFU);
-        frame_cks[3] = (uint8_t)((mes_pkg_send->data&0x0000FF00U)>>8);
-        frame_cks[4] = (uint8_t)((mes_pkg_send->data&0x00FF0000U)>>16);
-        frame_cks[5] = (uint8_t)((mes_pkg_send->data&0xFF000000U)>>24);
-    }
-
-    // Get CRC result
-    cks = GetCRC8(frame_cks, 6);
-
-    // Create a frame to send
-    frame_send[0]  = '$';
-    frame_send[1]  = frame_cks[0];
-    frame_send[2]  = '#';
-    frame_send[3]  = frame_cks[1];
-    frame_send[4]  = '#';
-    frame_send[5]  = frame_cks[2];
-    frame_send[6]  = frame_cks[3];
-    frame_send[7]  = frame_cks[4];
-    frame_send[8]  = frame_cks[5];
-    frame_send[9]  = '#';
-    frame_send[10] = cks;
-    frame_send[11] = '$';
-
-    // Finally send back the frame
-    if (CDC1_SendBlock(frame_send, 12) != ERR_OK)
-        return ERR_COMMON;
-
-    return error;
-}
 
 /**
- *
+ * Pack the mes_pkg_recv
  */
 static err_t PackRecvMessage(PiloteMessagePackage *mes_pkg_recv,
                              const PiloteMesOperation operation,
@@ -578,7 +443,7 @@ static err_t PackRecvMessage(PiloteMessagePackage *mes_pkg_recv,
 }
 
 /**
- *
+ *  Unpack the mes_pkg_send
  */
 static err_t UnpackSendMessage(const PiloteMessagePackage *mes_pkg_send,
                                PiloteMesOperation *operation,
