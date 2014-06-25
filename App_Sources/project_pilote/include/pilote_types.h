@@ -160,7 +160,7 @@ typedef enum {
  *                                    USB Protocol
  * -------------------------------------------------------------------------------------
  */
-#define PILOTE_USB_PROTOCOL_FRAME_COUNT         12U
+#define PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT   12U
 
 /**
  * -------------------------------------------------------------------------------------

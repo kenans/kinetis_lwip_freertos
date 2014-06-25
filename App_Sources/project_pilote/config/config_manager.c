@@ -314,9 +314,9 @@ static err_t ConfigManagerParseUsbMes(PiloteMessagePackage *mes_pkg_recv,
             break;
         case PILOTE_MES_TARGET_UDP_ID:
             mes_pkg_send->data = (uint32_t)(((_pilote_config.udp_id[0]<<24)&0xff000000U)+
-                    ((_pilote_config.udp_id[1]<<16)&0x00ff0000U)+
-                    ((_pilote_config.udp_id[2]<<8)&0x0000ff00U)+
-                    ((_pilote_config.udp_id[3])&0x000000ffU));
+                                            ((_pilote_config.udp_id[1]<<16)&0x00ff0000U)+
+                                            ((_pilote_config.udp_id[2]<<8)&0x0000ff00U)+
+                                            ((_pilote_config.udp_id[3])&0x000000ffU));
             break;
         case PILOTE_MES_TARGET_UDP_DATA:
             // TODO
