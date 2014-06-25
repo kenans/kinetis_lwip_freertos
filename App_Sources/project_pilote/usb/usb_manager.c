@@ -306,9 +306,9 @@ static err_t UsbManagerSendbackFrame(err_t error_frame, const PiloteMessagePacka
             return ERR_COMMON;
         }
         if (mes_pkg_send->operation == PILOTE_MES_OPERATION_REPLY_CONFIG) {
-            frame_cks[0] = 0x01U;
-        } else if (mes_pkg_send->operation == PILOTE_MES_OPERATION_REPLY_MODIFY) {
             frame_cks[0] = 0x00U;
+        } else if (mes_pkg_send->operation == PILOTE_MES_OPERATION_REPLY_MODIFY) {
+            frame_cks[0] = 0x01U;
         } else {
             return ERR_COMMON;
         }

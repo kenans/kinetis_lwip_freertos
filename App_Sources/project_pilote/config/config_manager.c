@@ -107,7 +107,7 @@ void ConfigThread(void *pvParameters)
                     switch (mes_pkg_recv.mes_type) {
                         case PILOTE_MES_TYPE_USB:
 #if 1
-                            // Parse the message received from USB and generate send message
+                            // Parse the received message then do something and generate send message
                             ConfigManagerParseUsbMes(&mes_pkg_recv, &mes_pkg_send);
                             // Send back message to USB Manager
                             xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
@@ -208,72 +208,6 @@ static err_t ConfigManagerParseUsbMes(PiloteMessagePackage *mes_pkg_recv,
         case PILOTE_MES_OPERATION_READ_CONFIG:
             mes_pkg_send->operation = PILOTE_MES_OPERATION_REPLY_CONFIG;        // Set mes_pkg_send operation
             mes_pkg_send->target = mes_pkg_recv->target;                                // Set mes_pkg_send target
-            switch (mes_pkg_recv->target) {
-                case PILOTE_MES_TARGET_ENABLE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.enabled;
-                    break;
-                case PILOTE_MES_TARGET_MODE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.mode;
-                    break;
-                case PILOTE_MES_TARGET_OUTPUT_MODE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.output_mode;
-                    break;
-                case PILOTE_MES_TARGET_SOURCE_MODE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.source_mode;
-                    break;
-                case PILOTE_MES_TARGET_VIDEO_MODE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.video_mode;
-                    break;
-                case PILOTE_MES_TARGET_TOKEN_RING:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.token_ring;
-                    break;
-                case PILOTE_MES_TARGET_CODE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.code;
-                    break;
-                case PILOTE_MES_TARGET_GROUP:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.group;
-                    break;
-                case PILOTE_MES_TARGET_NUMS_OF_FRAMES:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.nums_of_frames;
-                    break;
-                case PILOTE_MES_TARGET_UDP_ID:
-                    mes_pkg_recv->data = (uint32_t)(((_pilote_config.udp_id[0]<<24)&0xff000000U)+
-                            ((_pilote_config.udp_id[1]<<16)&0x00ff0000U)+
-                            ((_pilote_config.udp_id[2]<<8)&0x0000ff00U)+
-                            ((_pilote_config.udp_id[3])&0x000000ffU));
-                    break;
-                case PILOTE_MES_TARGET_UDP_DATA:
-                    // TODO
-                    break;
-                case PILOTE_MES_TARGET_COMMAND_PARAM:
-                    mes_pkg_recv->data = (uint32_t)(((_pilote_config.command_param[0]<<8)&0xff00U) +
-                            (_pilote_config.command_param[1]));
-                    break;
-                case PILOTE_MES_TARGET_COMMAND_DATA:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.command_data;
-                    break;
-                case PILOTE_MES_TARGET_TIME_BT_FRAMES:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.time_between_frames;
-                    break;
-                case PILOTE_MES_TARGET_DELAY_SOURCE:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.delay_source;
-                    break;
-                case PILOTE_MES_TARGET_DELAY_OUTPUT:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.delay_output;
-                    break;
-                case PILOTE_MES_TARGET_START_TIME:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.start_time;
-                    break;
-                case PILOTE_MES_TARGET_END_TIME:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.end_time;
-                    break;
-                case PILOTE_MES_TARGET_WEEKDAY:
-                    mes_pkg_recv->data = (uint32_t)_pilote_config.week_day;
-                    break;
-                default:
-                    return ERR_COMMON;
-                    break;
-            }
             break;
         case PILOTE_MES_OPERATION_MODIFY:
             mes_pkg_send->operation = PILOTE_MES_OPERATION_REPLY_MODIFY;        // Set mes_pkg_send operation
@@ -343,14 +277,79 @@ static err_t ConfigManagerParseUsbMes(PiloteMessagePackage *mes_pkg_recv,
                 default:
                     return ERR_COMMON;
                     break;
-                }
+            }
             break;
         default:
             return ERR_COMMON;
             break;
     }
 
-
+    switch (mes_pkg_recv->target) {
+        case PILOTE_MES_TARGET_ENABLE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.enabled;
+            break;
+        case PILOTE_MES_TARGET_MODE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.mode;
+            break;
+        case PILOTE_MES_TARGET_OUTPUT_MODE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.output_mode;
+            break;
+        case PILOTE_MES_TARGET_SOURCE_MODE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.source_mode;
+            break;
+        case PILOTE_MES_TARGET_VIDEO_MODE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.video_mode;
+            break;
+        case PILOTE_MES_TARGET_TOKEN_RING:
+            mes_pkg_send->data = (uint32_t)_pilote_config.token_ring;
+            break;
+        case PILOTE_MES_TARGET_CODE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.code;
+            break;
+        case PILOTE_MES_TARGET_GROUP:
+            mes_pkg_send->data = (uint32_t)_pilote_config.group;
+            break;
+        case PILOTE_MES_TARGET_NUMS_OF_FRAMES:
+            mes_pkg_send->data = (uint32_t)_pilote_config.nums_of_frames;
+            break;
+        case PILOTE_MES_TARGET_UDP_ID:
+            mes_pkg_send->data = (uint32_t)(((_pilote_config.udp_id[0]<<24)&0xff000000U)+
+                    ((_pilote_config.udp_id[1]<<16)&0x00ff0000U)+
+                    ((_pilote_config.udp_id[2]<<8)&0x0000ff00U)+
+                    ((_pilote_config.udp_id[3])&0x000000ffU));
+            break;
+        case PILOTE_MES_TARGET_UDP_DATA:
+            // TODO
+            break;
+        case PILOTE_MES_TARGET_COMMAND_PARAM:
+            mes_pkg_send->data = (uint32_t)(((_pilote_config.command_param[0]<<8)&0xff00U) +
+                    (_pilote_config.command_param[1]));
+            break;
+        case PILOTE_MES_TARGET_COMMAND_DATA:
+            mes_pkg_send->data = (uint32_t)_pilote_config.command_data;
+            break;
+        case PILOTE_MES_TARGET_TIME_BT_FRAMES:
+            mes_pkg_send->data = (uint32_t)_pilote_config.time_between_frames;
+            break;
+        case PILOTE_MES_TARGET_DELAY_SOURCE:
+            mes_pkg_send->data = (uint32_t)_pilote_config.delay_source;
+            break;
+        case PILOTE_MES_TARGET_DELAY_OUTPUT:
+            mes_pkg_send->data = (uint32_t)_pilote_config.delay_output;
+            break;
+        case PILOTE_MES_TARGET_START_TIME:
+            mes_pkg_send->data = (uint32_t)_pilote_config.start_time;
+            break;
+        case PILOTE_MES_TARGET_END_TIME:
+            mes_pkg_send->data = (uint32_t)_pilote_config.end_time;
+            break;
+        case PILOTE_MES_TARGET_WEEKDAY:
+            mes_pkg_send->data = (uint32_t)_pilote_config.week_day;
+            break;
+        default:
+            return ERR_COMMON;
+            break;
+    }
 
     return error;
 }
