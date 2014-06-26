@@ -46,7 +46,9 @@ static uint8_t _cdc_buffer[USB1_DATA_BUFF_SIZE];    // Buffer needed by USB CDC
 // static void LocalBuf_Remove();                   // Remove an item from the front of the buffer
 // static void LocalBuf_Init();                     // Initialize the buffer
 // static void LocalBuf_Clear();                    // Clear all the items in the buffer
-// Variables
+/**
+ *   Variables
+ */
 static uint8_t _local_buf[_LOCAL_BUFFER_COUNT];     // Local ring buffer
 const static uint8_t _size = _LOCAL_BUFFER_COUNT;   // ring buffer size
 static uint8_t _start = 0;                          // start id
