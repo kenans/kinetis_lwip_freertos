@@ -107,10 +107,13 @@ void ConfigThread(void *pvParameters)
                     switch (mes_pkg_recv.mes_type) {
                         case PILOTE_MES_TYPE_USB:
 #if 1
-                            // Parse the received message then do something and generate send message
-                            ConfigManagerParseUsbMes(&mes_pkg_recv, &mes_pkg_send);
-                            // Send back message to USB Manager
-                            xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                            if (mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
+                                mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
+                                // Parse the received message then do something and generate send message
+                                ConfigManagerParseUsbMes(&mes_pkg_recv, &mes_pkg_send);
+                                // Send back message to USB Manager
+                                xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                            }
 #else
                             switch (mes_pkg_recv.operation) {
                                 case PILOTE_MES_OPERATION_READ_CONFIG:
