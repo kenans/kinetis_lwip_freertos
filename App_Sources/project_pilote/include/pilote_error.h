@@ -34,35 +34,45 @@ typedef signed char err_t; // -128 ~ +127
  * Attention :
  *     These errors might already be defined in other files (err.h for lwIP; PE_Error.h for PEx).
  * Should always turn on "-Wall" option in order to check if macros are redefined.
+ *     To avoid a redefinition error, #ifndef should be used. Warning: If a redefinition occurs,
+ * values might be different.
  *     Anyway, ERR_OK should be set 0, meaning no error occurs.
  * ------------------------------------------------------------------------------------------
  */
 #ifndef ERR_OK
-#define ERR_OK          0    // No error
+#define ERR_OK              0       // No error
 #endif
 
 #ifndef ERR_COMMON
-#define ERR_COMMON     1    // common error, type not specified
+#define ERR_COMMON          1       // common error, type not specified
 #endif
 
 #ifndef ERR_MEM
-#define ERR_MEM        -1    // Out of memory error
+#define ERR_MEM             -1      // Out of memory error
 #endif
 
 #ifndef ERR_BUF
-#define ERR_BUF        -2    // Buffer error
+#define ERR_BUF             -2      // Buffer error
 #endif
 
 #ifndef ERR_TIMEOUT
-#define ERR_TIMEOUT    -3    // Timeout
+#define ERR_TIMEOUT         -3      // Timeout
 #endif
 
 #ifndef ERR_EEPROM
-#define ERR_EEPROM     -4    // EEPROM read or write error
+#define ERR_EEPROM          -4      // EEPROM read or write error
 #endif
 
 #ifndef ERR_IR
-#define ERR_IR         -5    // InfraRed error
+#define ERR_IR              -5      // InfraRed error
+#endif
+
+#ifndef ERR_CKS
+#define ERR_CKS             -6      // Checksum error
+#endif
+
+#ifndef ERR_FATAL
+#define ERR_FATAL           -7      // Fatal error, frame cannot be parsed
 #endif
 
 #endif /* PILOTE_ERROR_H_ */

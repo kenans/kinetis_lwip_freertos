@@ -44,16 +44,18 @@ typedef unsigned int uint32_t;
  *                   Structure PiloteConfigurations
  * -----------------------------------------------------------------------------
  */
-#define PILOTE_UDP_ID_COUNT        5U
+#define PILOTE_UDP_ID_COUNT        4U
 #define PILOTE_UDP_DATA_COUNT      50U
 #define PILOTE_COMMAND_PARAM_COUNT 2U
 
+#define PILOTE_MODE_ITEMS_COUNT    3U
 typedef enum {
     PILOTE_TRIGGER,
     PILOTE_SYNCHRO,
     PILOTE_COMMAND
 } PiloteMode;
 
+#define PILOTE_OUTPUT_MODE_ITEMS_COUNT  6U
 typedef unsigned char PiloteOutputMode;
 #define PILOTE_OUTPUT_OFF          0x00U
 #define PILOTE_OUTPUT_IR           0x01U
@@ -62,6 +64,7 @@ typedef unsigned char PiloteOutputMode;
 #define PILOTE_OUTPUT_CONTACT_ON   0x08U
 #define PILOTE_OUTPUT_TTL_ON       0x10U
 
+#define PILOTE_SOUCE_MODE_ITEMS_COUNT   11U
 typedef enum {
     PILOTE_SOURCE_OFF,
     PILOTE_SOURCE_CONTACT_ON,
@@ -76,6 +79,7 @@ typedef enum {
     PILOTE_SOURCE_DISPLAY_MATE
 } PiloteSourceMode;
 
+#define PILOTE_TOKEN_RING_ITEMS_COUNT   4U
 typedef enum {
     PILOTE_TOKEN_RING_OFF,
     PILOTE_TOKEN_RING_MASTER,
@@ -83,6 +87,7 @@ typedef enum {
     PILOTE_TOKEN_RING_ALL
 } PiloteTokenRing;
 
+#define PILOTE_VIDEO_MODE_ITEMS_COUNT   4U
 typedef enum {
     PILOTE_VIDEO_OFF,
     PILOTE_VIDEO_PAL_SECAM,
@@ -90,7 +95,9 @@ typedef enum {
     PILOTE_VIDEO_NTSC
 } PiloteVideoMode;
 
-typedef int PiloteTimeMs;
+typedef signed int PiloteTimeMs;
+
+#define PILOTE_WEEKDAY_TEMS_COUNT       8U
 typedef uint8_t PiloteWeekday;
 #define PILOTE_WEEKDAY_OFF         0x00U
 #define PILOTE_WEEKDAY_SUNDAY      0x01U
@@ -109,6 +116,7 @@ typedef enum {
     PILOTE_MES_RECV,
     PILOTE_MES_SEND
 } PiloteMesDirection;
+
 typedef enum {
     PILOTE_MES_TYPE_USB,
     PILOTE_MES_TYPE_UDP,
@@ -119,21 +127,40 @@ typedef enum {
     PILOTE_MES_OPERATION_START,
     PILOTE_MES_OPERATION_STOP,
     PILOTE_MES_OPERATION_MODIFY,
-    PILOTE_MES_OPERATION_ASK_FOR_CONFIG,
-    PILOTE_MES_OPERATION_SENDBACK_CONFIG
+    PILOTE_MES_OPERATION_REPLY_MODIFY,
+    PILOTE_MES_OPERATION_READ_CONFIG,
+    PILOTE_MES_OPERATION_REPLY_CONFIG
 } PiloteMesOperation;
 
-// Is this safe? Other solutions?
-typedef void* PiloteMesContent;
-
+#define PILOTE_MES_TARGET_ITEMS_COUNT   19U
 typedef enum {
     PILOTE_MES_TARGET_ENABLE,
     PILOTE_MES_TARGET_MODE,
+    PILOTE_MES_TARGET_OUTPUT_MODE,
+    PILOTE_MES_TARGET_SOURCE_MODE,
+    PILOTE_MES_TARGET_VIDEO_MODE,
+    PILOTE_MES_TARGET_TOKEN_RING,
     PILOTE_MES_TARGET_CODE,
+    PILOTE_MES_TARGET_GROUP,
+    PILOTE_MES_TARGET_NUMS_OF_FRAMES,
+    PILOTE_MES_TARGET_UDP_ID,
+    PILOTE_MES_TARGET_UDP_DATA,
+    PILOTE_MES_TARGET_COMMAND_PARAM,
+    PILOTE_MES_TARGET_COMMAND_DATA,
     PILOTE_MES_TARGET_TIME_BT_FRAMES,
-    PILOTE_MES_TARGET_NUMS_OF_FRAMES
-    //TODO
-} PiloteMesOperationTarget;
+    PILOTE_MES_TARGET_DELAY_SOURCE,
+    PILOTE_MES_TARGET_DELAY_OUTPUT,
+    PILOTE_MES_TARGET_START_TIME,
+    PILOTE_MES_TARGET_END_TIME,
+    PILOTE_MES_TARGET_WEEKDAY
+} PiloteMesTarget;
+
+/**
+ * -------------------------------------------------------------------------------------
+ *                                    USB Protocol
+ * -------------------------------------------------------------------------------------
+ */
+#define PILOTE_USB_PROTOCOL_FRAME_BYTES_COUNT   12U
 
 /**
  * -------------------------------------------------------------------------------------
@@ -199,8 +226,8 @@ typedef enum {
  *  mbox_send
  *      Send to PC
  */
-#define MBOX_RECV_COUNT           5U
-#define MBOX_SEND_COUNT           1U
+#define MBOX_RECV_COUNT           3U
+#define MBOX_SEND_COUNT           3U
 
 /**
  * -------------------------------------------------------------------------------------
