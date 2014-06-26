@@ -63,7 +63,7 @@ void USB_Task(void *pvParameters)
     extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
     extern xQueueHandle mbox_pilote_send;
 
-    bool usb_connected = FALSE;                                            // USB connection flag
+    bool usb_connected = FALSE;                                             // USB connection flag
     PiloteMessagePackage mes_pkg_recv;                                      // Mes package for recv mbox
     PiloteMessagePackage mes_pkg_send;                                      // Mes package for send mbox
     /**
@@ -102,7 +102,7 @@ void USB_Task(void *pvParameters)
             PiloteMesOperation operation;
             PiloteMesTarget target;
             uint32_t data;
-            // Copy from CDC buffer to a local USB buffer: _local_buf
+            // Copy from CDC buffer to a local USB buffer: local_buf
             while (!LocalBuf_IsFull()) {
                 if (CDC1_GetChar(&temp) == ERR_OK) {
                     // Pass to the next free element

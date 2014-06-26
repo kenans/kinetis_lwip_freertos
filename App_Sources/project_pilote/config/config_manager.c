@@ -106,7 +106,6 @@ void ConfigThread(void *pvParameters)
                 if (configuring) {
                     switch (mes_pkg_recv.mes_type) {
                         case PILOTE_MES_TYPE_USB:
-#if 1
                             if (mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
                                 mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
                                 // Parse the received message then do something and generate send message
@@ -114,45 +113,6 @@ void ConfigThread(void *pvParameters)
                                 // Send back message to USB Manager
                                 xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
                             }
-#else
-                            switch (mes_pkg_recv.operation) {
-                                case PILOTE_MES_OPERATION_READ_CONFIG:
-                                    // Load configuration require
-                                    // Firstly create a message package
-                                    mes_pkg_send.mes_type  = PILOTE_MES_TYPE_USB;
-                                    mes_pkg_send.operation = PILOTE_MES_OPERATION_REPLY_CONFIG;
-                                    mes_pkg_send.data_ptr = (void*)pilote_config_ptr;
-                                    // Then send back the message package
-                                    xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_50MS);
-                                    break;
-                                case PILOTE_MES_OPERATION_MODIFY:
-                                    // Modify configuration data
-                                    switch (mes_pkg_recv.target) {
-                                    // Firstly parse the target, then modify the data
-                                    case PILOTE_MES_TARGET_ENABLE:
-                                        pilote_config_ptr->enabled = (bool)mes_pkg_recv.data;
-                                        break;
-                                    case PILOTE_MES_TARGET_CODE:
-                                        pilote_config_ptr->code = (uint16_t)mes_pkg_recv.data;
-                                        break;
-                                    case PILOTE_MES_TARGET_MODE:
-                                        pilote_config_ptr->mode = mes_pkg_recv.data;
-                                        break;
-                                    case PILOTE_MES_TARGET_NUMS_OF_FRAMES:
-                                        pilote_config_ptr->nums_of_frames = (uint8_t)mes_pkg_recv.data;
-                                        break;
-                                    case PILOTE_MES_TARGET_TIME_BT_FRAMES:
-                                        pilote_config_ptr->time_between_frames = mes_pkg_recv.data;
-                                        break;
-                                    default:
-                                        break;
-
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-#endif
                             break;
                         case PILOTE_MES_TYPE_UDP:
                             // TODO
