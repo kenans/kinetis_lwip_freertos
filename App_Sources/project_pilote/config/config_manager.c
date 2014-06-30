@@ -77,7 +77,6 @@ void ConfigThread(void *pvParameters)
          * 2. If get a message,
          *      2.1 If is a START, block IR; if is an END, unblock IR.
          *      2.2 If is a USB message:
-         *          a.
          *      2.3 If is a UDP message:
          *      2.4 If is a HTTP message:
          * 3. If error occurs, do nothing; else call PiloteWriteConfig()
@@ -129,13 +128,13 @@ void ConfigThread(void *pvParameters)
         } else {
             // If timeout
             if (!configuring && uxQueueMessagesWaiting(mbox_pilote_config) == MBOX_ZERO_ITEM) {
-                // TODO
                 // If no problem, write something to EEPROM
                 if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
                     while (1) {
                         // Save EEPROM error
                     }
                 }
+                // TODO
                 // Check data consistency!
 
                 // If still no problem, OK, else try to roll back transaction

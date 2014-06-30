@@ -62,17 +62,17 @@ void RunTasks(void)
     }
 
     // --------------------------        Create Tasks         --------------------------------------
-    if (xTaskCreate(IR_Thread, "IR", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-2, NULL) != pdPASS) {
+    if (xTaskCreate(IR_Thread, "ir_manag", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-2, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }
     }
-    if (xTaskCreate(ConfigThread, "CONFIG", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-3, NULL) != pdPASS) {
+    if (xTaskCreate(ConfigThread, "cfg_manag", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-3, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }
     }
-    if (xTaskCreate(USB_Task, "USB", configMINIMAL_STACK_SIZE+200, NULL, configMAX_PRIORITIES-4, NULL) != pdPASS) {
+    if (xTaskCreate(USB_Task, "usb_manag", configMINIMAL_STACK_SIZE+200, NULL, configMAX_PRIORITIES-4, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }
