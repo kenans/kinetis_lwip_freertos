@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V8.0.0 - Copyright (C) 2013 Real Time Engineers Ltd.
+    FreeRTOS V8.0.1 - Copyright (C) 2013 Real Time Engineers Ltd.
 
     FEATURES AND PORTS ARE ADDED TO FREERTOS ALL THE TIME.  PLEASE VISIT
     http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -144,6 +144,8 @@
 #define configTIMER_TASK_PRIORITY                 0
 #define configTIMER_QUEUE_LENGTH                  0
 #define configTIMER_TASK_STACK_DEPTH              0
+#define INCLUDE_xEventGroupSetBitFromISR          0
+#define INCLUDE_xTimerPendFunctionCall            0
 
 /* Set the following definitions to 1 to include the API function, or zero
    to exclude the API function. */

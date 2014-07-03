@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V8.0.0 - Copyright (C) 2014 Real Time Engineers Ltd.
+    FreeRTOS V8.0.1 - Copyright (C) 2014 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -76,6 +76,10 @@
 
 #include "FreeRTOSConfig.h"
 #include "portmacro.h"
+
+#if configPEX_KINETIS_SDK
+extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
+#endif
 
 /*!
  * \brief Return the tick raw counter value. It is assumed that the counter register has been reset at the last tick time

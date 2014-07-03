@@ -4,14 +4,14 @@
 **     Project     : Pilote_V5
 **     Processor   : MK60FN1M0VLQ12
 **     Component   : FreeRTOS
-**     Version     : Component 01.366, Driver 01.00, CPU db: 3.00.000
+**     Version     : Component 01.368, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-06-23, 10:22, # CodeGen: 0
+**     Date/Time   : 2014-07-03, 10:17, # CodeGen: 8
 **     Abstract    :
 **          This component implements the FreeRTOS Realtime Operating System
 **     Settings    :
 **          Component name                                 : FRTOS
-**          RTOS Version                                   : V8.0.0
+**          RTOS Version                                   : V8.0.1
 **          Custom Port                                    : Custom port settings
 **            Compiler                                     : ARM gcc
 **            Static Sources                               : Enabled

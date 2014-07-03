@@ -4,9 +4,9 @@
 **     Project     : Pilote_V5
 **     Processor   : MK60FN1M0VLQ12
 **     Component   : GenericI2C
-**     Version     : Component 01.020, Driver 01.00, CPU db: 3.00.000
+**     Version     : Component 01.023, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-06-23, 10:22, # CodeGen: 0
+**     Date/Time   : 2014-07-03, 10:17, # CodeGen: 8
 **     Abstract    :
 **         This component implements a generic I2C driver wrapper to work both with LDD and non-LDD I2C components.
 **     Settings    :

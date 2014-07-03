@@ -1857,28 +1857,5 @@ PE_DEBUGHALT();
       <event name="OnChannel7" v="don&amp;apos;t generate code" />
     </Events>
   </Bean>
-  <Bean name="USB_Input_Buf" type="RingBuffer">
-    <Enabled v="Y" />
-    <Properties>
-      <Component_name v="USB_Input_Buf" />
-      <Reentrant v="no" />
-      <Critical_Section v="CS1" />
-      <Buffer_Size v="32" />
-      <Element_Size v="1 Byte" />
-    </Properties>
-    <Methods>
-      <Clear v="generate code" />
-      <Put v="generate code" />
-      <Get v="generate code" />
-      <NofElements v="generate code" />
-      <NofFreeElements v="generate code" />
-      <Init v="generate code" />
-    </Methods>
-    <Events>
-      <Event_module_name v="Events" />
-      <event name="OnBufferFull" v="don&amp;apos;t generate code" />
-      <event name="OnBufferEmpty" v="don&amp;apos;t generate code" />
-    </Events>
-  </Bean>
 </PE_PROJECT_SETTINGS_DOCUMENTATION>
 

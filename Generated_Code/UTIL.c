@@ -4,9 +4,9 @@
 **     Project     : Pilote_V5
 **     Processor   : MK60FN1M0VLQ12
 **     Component   : Utility
-**     Version     : Component 01.104, Driver 01.00, CPU db: 3.00.000
+**     Version     : Component 01.105, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-06-23, 10:22, # CodeGen: 0
+**     Date/Time   : 2014-07-03, 10:17, # CodeGen: 8
 **     Abstract    :
 **          Contains various utility functions.
 **     Settings    :
@@ -51,7 +51,7 @@
 **         ScanDecimal16uNumber    - byte UTIL_ScanDecimal16uNumber(const unsigned char **str, uint16_t *val);
 **         ScanDecimal16sNumber    - byte UTIL_ScanDecimal16sNumber(const unsigned char **str, int16_t *val);
 **         ScanDecimal32uNumber    - byte UTIL_ScanDecimal32uNumber(const unsigned char **str, uint32_t *val);
-**         ScanDecimal32sNumber    - byte UTIL_ScanDecimal32sNumber(const unsigned char **str, int32_t *val);
+**         ScanDecimal32sNumber    - uint8_t UTIL_ScanDecimal32sNumber(const unsigned char **str, int32_t *val);
 **         ScanHex8uNumber         - byte UTIL_ScanHex8uNumber(const unsigned char **str, uint8_t *val);
 **         ScanHex8uNumberNoPrefix - byte UTIL_ScanHex8uNumberNoPrefix(const unsigned char **str, uint8_t *val);
 **         ScanHex16uNumber        - byte UTIL_ScanHex16uNumber(const unsigned char **str, uint16_t *val);
@@ -1690,7 +1690,7 @@ uint8_t UTIL_ScanDecimal32uNumber(const unsigned char **str, uint32_t *val)
 **         ---             - Error code
 ** ===================================================================
 */
-byte UTIL_ScanDecimal32sNumber(const unsigned char **str, int32_t *val)
+uint8_t UTIL_ScanDecimal32sNumber(const unsigned char **str, int32_t *val)
 {
   /* Scans a decimal number, and stops at any non-number. Number can have any preceding spaces. */
   const unsigned char *p = *str;

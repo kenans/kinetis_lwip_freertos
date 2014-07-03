@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V8.0.0 - Copyright (C) 2014 Real Time Engineers Ltd. 
+    FreeRTOS V8.0.1 - Copyright (C) 2014 Real Time Engineers Ltd. 
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -72,7 +72,8 @@
 #include "task.h"
 #include "portTicks.h" /* for CPU_CORE_CLK_HZ used in configSYSTICK_CLOCK_HZ */
 #if configSYSTICK_USE_LOW_POWER_TIMER
-  #include "LPTMR_PDD.h"
+  #include "LPTMR_PDD.h" /* PDD interface to low power timer */
+  #include "SIM_PDD.h"   /* PDD interface to system integration module */
 #endif
 /* --------------------------------------------------- */
 /* macros dealing with tick counter */
@@ -200,11 +201,100 @@ typedef unsigned long TickCounter_t; /* enough for 24 bit Systick */
 #define portNVIC_PENDSV_PRI                 (((unsigned long)configKERNEL_INTERRUPT_PRIORITY)<<16) /* priority of PendableService interrupt (in portNVIC_SYSPRI3) */
 
 #define portNVIC_SYSPRI7                    ((volatile unsigned long*)0xe000e41c) /* system handler priority register 7, PRI_28 is LPTMR */
-#define portNVIC_LP_TIMER_PRI               (((unsigned long)configKERNEL_INTERRUPT_PRIORITY)<<0) /* priority of SysTick interrupt (in portNVIC_SYSPRI3) */
+#define portNVIC_LP_TIMER_PRI               (((unsigned long)configKERNEL_INTERRUPT_PRIORITY)<<0) /* priority of low power timer interrupt */
+
+#if configSYSTICK_USE_LOW_POWER_TIMER
+#define IRQn_Type int
+#define __NVIC_PRIO_BITS          configPRIO_BITS
+#define     __O     volatile             /*!< Defines 'write only' permissions                */
+#define     __IO    volatile             /*!< Defines 'read / write' permissions              */
+/** \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
+ */
+#if (configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+typedef struct
+{
+  __IO uint32_t ISER[8];                 /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register           */
+       uint32_t RESERVED0[24];
+  __IO uint32_t ICER[8];                 /*!< Offset: 0x080 (R/W)  Interrupt Clear Enable Register         */
+       uint32_t RSERVED1[24];
+  __IO uint32_t ISPR[8];                 /*!< Offset: 0x100 (R/W)  Interrupt Set Pending Register          */
+       uint32_t RESERVED2[24];
+  __IO uint32_t ICPR[8];                 /*!< Offset: 0x180 (R/W)  Interrupt Clear Pending Register        */
+       uint32_t RESERVED3[24];
+  __IO uint32_t IABR[8];                 /*!< Offset: 0x200 (R/W)  Interrupt Active bit Register           */
+       uint32_t RESERVED4[56];
+  __IO uint8_t  IP[240];                 /*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
+       uint32_t RESERVED5[644];
+  __O  uint32_t STIR;                    /*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register     */
+}  NVIC_Type;
+#else /* M0+ */
+typedef struct
+{
+  __IO uint32_t ISER[1];                 /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register           */
+       uint32_t RESERVED0[31];
+  __IO uint32_t ICER[1];                 /*!< Offset: 0x080 (R/W)  Interrupt Clear Enable Register          */
+       uint32_t RSERVED1[31];
+  __IO uint32_t ISPR[1];                 /*!< Offset: 0x100 (R/W)  Interrupt Set Pending Register           */
+       uint32_t RESERVED2[31];
+  __IO uint32_t ICPR[1];                 /*!< Offset: 0x180 (R/W)  Interrupt Clear Pending Register         */
+       uint32_t RESERVED3[31];
+       uint32_t RESERVED4[64];
+  __IO uint32_t IP[8];                   /*!< Offset: 0x300 (R/W)  Interrupt Priority Register              */
+}  NVIC_Type;
+#endif
+
+/* Memory mapping of Cortex-M0+ Hardware */
+#define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Base Address */
+#define NVIC_BASE           (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address                 */
+#define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struct          */
+
+/* Interrupt Priorities are WORD accessible only under ARMv6M                   */
+/* The following MACROS handle generation of the register offset and byte masks */
+#define _BIT_SHIFT(IRQn)         (  (((uint32_t)(IRQn)       )    &  0x03) * 8 )
+#define _IP_IDX(IRQn)            (   ((uint32_t)(IRQn)            >>    2)     )
+
+/** \brief  Set Interrupt Priority
+    The function sets the priority of an interrupt.
+    \note The priority cannot be set for every core interrupt.
+    \param [in]      IRQn  Interrupt number.
+    \param [in]  priority  Priority to set.
+ */
+static void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority) {
+  IRQn -= 16; /* PEx starts numbers with zero, while system interrupts would be negative */
+#if (configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+  NVIC->IP[(uint32_t)(IRQn)] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff);   /* set Priority for device specific Interrupts  */
+#else /* M0+ */
+  NVIC->IP[_IP_IDX(IRQn)] = (NVIC->IP[_IP_IDX(IRQn)] & ~(0xFF << _BIT_SHIFT(IRQn))) |
+      (((priority << (8 - __NVIC_PRIO_BITS)) & 0xFF) << _BIT_SHIFT(IRQn)); /* set Priority for device specific Interrupts  */
+#endif
+}
+
+/** \brief  Enable External Interrupt
+    The function enables a device-specific interrupt in the NVIC interrupt controller.
+    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+ */
+static void NVIC_EnableIRQ(IRQn_Type IRQn) {
+  IRQn -= 16; /* PEx starts numbers with zero, while system interrupts would be negative */
+#if (configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+  NVIC->ISER[(uint32_t)((int32_t)IRQn) >> 5] = (uint32_t)(1 << ((uint32_t)((int32_t)IRQn) & (uint32_t)0x1F)); /* enable interrupt */
+#else /* M0+ */
+  NVIC->ISER[0] = (1 << ((uint32_t)(IRQn) & 0x1F)); /* enable interrupt */
+#endif
+}
+#endif /* configSYSTICK_USE_LOW_POWER_TIMER */
 
 /* Constants required to set up the initial stack. */
 #define portINITIAL_XPSR         (0x01000000)
 #define portINITIAL_EXEC_RETURN  (0xfffffffd)
+
+/* Let the user override the pre-loading of the initial LR with the address of
+   prvTaskExitError() in case is messes up unwinding of the stack in the
+   debugger. */
+#ifdef configTASK_RETURN_ADDRESS
+  #define portTASK_RETURN_ADDRESS	configTASK_RETURN_ADDRESS
+#else
+  #define portTASK_RETURN_ADDRESS	prvTaskExitError
+#endif
 
 #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F)
   /* Constants required to manipulate the VFP. */
@@ -217,20 +307,54 @@ typedef unsigned long TickCounter_t; /* enough for 24 bit Systick */
 /* Each task maintains its own interrupt status in the critical nesting variable. */
 static unsigned portBASE_TYPE uxCriticalNesting = 0xaaaaaaaa;
 
+#define configUSE_TASK_END_SCHEDULER   1
+
+#if configUSE_TASK_END_SCHEDULER
+#include <setjmp.h>
+static jmp_buf xJumpBuf; /* Used to restore the original context when the scheduler is ended. */
+#endif
+/*-----------------------------------------------------------*/
+static void prvTaskExitError(void) {
+	/* A function that implements a task must not exit or attempt to return to
+	its caller as there is nothing to return to.  If a task wants to exit it
+	should instead call vTaskDelete( NULL ).
+
+	Artificially force an assert() to be triggered if configASSERT() is
+	defined, then stop here so application writers can catch the error. */
+	configASSERT(uxCriticalNesting == ~0UL);
+	portDISABLE_INTERRUPTS();
+	for(;;);
+}
+/*-----------------------------------------------------------*/
+#if (configCOMPILER==configCOMPILER_ARM_KEIL) && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
+__asm uint32_t ulPortSetInterruptMask(void) {
+  PRESERVE8
+
+  mrs r0, basepri
+  mov r1, #configMAX_SYSCALL_INTERRUPT_PRIORITY
+  msr basepri, r1
+  bx r14
+}
+#endif /* (configCOMPILER==configCOMPILER_ARM_KEIL) */
+/*-----------------------------------------------------------*/
+#if (configCOMPILER==configCOMPILER_ARM_KEIL) && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
+__asm void vPortClearInterruptMask(uint32_t ulNewMask) {
+  PRESERVE8
+
+  msr basepri, r0
+  bx r14
+}
+#endif /* (configCOMPILER==configCOMPILER_ARM_KEIL) */
 /*-----------------------------------------------------------*/
 portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE * pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters ) {
   /* Simulate the stack frame as it would be created by a context switch interrupt. */
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
-  pxTopOfStack -= 2; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts,
+  pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts,
                         and to ensure alignment. */
-#else
-  pxTopOfStack--;
-#endif
   *pxTopOfStack = portINITIAL_XPSR;   /* xPSR */
   pxTopOfStack--;
   *pxTopOfStack = (portSTACK_TYPE)pxCode;  /* PC */
   pxTopOfStack--;
-  *pxTopOfStack = 0;  /* LR */
+  *pxTopOfStack = (portSTACK_TYPE)portTASK_RETURN_ADDRESS;  /* LR */
 
   /* Save code space by skipping register initialization. */
   pxTopOfStack -= 5;  /* R12, R3, R2 and R1. */
@@ -423,27 +547,25 @@ void vPortInitTickTimer(void) {
 }
 #endif /* configUSE_TICKLESS_IDLE */
 #if configSYSTICK_USE_LOW_POWER_TIMER
-  SIM_SCGC5 |= SIM_SCGC5_LPTMR_MASK; /* enable clock: SIM_SCGC5: LPTMR=1 */
+  /* SIM_SCGx: enable clock to LPTMR */
+  SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
 
-  /* LPTMR0_CSR: ??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,TCF=1,TIE=0,TPS=0,TPP=0,TFC=0,TMS=0,TEN=0 */
-  LPTMR0_CSR = (LPTMR_CSR_TCF_MASK | LPTMR_CSR_TPS(0x00)); /* Clear control register */
-  /* LPTMR0_PSR: ??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,PRESCALE=0,PBYP=1,PCS=1 */
-  LPTMR0_PSR = LPTMR_PSR_PRESCALE(0x00) | /* prescaler value */
-               LPTMR_PSR_PBYP_MASK | /* prescaler bypass */
-               LPTMR_PSR_PCS(0x01);    /* Clock source */
-  /*
-   *           PBYP PCS
+  /* LPTRM0_CSR: clear TCF (Timer compare Flag) with writing a one to it */
+  LPTMR_PDD_ClearInterruptFlag(LPTMR0_BASE_PTR);
+  
+  /* LPTMR_PSR: configure prescaler, bypass and clock source */
+  /*           PBYP PCS
    * ERCLK32    1   10
    * LPO_1kHz   1   01
    * ERCLK      0   00
    * IRCLK      1   00
    */
-  *(portNVIC_SYSPRI7) |= portNVIC_LP_TIMER_PRI; /* set priority of low power timer interrupt */
-  /* NVIC_ISER: SETENA|=0x10000000 */
-  NVIC_ISER |= NVIC_ISER_SETENA(0x10000000);     /* 0xE000E100 <= 0x10000000 */                              
+  LPTMR_PDD_SelectPrescalerSource(LPTMR0_BASE_PTR, LPTMR_PDD_SOURCE_LPO1KHZ);
+  LPTMR_PDD_EnablePrescalerBypass(LPTMR0_BASE_PTR, LPTMR_PDD_BYPASS_ENABLED);
 
-  /* LPTMR0_CSR: ??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,??=0,TCF=0,TIE=0,TPS=0,TPP=0,TFC=0,TMS=0,TEN=1 */
-  LPTMR0_CSR = (LPTMR_CSR_TPS(0x00) | LPTMR_CSR_TEN_MASK); /* Set up control register */
+  /* set timer interrupt priority in IP[] and enable it in ISER[] */
+  NVIC_SetPriority(LDD_ivIndex_INT_LPTimer, configLIBRARY_LOWEST_INTERRUPT_PRIORITY);
+  NVIC_EnableIRQ(LDD_ivIndex_INT_LPTimer); /* enable IRQ in NVIC_ISER[] */
 #else /* use normal SysTick Counter */
   *(portNVIC_SYSPRI3) |= portNVIC_SYSTICK_PRI; /* set priority of SysTick interrupt */
 #endif
@@ -461,8 +583,8 @@ void vPortStopTickTimer(void) {
   DISABLE_TICK_COUNTER();
 }
 /*-----------------------------------------------------------*/
-#if (configCOMPILER==configCOMPILER_ARM_KEIL) || (configCOMPILER==configCOMPILER_ARM_GCC)
 #if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCOMPILER==configCOMPILER_ARM_GCC)
 void vPortEnableVFP(void) {
   /* The FPU enable bits are in the CPACR. */
   __asm volatile (
@@ -475,8 +597,22 @@ void vPortEnableVFP(void) {
     : "r0","r1" /* clobber */
   );
 }
-#endif /* configCPU_FAMILY_ARM_M4F */
+#elif (configCOMPILER==configCOMPILER_ARM_KEIL)
+__asm void vPortEnableVFP(void) {
+	PRESERVE8
+
+	/* The FPU enable bits are in the CPACR. */
+	ldr.w r0, =0xE000ED88
+	ldr	r1, [r0]
+
+	/* Enable CP10 and CP11 coprocessors, then save back. */
+	orr	r1, r1, #( 0xf << 20 )
+	str r1, [r0]
+	bx	r14
+	nop
+}
 #endif /* GNU or Keil */
+#endif /* configCPU_FAMILY_ARM_M4F */
 /*-----------------------------------------------------------*/
 BaseType_t xPortStartScheduler(void) {
   /* Make PendSV, SVCall and SysTick the lowest priority interrupts. SysTick priority will be set in vPortInitTickTimer(). */
@@ -493,9 +629,27 @@ BaseType_t xPortStartScheduler(void) {
   vPortEnableVFP(); /* Ensure the VFP is enabled - it should be anyway */
   *(portFPCCR) |= portASPEN_AND_LSPEN_BITS; /* Lazy register save always */
 #endif
+#if configUSE_TASK_END_SCHEDULER
+    if(setjmp(xJumpBuf) != 0 ) {
+      /* here we will get in case of call to vTaskEndScheduler() */
+      return pdFALSE;
+    }
+#endif
   vPortStartFirstTask(); /* Start the first task. */
   /* Should not get here, unless you call vTaskEndScheduler()! */
   return pdFALSE;
+}
+/*-----------------------------------------------------------*/
+void vPortEndScheduler(void) {
+  vPortStopTickTimer();
+  /* Jump back to the processor state prior to starting the
+     scheduler.  This means we are not going to be using a
+     task stack frame so the task can be deleted. */
+#if configUSE_TASK_END_SCHEDULER
+  longjmp(xJumpBuf, 1);
+#else
+  for(;;){} /* wait here */
+#endif
 }
 /*-----------------------------------------------------------*/
 void vPortEnterCritical(void) {
@@ -633,6 +787,7 @@ __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
 #endif
+  PRESERVE8
   EXTERN pxCurrentTCB
 
   /* Get the location of the current TCB. */
@@ -646,14 +801,13 @@ __asm void vPortSVCHandler(void) {
   ldmia r0!, {r4-r11}
 #endif
   msr psp, r0
-  mov r0, #0
+  mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
   msr basepri, r0
 #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F)
 #else
   orr r14, r14, #13
 #endif
   bx r14
-  nop
 }
 /*-----------------------------------------------------------*/
 #else /* Cortex M0+ */
@@ -752,7 +906,9 @@ __asm void PendSV_Handler(void) {
 #else
 __asm void vPortPendSVHandler(void) {
 #endif
+  PRESERVE8
   EXTERN pxCurrentTCB
+  EXTERN vTaskSwitchContext
 
   mrs r0, psp
   ldr  r3, =pxCurrentTCB     /* Get the location of the current TCB. */
@@ -768,7 +924,7 @@ __asm void vPortPendSVHandler(void) {
 #endif
   str r0, [r2]               /* Save the new top of stack into the first member of the TCB. */
   stmdb sp!, {r3, r14}
-  mov r0, %0
+  mov r0, #0
   msr basepri, r0
   bl vTaskSwitchContext
   mov r0, #0

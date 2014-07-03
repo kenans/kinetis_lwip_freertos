@@ -7,7 +7,7 @@
 **     Version     : Component 01.006, Driver 01.04, CPU db: 3.00.000
 **     Datasheet   : K60P144M150SF3RM, Rev. 2, Dec 2011
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-06-24, 14:43, # CodeGen: 4
+**     Date/Time   : 2014-07-03, 10:17, # CodeGen: 8
 **     Abstract    :
 **
 **     Settings    :
@@ -345,10 +345,9 @@ void PE_low_level_init(void)
   /* NVICIP20: PRI20=0 */
   NVICIP20 = NVIC_IP_PRI20(0x00);
   /* ### FreeRTOS "FRTOS" init code ... */
-
 #if configSYSTICK_USE_LOW_POWER_TIMER
   /* enable clocking for low power timer, otherwise vPortStopTickTimer() will crash */
-  SIM_SCGC5 |= SIM_SCGC5_LPTMR_MASK; /* SIM_SCGC5: LPTMR=1 */
+  SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
 #endif
   vPortStopTickTimer(); /* tick timer shall not run until the RTOS scheduler is started */
   /* ### Asynchro serial "AS1" init code ... */

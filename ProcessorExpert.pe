@@ -3,8 +3,8 @@
   <Header>
     <Name>Pilote_V5</Name>
     <SavedBy>OrpheoXlite</SavedBy>
-    <ModificationStamp>27</ModificationStamp>
-    <Date>2014-06-26</Date>
+    <ModificationStamp>28</ModificationStamp>
+    <Date>2014-07-03</Date>
     <IDE>Eclipse IDE</IDE>
     <PEversion>1.9.2.RT6b1416-0656</PEversion>
   </Header>
@@ -510,7 +510,7 @@
         <ItemSymbol>ClockMonitorGrp0</ItemSymbol>
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
-        <Expanded>true</Expanded>
+        <Expanded>false</Expanded>
       </ItemState>
       <ItemState>
         <ItemSymbol>MCGCMECLKMode0</ItemSymbol>
@@ -540,7 +540,7 @@
         <ItemSymbol>FLLGrp0</ItemSymbol>
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
-        <Expanded>true</Expanded>
+        <Expanded>false</Expanded>
       </ItemState>
       <ItemState>
         <ItemSymbol>FLLEnblCLKMode0</ItemSymbol>
@@ -15870,7 +15870,7 @@
     <UserFolderName />
     <Comment lines_count="0" />
     <Template />
-    <BeanVersion>01.366</BeanVersion>
+    <BeanVersion>01.368</BeanVersion>
     <LightErrorsIgnored>false</LightErrorsIgnored>
     <Properties>
       <ItemState>
@@ -15883,7 +15883,7 @@
         <ItemSymbol>FreeRTOSVersion</ItemSymbol>
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
-        <Value>V8.0.0</Value>
+        <Value>V8.0.1</Value>
       </ItemState>
       <ItemState>
         <ItemSymbol>CustomPortGroup</ItemSymbol>
@@ -17670,7 +17670,7 @@
     <UserFolderName>Referenced_Components</UserFolderName>
     <Comment lines_count="0" />
     <Template />
-    <BeanVersion>01.104</BeanVersion>
+    <BeanVersion>01.105</BeanVersion>
     <LightErrorsIgnored>false</LightErrorsIgnored>
     <Properties>
       <ItemState>
@@ -24037,7 +24037,7 @@
     <UserFolderName>Referenced_Components</UserFolderName>
     <Comment lines_count="0" />
     <Template />
-    <BeanVersion>01.020</BeanVersion>
+    <BeanVersion>01.023</BeanVersion>
     <LightErrorsIgnored>false</LightErrorsIgnored>
     <Properties>
       <ItemState>
@@ -24386,6 +24386,22 @@
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
         <Value>GI2C1_OnReleaseBus</Value>
+      </ItemState>
+      <ItemState>
+        <ItemSymbol>OnError</ItemSymbol>
+        <ReadOnly>false</ReadOnly>
+        <UserReadOnly>false</UserReadOnly>
+        <Value>false</Value>
+        <Expanded>false</Expanded>
+        <LastSelection>false</LastSelection>
+        <LastUserSel>never</LastUserSel>
+        <PropertyModelIsAutomatic>false</PropertyModelIsAutomatic>
+      </ItemState>
+      <ItemState>
+        <ItemSymbol>OnErrorName</ItemSymbol>
+        <ReadOnly>false</ReadOnly>
+        <UserReadOnly>false</UserReadOnly>
+        <Value />
       </ItemState>
     </Events>
   </Bean>
