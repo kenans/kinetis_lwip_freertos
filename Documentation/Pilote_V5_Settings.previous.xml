@@ -482,7 +482,7 @@ PE_DEBUGHALT();
     <Enabled v="Y" />
     <Properties>
       <Component_name v="FRTOS" />
-      <RTOS_Version v="V8.0.0" />
+      <RTOS_Version v="V8.0.1" />
       <group name="Custom Port">
         <Compiler v="ARM gcc" />
         <boolgroup name="Static Sources" v="Enabled">
@@ -1367,6 +1367,7 @@ PE_DEBUGHALT();
       <event name="OnMasterBlockReceived" v="don&amp;apos;t generate code" />
       <event name="OnRequestBus" v="don&amp;apos;t generate code" />
       <event name="OnReleaseBus" v="don&amp;apos;t generate code" />
+      <event name="OnError" v="don&amp;apos;t generate code" />
     </Events>
   </Bean>
   <Bean name="CI2C1" type="I2C_LDD">

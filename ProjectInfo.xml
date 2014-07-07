@@ -100,6 +100,17 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\UTIL.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\Vectors.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\WAIT1.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\croutine.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\event_groups.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\heap_1.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\heap_2.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\heap_3.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\heap_4.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\list.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\port.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\queue.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\tasks.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\timers.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\usb_cdc.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\usb_cdc_pstn.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\usb_class.c</PathName>
@@ -149,6 +160,8 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\timers.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portTicks.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portmacro.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOSConfig.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\GI2C1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\IO_Map.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\PE_Const.h</PathName>
@@ -158,6 +171,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\PWM1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\PwmLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\Rx1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\StackMacros.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\TI1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\TU1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\TU2.h</PathName>
@@ -167,8 +181,20 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\USB_Config.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\UTIL.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\WAIT1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\croutine.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\derivative.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\event_groups.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\hidef.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\list.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\mpu_wrappers.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\portTicks.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\portable.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\portmacro.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\projdefs.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\queue.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\semphr.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\task.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\timers.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\types.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\usb_bdt_kinetis.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\usb_cdc.h</PathName>
@@ -221,6 +247,7 @@
     </GeneratedHs>
     <GeneratedASMs>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portasm.s</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\portasm.s</PathName>
     </GeneratedASMs>
   </FILES>
   <OPTIONS>

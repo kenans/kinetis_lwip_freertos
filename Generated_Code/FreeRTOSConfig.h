@@ -85,7 +85,7 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
-#define configGENERATE_STATIC_SOURCES             1 /* 1: it will create 'static' sources to be used without Processor Expert; 0: Processor Expert code generated */
+#define configGENERATE_STATIC_SOURCES             0 /* 1: it will create 'static' sources to be used without Processor Expert; 0: Processor Expert code generated */
 #define configPEX_KINETIS_SDK                     0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 
 #define configGENERATE_RUN_TIME_STATS             0 /* 1: generate runtime statistics; 0: no runtime statistics */
@@ -101,8 +101,8 @@
 #define configCPU_CLOCK_HZ                        SystemCoreClock /* CPU clock frequency */
 #define configBUS_CLOCK_HZ                        SystemCoreClock /* Bus clock frequency */
 #else
-#define configCPU_CLOCK_HZ                        50000000U /* CPU clock frequency */
-#define configBUS_CLOCK_HZ                        50000000U /* Bus clock frequency */
+#define configCPU_CLOCK_HZ                        CPU_CORE_CLK_HZ /* CPU core clock defined in Cpu.h */
+#define configBUS_CLOCK_HZ                        CPU_BUS_CLK_HZ /* CPU bus clock defined in Cpu.h */
 #endif /* configPEX_KINETIS_SDK */
 #define configSYSTICK_USE_CORE_CLOCK              1 /* System Tick is using core clock  */
 #define configSYSTICK_CLOCK_DIVIDER               1 /* no divider */

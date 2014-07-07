@@ -74,6 +74,7 @@
  *  of one of the standard FreeRTOS header files.
  */
 
+#include "Cpu.h" /* include CPU module because of dependency to CPU clock rate */
 #include "FreeRTOSConfig.h"
 #include "portmacro.h"
 

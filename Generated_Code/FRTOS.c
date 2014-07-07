@@ -6,7 +6,7 @@
 **     Component   : FreeRTOS
 **     Version     : Component 01.368, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-03, 10:17, # CodeGen: 8
+**     Date/Time   : 2014-07-07, 14:08, # CodeGen: 9
 **     Abstract    :
 **          This component implements the FreeRTOS Realtime Operating System
 **     Settings    :
@@ -14,13 +14,7 @@
 **          RTOS Version                                   : V8.0.1
 **          Custom Port                                    : Custom port settings
 **            Compiler                                     : ARM gcc
-**            Static Sources                               : Enabled
-**              Source Folder                              : FreeRTOS\src
-**              Header Folder                              : FreeRTOS\include
-**              Port Folder                                : FreeRTOS\port
-**              Manual Clock Values                        : Enabled
-**                configCPU_CLOCK_HZ                       : 50000000U
-**                configBUS_CLOCK_HZ                       : 50000000U
+**            Static Sources                               : Disabled
 **            Custom portBASE_TYPE                         : Disabled
 **          Classic CodeWarrior                            : no
 **          Disabled Interrupts in Startup                 : yes

@@ -485,15 +485,7 @@ PE_DEBUGHALT();
       <RTOS_Version v="V8.0.1" />
       <group name="Custom Port">
         <Compiler v="ARM gcc" />
-        <boolgroup name="Static Sources" v="Enabled">
-          <Source_Folder v="FreeRTOS\src" />
-          <Header_Folder v="FreeRTOS\include" />
-          <Port_Folder v="FreeRTOS\port" />
-          <boolgroup name="Manual Clock Values" v="Enabled">
-            <configCPU_CLOCK_HZ v="50000000U" />
-            <configBUS_CLOCK_HZ v="50000000U" />
-          </boolgroup>
-        </boolgroup>
+        <boolgroup name="Static Sources" v="Disabled" />
         <boolgroup name="Custom portBASE_TYPE" v="Disabled" />
       </group>
       <Classic_CodeWarrior v="no" />
