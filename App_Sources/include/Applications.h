@@ -23,6 +23,7 @@
 #include "config_manager.h"
 #include "ir_manager.h"
 #include "usb_manager.h"
+#include "ethernet.h"
 
 
 /**

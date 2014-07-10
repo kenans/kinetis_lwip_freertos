@@ -443,6 +443,27 @@ Module "TU2"       (component TimerUnit_LDD)
    - TU2_Disable -Disables the component - it stops signal generation and events calling. The method is not available if the 
                 counter can't be disabled/enabled by HW.
 
+Module "ETH1"      (component Ethernet_LDD)
+   - ETH1_Init -Initializes the device. Allocates memory for the device data structure, allocates interrupt vectors and sets 
+                interrupt priority, sets pin routing, sets timing, etc. If the property <"Enable device"> is set to "yes" then 
+                the device is also enabled (see the description of the <Enable> method). In this case the <Enable> method is 
+                not necessary and need not to be generated. This method can be called only once. Before the second call of Init 
+                the <Deinit> method must be called first.
+   - ETH1_Deinit -Deinitializes the device. Switches off the device, frees the device data structure memory, interrupt vectors, 
+                etc.
+   - ETH1_SendFrame -Initiates a frame transmission. Frame contents are defined by the specified list of buffer descriptors. 
+                Frames are internally queued. The end of the frame transmission is signalized by the OnFrameTransmitted event.
+   - ETH1_ReceiveFrame -Initiates frame receptions. Frame contents will be placed into buffers specified by the list of buffers.
+                Frames are internally queued. The end of a frame reception is signalized by the OnFrameReceived event.
+   - ETH1_ReadMII -Initiates a MII register read operation. The end of the operation is signalized by the OnMIIFinished event 
+                in the interrupt mode or by the GetMIIResult method in the polled mode. The value of the register is returned 
+                by the GetMIIResult method. This method is available only if management bus is enabled.
+   - ETH1_WriteMII -Initiates a MII register write operation. The end of the operation is signalized by the OnMIIFinished event 
+                in the interrupt mode or by the GetMIIResult method in the polled mode. This method is available only if 
+                management bus is enabled.
+   - ETH1_GetMIIResult -If the MII operation has finished, the variable pointed by the Data parameter will contain the value of 
+                the addressed MII register. This method is available only if management bus is enabled.
+
 Module "Cpu"       (component MK60FN1M0LQ15)
 
 ===================================================================================

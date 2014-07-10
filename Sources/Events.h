@@ -53,6 +53,8 @@
 #include "TU1.h"
 #include "TI1.h"
 #include "TU2.h"
+#include "ETH1.h"
+#include "eth.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -199,6 +201,67 @@ void AS1_OnTxChar(void);
 */
 /* ===================================================================*/
 void TI1_OnInterrupt(LDD_TUserData *UserDataPtr);
+
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFrameTransmitted (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called after the whole frame on the head of
+**         the internal frame queue has been sent and removed from the
+**         queue. The event is available only if IEEE 1588 is disabled.
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+*/
+/* ===================================================================*/
+void ETH1_OnFrameTransmitted(LDD_TUserData *UserDataPtr);
+
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFrameReceived (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called after the whole frame on the head of
+**         the internal frame queue has been received and removed from
+**         the queue. The event is available only if IEEE 1588 is
+**         disabled.
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+**     @param
+**         FragCount       - Received frame fragment count
+**                           (the number of buffers used to store the
+**                           frame data).
+**     @param
+**         Length          - Received frame length.
+*/
+/* ===================================================================*/
+void ETH1_OnFrameReceived(LDD_TUserData *UserDataPtr, uint16_t FragCount, uint16_t Length);
+
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFatalError (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called when a fatal error has occurred (i.e.
+**         ethernet bus error). The device should be reinitialized
+**         during this event (Deinit and Init methods should be called).
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+*/
+/* ===================================================================*/
+void ETH1_OnFatalError(LDD_TUserData *UserDataPtr);
 
 /* END Events */
 

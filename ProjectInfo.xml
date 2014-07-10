@@ -44,21 +44,34 @@
     </IncludePaths>
     <SourceCodePaths>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\structure\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\usb\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\tools\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Project_Settings\Startup_Code\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Sources\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\</Path>
     </SourceCodePaths>
   </PATHS>
   <FILES>
     <GeneratedCs>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\Applications.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\ethernet.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\http_server.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\image.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\webpages.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\ir_manager.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\ir_transmitter.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\config_accessor.c</PathName>
@@ -74,18 +87,8 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\CS1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\Cpu.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\EE241.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\ETH1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FRTOS.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\port.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\croutine.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\event_groups.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\heap_1.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\heap_2.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\heap_3.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\heap_4.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\list.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\queue.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\tasks.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\src\timers.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\GI2C1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\PE_LDD.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\PWM1.c</PathName>
@@ -122,8 +125,69 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Project_Settings\Startup_Code\startup.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Sources\Events.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Sources\main.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\eth.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\eth_buf.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\eth_phy.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\api_lib.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\api_msg.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\err.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\netbuf.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\netdb.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\netifapi.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\sockets.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\api\tcpip.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\dhcp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\dns.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\init.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\autoip.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\icmp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\igmp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\inet.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\inet_chksum.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\ip.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\ip_addr.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\ipv4\ip_frag.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\mem.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\memp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\netif.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\pbuf.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\raw.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\asn1_dec.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\asn1_enc.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\mib2.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\mib_structs.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\msg_in.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\snmp\msg_out.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\stats.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\sys.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\tcp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\tcp_in.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\tcp_out.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\core\udp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\etharp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\ethernetif.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\sys_arch.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\loopif.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\auth.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\chap.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\chpms.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\fsm.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\ipcp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\lcp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\magic.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\md5.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\pap.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\ppp.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\ppp_oe.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\randm.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\vj.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\slipif.c</PathName>
     </GeneratedCs>
     <GeneratedHs>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\include\ethernet.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\http_server.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\image.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\webpages.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\include\Applications.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\include\common.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\include\ir_manager.h</PathName>
@@ -143,23 +207,9 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\CS1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\Cpu.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\EE241.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\ETH1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FRTOS.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FSL_USB_Stack_Config.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\FreeRTOS.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\FreeRTOSConfig.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\StackMacros.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\croutine.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\event_groups.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\list.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\mpu_wrappers.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\portable.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\projdefs.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\queue.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\semphr.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\task.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\include\timers.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portTicks.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portmacro.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOSConfig.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\GI2C1.h</PathName>
@@ -244,9 +294,74 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Static_Code\PDD\USB_PDD.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Static_Code\PDD\VREF_PDD.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Static_Code\PDD\WDOG_PDD.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\include\eth.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\include\eth_buf.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\eth_drivers\include\eth_phy.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\autoip.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\icmp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\igmp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\inet.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\inet_chksum.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\ip.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\ip_addr.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\ipv4\lwip\ip_frag.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\api.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\api_msg.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\arch.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\debug.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\def.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\dhcp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\dns.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\err.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\init.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\mem.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\memp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\memp_std.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\netbuf.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\netdb.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\netif.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\netifapi.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\opt.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\pbuf.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\raw.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\sio.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\snmp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\snmp_asn1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\snmp_msg.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\snmp_structs.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\sockets.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\stats.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\sys.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\tcp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\tcpip.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\lwip\udp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\netif\etharp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\netif\loopif.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\netif\ppp_oe.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\include\netif\slipif.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\cc.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\cpu.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\ethernetif.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\lwip_errno.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\perf.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\arch\sys_arch.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\lwip_config\lwipopts.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\auth.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\chap.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\chpms.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\fsm.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\ipcp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\lcp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\magic.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\md5.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\pap.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\ppp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\pppdebug.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\randm.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\vj.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\ppp\vjbsdhdr.h</PathName>
     </GeneratedHs>
     <GeneratedASMs>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\FreeRTOS\port\portasm.s</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\Generated_Code\portasm.s</PathName>
     </GeneratedASMs>
   </FILES>

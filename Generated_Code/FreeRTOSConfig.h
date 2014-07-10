@@ -111,7 +111,7 @@
 /*----------------------------------------------------------*/
 /* Heap Memory */
 #define configFRTOS_MEMORY_SCHEME                 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc) or 4 (coalesc blocks) */
-#define configTOTAL_HEAP_SIZE                     ((size_t)(8192)) /* size of heap in bytes */
+#define configTOTAL_HEAP_SIZE                     ((size_t)(16384)) /* size of heap in bytes */
 #define configUSE_HEAP_SECTION_NAME               1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
 #if configUSE_HEAP_SECTION_NAME
 #define configHEAP_SECTION_NAME_STRING            ".m_data_20000000" /* heap section name (use e.g. ".m_data_20000000" for gcc and "m_data_20000000" for IAR). Check your linker file for the name used. */
@@ -136,7 +136,7 @@
 #define configUSE_TICKLESS_IDLE_DECISION_HOOK     0 /* set to 1 to enable application hook, zero otherwise */
 #define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME xEnterTicklessIdle /* function name of decision hook */
 
-#define configMAX_PRIORITIES                      ((unsigned portBASE_TYPE)6)
+#define configMAX_PRIORITIES                      ((unsigned portBASE_TYPE)8)
 #define configMAX_CO_ROUTINE_PRIORITIES           2
 
 /* Software timer definitions. */

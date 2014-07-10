@@ -225,6 +225,95 @@ void TI1_OnInterrupt(LDD_TUserData *UserDataPtr)
     ++*(uint32_t*)(UserDataPtr);
 }
 
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFrameTransmitted (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called after the whole frame on the head of
+**         the internal frame queue has been sent and removed from the
+**         queue. The event is available only if IEEE 1588 is disabled.
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+*/
+/* ===================================================================*/
+void ETH1_OnFrameTransmitted(LDD_TUserData *UserDataPtr)
+{
+    /* Write your code here ... */
+    EthFrameData *eth_data = (EthFrameData*)UserDataPtr;
+    TX_ReleaseFrame(eth_data);
+}
+
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFrameReceived (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called after the whole frame on the head of
+**         the internal frame queue has been received and removed from
+**         the queue. The event is available only if IEEE 1588 is
+**         disabled.
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+**     @param
+**         FragCount       - Received frame fragment count
+**                           (the number of buffers used to store the
+**                           frame data).
+**     @param
+**         Length          - Received frame length.
+*/
+/* ===================================================================*/
+void ETH1_OnFrameReceived(LDD_TUserData *UserDataPtr, uint16_t FragCount, uint16_t Length)
+{
+    /* Write your code here ... */
+    EthFrameData *eth_data = (EthFrameData*)UserDataPtr;
+    uint8_t *ptr;
+    uint16_t temp;
+    LDD_QUEUE_INSERT(eth_data->rx_frag_counts, FragCount, temp);
+    LDD_QUEUE_INSERT(eth_data->rx_lengths, Length, temp);
+    while (FragCount--) {
+        LDD_QUEUE_REMOVE(eth_data->empty_rx_buffers, ptr, temp);
+        LDD_QUEUE_INSERT(eth_data->filled_rx_buffers, ptr, temp);
+    }
+}
+/*
+** ===================================================================
+**     Event       :  ETH1_OnFatalError (module Events)
+**
+**     Component   :  ETH1 [Ethernet_LDD]
+*/
+/*!
+**     @brief
+**         This event is called when a fatal error has occurred (i.e.
+**         ethernet bus error). The device should be reinitialized
+**         during this event (Deinit and Init methods should be called).
+**     @param
+**         UserDataPtr     - Pointer to user data
+**                           structure pointer.
+*/
+/* ===================================================================*/
+void ETH1_OnFatalError(LDD_TUserData *UserDataPtr)
+{
+    /* Write your code here ... */
+    EthFrameData *eth_data = (EthFrameData*)UserDataPtr;
+    uint8_t *buffers[RX_BUFFER_COUNT];
+
+    ETH1_Deinit(eth_data->eth_device_data);
+    eth_data->eth_device_data = ETH1_Init(eth_data);
+    /* ... reinitialize transmit and receive buffer queues ... */
+    /* Pass the receive buffers to be filled with received data */
+    ETH1_ReceiveFrame(eth_data->eth_device_data, buffers, RX_BUFFER_COUNT);
+
+}
+
 /* END Events */
 
 #ifdef __cplusplus

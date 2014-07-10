@@ -5,7 +5,7 @@
 **     Processor   : MK60FN1M0VLQ12
 **     Version     : Component 01.006, Driver 01.04, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-06-24, 14:43, # CodeGen: 4
+**     Date/Time   : 2014-07-10, 17:30, # CodeGen: 10
 **     Abstract    :
 **
 **     Settings    :
@@ -73,6 +73,7 @@
   #include "TU1.h"
   #include "TI1.h"
   #include "TU2.h"
+  #include "ETH1.h"
   #include "Events.h"
 
 
@@ -184,9 +185,9 @@
     (tIsrFunc)&USB_ISR,                /* 0x59  0x00000164   0   ivINT_USB0                     used by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x5A  0x00000168   -   ivINT_USBDCD                   unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x5B  0x0000016C   -   ivINT_ENET_1588_Timer          unused by PE */
-    (tIsrFunc)&Cpu_Interrupt,          /* 0x5C  0x00000170   -   ivINT_ENET_Transmit            unused by PE */
-    (tIsrFunc)&Cpu_Interrupt,          /* 0x5D  0x00000174   -   ivINT_ENET_Receive             unused by PE */
-    (tIsrFunc)&Cpu_Interrupt,          /* 0x5E  0x00000178   -   ivINT_ENET_Error               unused by PE */
+    (tIsrFunc)&ETH1_InterruptTxFrame,  /* 0x5C  0x00000170   8   ivINT_ENET_Transmit            used by PE */
+    (tIsrFunc)&ETH1_InterruptRxFrame,  /* 0x5D  0x00000174   8   ivINT_ENET_Receive             used by PE */
+    (tIsrFunc)&ETH1_InterruptShared,   /* 0x5E  0x00000178   8   ivINT_ENET_Error               used by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x5F  0x0000017C   -   ivINT_Reserved95               unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x60  0x00000180   -   ivINT_SDHC                     unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x61  0x00000184   -   ivINT_DAC0                     unused by PE */

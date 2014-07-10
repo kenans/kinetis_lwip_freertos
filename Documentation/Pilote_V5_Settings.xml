@@ -515,7 +515,7 @@ PE_DEBUGHALT();
         <Idle_should_yield v="yes" />
         <Task_Name_Length v="12" />
         <Minimal_Stack_Size v="200" />
-        <Maximum_Priorities v="6" />
+        <Maximum_Priorities v="8" />
         <Maximum_Coroutine_Priorities v="2" />
         <Stackoverflow_checking_method v="Method 1" />
         <Cleanup_Resources v="yes" />
@@ -541,7 +541,7 @@ PE_DEBUGHALT();
         <boolgroup name="User Heap Section" v="Enabled">
           <Heap_Section_Name v=".m_data_20000000" />
         </boolgroup>
-        <Total_Heap_Size v="8192" />
+        <Total_Heap_Size v="16384" />
       </group>
       <boolgroup name="Shell" v="Disabled" />
       <Utility v="UTIL" />
@@ -1848,6 +1848,199 @@ PE_DEBUGHALT();
       <event name="OnChannel5" v="don&amp;apos;t generate code" />
       <event name="OnChannel6" v="don&amp;apos;t generate code" />
       <event name="OnChannel7" v="don&amp;apos;t generate code" />
+    </Events>
+  </Bean>
+  <Bean name="ETH1" type="Ethernet_LDD">
+    <Enabled v="Y" />
+    <Properties>
+      <Component_name v="ETH1" />
+      <Device v="ENET" />
+      <group name="Settings">
+        <enumgroup name="Interface" v="RMII">
+          <boolgroup name="Management bus" v="Enabled">
+            <Clock_frequency v="2.5 MHz" />
+            <Preamble_drop v="Enabled" />
+            <Holdtime v="8 bus cycles" />
+          </boolgroup>
+          <RMII_speed v="100 Mbps" />
+        </enumgroup>
+        <MAC_address v="00:04:9F:02:F3:D3" />
+        <Duplex_mode v="Full duplex" />
+        <boolgroup name="Flow control" v="Enabled">
+          <Pause_frame_duration v="0" />
+        </boolgroup>
+        <Internal_loopback v="Disabled" />
+        <IEEE_1588 v="Disabled" />
+        <group name="Frame">
+          <Maximum_length v="1518" />
+          <Truncation_length v="2048" />
+          <group name="Transmit">
+            <Append_CRC v="yes" />
+            <boolgroup name="Insert MAC address" v="no" />
+            <Inter_packet_gap v="8" />
+            <Insert_IP_header_checksum v="Disabled" />
+            <Insert_protocol_checksum v="Disabled" />
+            <Payload_alignment v="Disabled" />
+          </group>
+          <group name="Receive">
+            <Forward_CRC v="yes" />
+            <Payload_alignment v="Disabled" />
+            <Payload_length_check v="Disabled" />
+            <Remove_padding v="no" />
+            <Remove_padding_in_short_IP_frames v="no" />
+            <group name="Filter">
+              <Control_frames v="Accept" />
+              <Pause_frames v="Accept" />
+              <Invalid_frames v="Accept" />
+              <Wrong_IP_header_checksum v="Accept" />
+              <Wrong_protocol_checksum v="Accept" />
+            </group>
+          </group>
+        </group>
+        <boolgroup name="Address filter" v="Enabled">
+          <Broadcast_frames v="Accept" />
+          <Unicast_addresses>
+            <StrgList></StrgList>
+          </Unicast_addresses>
+          <Multicast_addresses>
+            <StrgList></StrgList>
+          </Multicast_addresses>
+        </boolgroup>
+        <boolgroup name="Statistics" v="Enabled">
+          <boolgroup name="Remote network monitoring" v="Enabled">
+            <EmptySection_DummyValue />
+          </boolgroup>
+          <boolgroup name="IEEE" v="Enabled">
+            <EmptySection_DummyValue />
+          </boolgroup>
+        </boolgroup>
+        <group name="DMA">
+          <group name="Transmit">
+            <Watermark v="Store and forward" />
+            <Section_empty_threshold v="0" />
+            <Almost_empty_threshold v="8" />
+            <Almost_full_threshold v="8" />
+          </group>
+          <group name="Receive">
+            <Section_full_threshold v="0" />
+            <Section_empty_threshold v="0" />
+            <Almost_empty_threshold v="8" />
+            <Almost_full_threshold v="8" />
+          </group>
+        </group>
+        <group name="Buffers">
+          <Transmit_buffer_queue_size v="8" />
+          <Receive_buffer_queue_size v="8" />
+          <Receive_buffer_size v="512" />
+        </group>
+      </group>
+      <boolgroup name="Interrupt service/event" v="Enabled">
+        <group name="Transmit">
+          <Transmit_frame v="INT_ENET_Transmit" />
+          <Transmit_frame_priority v="medium priority" />
+        </group>
+        <group name="Receive">
+          <Receive_frame v="INT_ENET_Receive" />
+          <Receive_frame_priority v="medium priority" />
+        </group>
+        <group name="Others">
+          <MII___Ethernet_bus_error___Wake_up v="INT_ENET_Error" />
+          <MII___Ethernet_bus_error___Wake_up_priority v="medium priority" />
+        </group>
+      </boolgroup>
+      <enumgroup name="Pins" v="RMII">
+        <boolgroup name="Management" v="Enabled">
+          <MDC_pin v="ADC0_SE9/ADC1_SE9/ADC2_SE9/ADC3_SE9/TSI0_CH6/PTB1/I2C0_SDA/FTM1_CH1/RMII0_MDC/MII0_MDC/FTM1_QD_PHB" />
+          <MDIO_pin v="ADC0_SE8/ADC1_SE8/ADC2_SE8/ADC3_SE8/TSI0_CH0/PTB0/LLWU_P5/I2C0_SCL/FTM1_CH0/RMII0_MDIO/MII0_MDIO/FTM1_QD_PHA" />
+        </boolgroup>
+        <group name="Transmit">
+          <TXD0_pin v="CMP3_IN2/PTA16/SPI0_SOUT/UART0_CTS_b/UART0_COL_b/RMII0_TXD0/MII0_TXD0/I2S0_RX_FS/I2S0_RXD1" />
+          <TXD1_pin v="ADC1_SE17/PTA17/SPI0_SIN/UART0_RTS_b/RMII0_TXD1/MII0_TXD1/I2S0_MCLK" />
+          <TXEN_pin v="CMP3_IN1/PTA15/SPI0_SCK/UART0_RX/RMII0_TXEN/MII0_TXEN/I2S0_RXD0" />
+        </group>
+        <group name="Receive">
+          <RXDV_CRS_pin v="CMP3_IN0/PTA14/SPI0_PCS0/UART0_TX/RMII0_CRS_DV/MII0_RXDV/I2S0_RX_BCLK/I2S0_TXD1" />
+          <RXD0_pin v="CMP2_IN1/PTA13/LLWU_P4/CAN0_RX/FTM1_CH1/RMII0_RXD0/MII0_RXD0/I2S0_TX_FS/FTM1_QD_PHB" />
+          <RXD1_pin v="CMP2_IN0/PTA12/CAN0_TX/FTM1_CH0/RMII0_RXD1/MII0_RXD1/I2S0_TXD0/FTM1_QD_PHA" />
+          <boolgroup name="RXER" v="Disabled" />
+        </group>
+        <REF_CLK_pin v="EXTAL0/PTA18/FTM0_FLT2/FTM_CLKIN0" />
+      </enumgroup>
+      <group name="Initialization">
+        <Enable_device v="yes" />
+        <list name="Auto Initialization" v="1">
+          <Auto_initialization v="no" />
+        </list>
+        <group name="Event mask">
+          <OnFrameTransmitted v="Enabled" />
+          <OnFrameReceived v="Enabled" />
+          <OnFrameTransmittedTimestamped v="Disabled" />
+          <OnFrameReceivedTimestamped v="Disabled" />
+          <OnMIIFinished v="Disabled" />
+          <OnWakeUp v="Disabled" />
+          <OnFatalError v="Enabled" />
+        </group>
+        <boolgroup name="Sleep mode" v="Disabled" />
+        <Debug v="Disabled" />
+      </group>
+      <list name="CPU clock/configuration selection (included)" v="1">
+        <group name="CPU clock/configuration selection">
+          <Clock_configuration_0 v="This component enabled" />
+          <Clock_configuration_1 v="This component disabled" />
+          <Clock_configuration_2 v="This component disabled" />
+          <Clock_configuration_3 v="This component disabled" />
+          <Clock_configuration_4 v="This component disabled" />
+          <Clock_configuration_5 v="This component disabled" />
+          <Clock_configuration_6 v="This component disabled" />
+          <Clock_configuration_7 v="This component disabled" />
+        </group>
+      </list>
+    </Properties>
+    <Methods>
+      <Init v="generate code" />
+      <Deinit v="generate code" />
+      <Enable v="don&amp;apos;t generate code" />
+      <Disable v="don&amp;apos;t generate code" />
+      <SetEventMask v="don&amp;apos;t generate code" />
+      <GetEventMask v="don&amp;apos;t generate code" />
+      <SendFrame v="generate code" />
+      <ReceiveFrame v="generate code" />
+      <SendPauseFrame v="don&amp;apos;t generate code" />
+      <SetMACAddress v="don&amp;apos;t generate code" />
+      <GetMACAddress v="don&amp;apos;t generate code" />
+      <SetDuplexMode v="don&amp;apos;t generate code" />
+      <GetDuplexMode v="don&amp;apos;t generate code" />
+      <JoinMulticastGroup v="don&amp;apos;t generate code" />
+      <LeaveMulticastGroups v="don&amp;apos;t generate code" />
+      <SetFilterMode v="don&amp;apos;t generate code" />
+      <GetFilterMode v="don&amp;apos;t generate code" />
+      <ReadMII v="generate code" />
+      <WriteMII v="generate code" />
+      <GetMIIResult v="generate code" />
+      <SetSleepMode v="don&amp;apos;t generate code" />
+      <GetSleepMode v="don&amp;apos;t generate code" />
+      <GetStats v="don&amp;apos;t generate code" />
+      <ClearStats v="don&amp;apos;t generate code" />
+      <Main v="don&amp;apos;t generate code" />
+      <ConnectPin v="don&amp;apos;t generate code" />
+      <SetOperationMode v="don&amp;apos;t generate code" />
+      <GetDriverState v="don&amp;apos;t generate code" />
+    </Methods>
+    <Events>
+      <Event_module_name v="Events" />
+      <event name="OnFrameTransmitted" v="generate code">
+        <Event_procedure_name v="ETH1_OnFrameTransmitted" />
+      </event>
+      <event name="OnFrameReceived" v="generate code">
+        <Event_procedure_name v="ETH1_OnFrameReceived" />
+      </event>
+      <event name="OnFrameTransmittedTimestamped" v="don&amp;apos;t generate code" />
+      <event name="OnFrameReceivedTimestamped" v="don&amp;apos;t generate code" />
+      <event name="OnMIIFinished" v="don&amp;apos;t generate code" />
+      <event name="OnWakeUp" v="don&amp;apos;t generate code" />
+      <event name="OnFatalError" v="generate code">
+        <Event_procedure_name v="ETH1_OnFatalError" />
+      </event>
     </Events>
   </Bean>
 </PE_PROJECT_SETTINGS_DOCUMENTATION>

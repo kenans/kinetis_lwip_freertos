@@ -77,4 +77,9 @@ void RunTasks(void)
         // Error occurs, often out of heap size. Should never get hear.
         }
     }
+    if (xTaskCreate(Eth_Task, "eth_task", configMINIMAL_STACK_SIZE+100, NULL, configMAX_PRIORITIES-5, NULL) != pdPASS) {
+        while (1) {
+        // Error occurs, often out of heap size. Should never get hear.
+        }
+    }
 }
