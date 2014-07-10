@@ -16,8 +16,8 @@
 // System includes
 #include "common.h"
 // Project pilote includes
-//#include "pilote_config.h"
-//#include "pilote_mes.h"
+#include "pilote_config.h"
+#include "pilote_mes.h"
 // Web server includes
 #include "webpages.h"
 #include "image.h"

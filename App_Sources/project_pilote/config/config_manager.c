@@ -16,7 +16,7 @@
  * Only used in this file
  */
 // Functions
-static err_t ConfigManagerParseUsbMes(PiloteMessagePackage *mes_pkg_recv,
+static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                                       PiloteMessagePackage *mes_pkg_send);
 // Variables
 static PiloteConfigurations _pilote_config;                      // Create instance. It's the only instance of program
@@ -102,21 +102,18 @@ void ConfigThread(void *pvParameters)
                         break;
                     }
 
-                if (configuring) {
+                if (configuring &&
+                    mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
+                    mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
                     switch (mes_pkg_recv.mes_type) {
+                        case PILOTE_MES_TYPE_HTTP:
                         case PILOTE_MES_TYPE_USB:
-                            if (mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
-                                mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
-                                // Parse the received message then do something and generate send message
-                                ConfigManagerParseUsbMes(&mes_pkg_recv, &mes_pkg_send);
-                                // Send back message to USB Manager
-                                xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
-                            }
+                            // Parse the received message then do something and generate send message
+                            ConfigManagerParseMes(&mes_pkg_recv, &mes_pkg_send);
+                            // Send back message to USB Manager
+                            xQueueSend(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
                             break;
                         case PILOTE_MES_TYPE_UDP:
-                            // TODO
-                            break;
-                        case PILOTE_MES_TYPE_HTTP:
                             // TODO
                             break;
                         default:
@@ -154,16 +151,28 @@ void ConfigThread(void *pvParameters)
 /**
  *
  */
-static err_t ConfigManagerParseUsbMes(PiloteMessagePackage *mes_pkg_recv,
-                                      PiloteMessagePackage *mes_pkg_send)
+static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
+                                   PiloteMessagePackage *mes_pkg_send)
 {
     err_t error = ERR_OK;
 
-    if (mes_pkg_recv->mes_type != PILOTE_MES_TYPE_USB ||
-        mes_pkg_recv->direction != PILOTE_MES_RECV) {                           // If mes_pkg_recv error
+    if (mes_pkg_recv->direction != PILOTE_MES_RECV) {                           // If mes_pkg_recv error
         return ERR_COMMON;
-    } else {
-        mes_pkg_send->mes_type = PILOTE_MES_TYPE_USB;                           // Set mes_pkg_send type
+    }
+
+    switch (mes_pkg_recv->mes_type) {
+        case PILOTE_MES_TYPE_HTTP:
+            mes_pkg_send->mes_type = PILOTE_MES_TYPE_HTTP;
+            break;
+        case PILOTE_MES_TYPE_USB:
+            mes_pkg_send->mes_type = PILOTE_MES_TYPE_USB;
+            break;
+        case PILOTE_MES_TYPE_UDP:
+            mes_pkg_send->mes_type = PILOTE_MES_TYPE_USB;
+            break;
+        default:
+            return ERR_COMMON;
+            break;
     }
 
     switch (mes_pkg_recv->operation) {

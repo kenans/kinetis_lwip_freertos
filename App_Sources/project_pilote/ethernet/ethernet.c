@@ -57,7 +57,7 @@ void Eth_Task(void *pvParameters)
 //		// Polling
 //        if (link_up) {
             ethernetif_input(&_eth_netif);
-            vTaskDelay(10/portTICK_PERIOD_MS);
+            vTaskDelay(2/portTICK_PERIOD_MS);
 //            count++;
 //        } else {
 //            vTaskDelay(2000/portTICK_PERIOD_MS);

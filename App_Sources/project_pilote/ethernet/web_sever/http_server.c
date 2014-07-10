@@ -14,8 +14,8 @@
 static void Http_SendError404(struct netconn *new_conn);
 // Variables
 static char _web_page[512];	                                    // Web page buffer < 512o
-//static PiloteMessagePackage _mes_pkg_recv;                      // Mes package for recv mbox
-//static PiloteMessagePackage _mes_pkg_send;                      // Mes package for send mbox
+static PiloteMessagePackage _mes_pkg_recv;                      // Mes package for recv mbox
+static PiloteMessagePackage _mes_pkg_send;                      // Mes package for send mbox
 /**
  *  HttpServer_Task
  *      - Creates a simple HTTP web server
@@ -35,8 +35,8 @@ void HttpServer_Task(void* pvParameters)
     char http_request[5];
     char http_url[128];
     u16_t len = 0;                                                          // A temporary variable storing length
-//    extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
-//    extern xQueueHandle mbox_pilote_send;
+    extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
+    extern xQueueHandle mbox_pilote_send;
     /**
      *  Initialization
      */
@@ -45,10 +45,10 @@ void HttpServer_Task(void* pvParameters)
      *      direction and mes_type are set here and should never be changed!
      *      Only change operation, target and data.
      */
-//    PiloteInitRecvMesPackage(_mes_pkg_recv);                                 // Initialization _mes_pkg_recv
-//    _mes_pkg_recv.mes_type = PILOTE_MES_TYPE_HTTP;
-//    PiloteInitSendMesPackage(_mes_pkg_send);                                 // Initialization _mes_pkg_send
-//    _mes_pkg_recv.mes_type = PILOTE_MES_TYPE_HTTP;
+    PiloteInitRecvMesPackage(_mes_pkg_recv);                                 // Initialization _mes_pkg_recv
+    _mes_pkg_recv.mes_type = PILOTE_MES_TYPE_HTTP;
+    PiloteInitSendMesPackage(_mes_pkg_send);                                 // Initialization _mes_pkg_send
+    _mes_pkg_recv.mes_type = PILOTE_MES_TYPE_HTTP;
     /**
      *  Web server initialization
      */
