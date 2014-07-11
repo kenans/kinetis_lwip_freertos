@@ -35,7 +35,7 @@ void Eth_Task(void *pvParameters)
 	/**
 	 *  Create HTTPServer_Task
 	 */
-    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-3, NULL) != pdPASS) {
+    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-4, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }

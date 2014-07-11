@@ -52,7 +52,6 @@ void HttpServer_Task(void* pvParameters)
     char http_url[128];
     u16_t len = 0;                                                          // A temporary variable storing length
     extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
-    extern xQueueHandle mbox_pilote_send;
     /**
      *  Initialization
      */
@@ -121,7 +120,6 @@ void HttpServer_Task(void* pvParameters)
                             in_buf_ptr = NULL;  // Not used
                             _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&', should be done later in JS
                             netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
-                            //netconn_write(new_conn, "enable=1&mode=0&frame_nums=2&code=3&time_bt_frame=500", 53, NETCONN_COPY);
                             netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             // Restart IR
                             WebPilote_RestartIR();
@@ -129,24 +127,28 @@ void HttpServer_Task(void* pvParameters)
                             Http_SendError404(new_conn);
                         }
                     } else if (!strncmp(http_request, "POST", 4)) { // POST Request
-//                        if (!strncmp(http_url, "/config.txt", 11)) {
-//                            // Firstly stop IR
-//                            WebPilote_StopIR();
-//                            // Parse URL for POST request
-//                            char post_content[32];
-//                            char target[16], data[16];
-//                            // 1. Get post content
-//                            WebPilote_GetPostContent(in_netbuf, post_content);
-//                            // 2. Parse target and value
-//                            sscanf(post_content, "%[^=]=%s", target, data);
-//                            // 3. Submit message to config_messager
-//                            WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
-//                            // 4. Send back to web page
-//                            // Restart IR
-//                            WebPilote_RestartIR();
-//                        } else {
-//                            Http_SendError404(new_conn);
-//                        }
+                        if (!strncmp(http_url, "/config.txt", 11)) {
+                            // Firstly stop IR
+                            WebPilote_StopIR();
+                            // Parse URL for POST request
+                            char post_content[32];
+                            char target[16], data[16];
+                            // 1. Get post content
+                            WebPilote_GetPostContent(in_netbuf, post_content);
+                            // 2. Parse target and value
+                            sscanf(post_content, "%[^=]=%s", target, data);
+                            // 3. Submit message to config_messager
+                            WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
+                            // 4. Send back to web page
+                            strcpy(_web_buf, target);
+                            strcat(_web_buf, "=");
+                            strcat(_web_buf, data);
+                            netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
+                            // Restart IR
+                            WebPilote_RestartIR();
+                        } else {
+                            Http_SendError404(new_conn);
+                        }
                     } else {                                        // Other requests, ERROR 404
                         Http_SendError404(new_conn);
                     }

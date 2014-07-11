@@ -46,7 +46,7 @@
 
 #define SYS_LIGHTWEIGHT_PROT            1
 
-#define TCPIP_THREAD_PRIO	        (configMAX_PRIORITIES-4)
+#define TCPIP_THREAD_PRIO	        (configMAX_PRIORITIES-5)
 
 #if (ENET_HARDWARE_SHIFT==0)
 #define ETH_PAD_SIZE                    0

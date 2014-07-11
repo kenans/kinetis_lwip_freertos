@@ -133,9 +133,7 @@ void ConfigThread(void *pvParameters)
                 }
                 // TODO
                 // Check data consistency!
-
                 // If still no problem, OK, else try to roll back transaction
-
                 // Finally unblock IR
                 xQueueSend(mbox_pilote_config,
                           (void*)&(pilote_config_ptr),
