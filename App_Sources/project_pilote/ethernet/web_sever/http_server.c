@@ -93,7 +93,6 @@ void HttpServer_Task(void* pvParameters)
                             char *target_ptr;
                             char data[16];
                             // Firstly stop IR
-                            // TODO
                             WebPilote_StopIR();
                             // Then parse message
                             // 1. Get a target
@@ -135,10 +134,14 @@ void HttpServer_Task(void* pvParameters)
                             Http_SendError404(new_conn);
                         }
                     } else if (!strncmp(http_request, "POST", 4)) { // POST Request
+                        if (!strncmp(httpURL, "/config.txt", 11)) {
                         // Parse URL for POST request
                         // TODO
                         // Get post content
                         // TODO
+                        } else {
+                            Http_SendError404(new_conn);
+                        }
                     } else {                                        // Other requests, ERROR 404
                         Http_SendError404(new_conn);
                     }
