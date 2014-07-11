@@ -50,7 +50,8 @@ void IR_Thread(void *pvParameters)
 
     while (1) {                                                     // Main loop
         // Should we start or stop transmitting ?
-        if (xQueuePeek(mbox_pilote_config, &_pilote_config_ptr, MBOX_TIMEOUT_500MS) == pdTRUE) {
+//        if (xQueuePeek(mbox_pilote_config, &_pilote_config_ptr, MBOX_TIMEOUT_500MS) == pdTRUE) {
+        if (xQueuePeek(mbox_pilote_config, &_pilote_config_ptr, MBOX_ZERO_TIMEOUT) == pdTRUE) {
             if (_pilote_config_ptr != NULL) {
                 if (!_transmit_started &&                       // If transmit not started,
                     _pilote_config_ptr->enabled &&              // device and IR are both enabled
@@ -90,6 +91,7 @@ void IR_Thread(void *pvParameters)
                 }
                 _transmit_started = FALSE;                          // Clear _transmit_started
             }
+            vTaskDelay(FREE_RTOS_DELAY_500MS);
         }
     }
 }
