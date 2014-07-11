@@ -136,24 +136,24 @@ void HttpServer_Task(void* pvParameters)
                             Http_SendError404(new_conn);
                         }
                     } else if (!strncmp(http_request, "POST", 4)) { // POST Request
-                        if (!strncmp(http_url, "/config.txt", 11)) {
-                            // Firstly stop IR
-                            WebPilote_StopIR();
-                            // Parse URL for POST request
-                            char post_content[32];
-                            char target[16], data[16];
-                            // 1. Get post content
-                            WebPilote_GetPostContent(in_netbuf, post_content);
-                            // 2. Parse target and value
-                            sscanf(post_content, "%[^=]=%s", target, data);
-                            // 3. Submit message to config_messager
-                            WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
-                            // 4. Send back to web page
-                            // Restart IR
-                            WebPilote_RestartIR();
-                        } else {
-                            Http_SendError404(new_conn);
-                        }
+//                        if (!strncmp(http_url, "/config.txt", 11)) {
+//                            // Firstly stop IR
+//                            WebPilote_StopIR();
+//                            // Parse URL for POST request
+//                            char post_content[32];
+//                            char target[16], data[16];
+//                            // 1. Get post content
+//                            WebPilote_GetPostContent(in_netbuf, post_content);
+//                            // 2. Parse target and value
+//                            sscanf(post_content, "%[^=]=%s", target, data);
+//                            // 3. Submit message to config_messager
+//                            WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
+//                            // 4. Send back to web page
+//                            // Restart IR
+//                            WebPilote_RestartIR();
+//                        } else {
+//                            Http_SendError404(new_conn);
+//                        }
                     } else {                                        // Other requests, ERROR 404
                         Http_SendError404(new_conn);
                     }
@@ -238,13 +238,13 @@ static err_t WebPilote_CreateRecvMessage(char *target, char *data)
     if (target == NULL) {
         return ERR_MEM;
     }
-    if (data == NULL) {
+//    if (data == NULL) {
         _mes_pkg_recv.data = 0;
         _mes_pkg_recv.operation = PILOTE_MES_OPERATION_READ_CONFIG;
-    } else {
-        _mes_pkg_recv.data = atoi(data);
-        _mes_pkg_recv.operation = PILOTE_MES_OPERATION_MODIFY;
-    }
+//    } else {
+//        _mes_pkg_recv.data = atoi(data);
+//        _mes_pkg_recv.operation = PILOTE_MES_OPERATION_MODIFY;
+//    }
     if (!strncmp(target, "enable", 6)) {
         _mes_pkg_recv.target = PILOTE_MES_TARGET_ENABLE;
     } else if (!strncmp(target, "mode", 4)) {
