@@ -109,14 +109,7 @@ void HttpServer_Task(void* pvParameters)
                                 if (!strncmp(target, "rand", 4))        // Not a valid item to parse
                                     break;
                                 // 2. Submit message to config_manager
-                                //WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_READ_MESSAGE);
-                                WebPilote_CreateRecvMessage(target, NULL);
-                                // Send message to config_manager
-                                xQueueSend(mbox_pilote_recv, &_mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
-                                // Wait a reply from config_manager
-                                xQueueReceive(mbox_pilote_send, &_mes_pkg_send, MBOX_TIMEOUT_INFINIT);
-                                // Unpach the message
-                                WebPilote_UnpackSendMessage(data);
+                                WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_READ_MESSAGE);
                                 // 3. Create reply message
                                 strcat(_web_buf, target);
                                 strcat(_web_buf, "=");
@@ -238,13 +231,13 @@ static err_t WebPilote_CreateRecvMessage(char *target, char *data)
     if (target == NULL) {
         return ERR_MEM;
     }
-//    if (data == NULL) {
+    if (data == NULL) {
         _mes_pkg_recv.data = 0;
         _mes_pkg_recv.operation = PILOTE_MES_OPERATION_READ_CONFIG;
-//    } else {
-//        _mes_pkg_recv.data = atoi(data);
-//        _mes_pkg_recv.operation = PILOTE_MES_OPERATION_MODIFY;
-//    }
+    } else {
+        _mes_pkg_recv.data = atoi(data);
+        _mes_pkg_recv.operation = PILOTE_MES_OPERATION_MODIFY;
+    }
     if (!strncmp(target, "enable", 6)) {
         _mes_pkg_recv.target = PILOTE_MES_TARGET_ENABLE;
     } else if (!strncmp(target, "mode", 4)) {
@@ -283,7 +276,7 @@ static err_t WebPilote_UnpackSendMessage(char *data)
     if (_mes_pkg_send.target != _mes_pkg_recv.target) {         // If not the item required
         return ERR_COMMON;
     }
-    if (_mes_pkg_send.operation != PILOTE_MES_OPERATION_REPLY_CONFIG ||
+    if (_mes_pkg_send.operation != PILOTE_MES_OPERATION_REPLY_CONFIG &&
         _mes_pkg_send.operation != PILOTE_MES_OPERATION_REPLY_MODIFY) {
         return ERR_COMMON;
     }
