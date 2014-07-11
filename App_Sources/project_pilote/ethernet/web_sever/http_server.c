@@ -14,6 +14,7 @@
 static void Http_SendError404(struct netconn *new_conn);
 static err_t WebPilote_CreateRecvMessage(char *);
 static err_t WebPilote_UnpackSendMessage(char *);
+static err_t WebPilote_GetPostContent(struct netbuf *, char *);
 //static void WebPilote_StopIR();               // This method is implemented as macro
 #define WebPilote_StopIR()  do{_mes_pkg_recv.operation = PILOTE_MES_OPERATION_START;\
     xQueueSend(mbox_pilote_recv, &_mes_pkg_recv, 0);}while(0)
@@ -134,10 +135,34 @@ void HttpServer_Task(void* pvParameters)
                             Http_SendError404(new_conn);
                         }
                     } else if (!strncmp(http_request, "POST", 4)) { // POST Request
-                        if (!strncmp(httpURL, "/config.txt", 11)) {
+                        if (!strncmp(http_url, "/config.txt", 11)) {
                         // Parse URL for POST request
-                        // TODO
-                        // Get post content
+                            // TODO
+                            char post_buf[32];
+                            char target[16], value[16];
+                            bool flag = 0; // 0:'\r'; 1:'\n'
+                            uint8_t count = 0;
+                            uint16_t i = 0, j = 0;
+                            uint16_t value_int = 0;
+                            do {
+                                netbuf_data(pxRxBuffer, (void**)&pcRxString, &len);
+                                for (i=0 ; i<len ; i++, pcRxString++) {
+                                    if (count==4) {
+                                        post_buf[j++] = *pcRxString;
+                                    } else {
+                                        if (*pcRxString=='\r'&&flag==0) {
+                                            count++; flag = 1;
+                                        } else if (*pcRxString=='\n'&&flag==1) {
+                                            count++; flag = 0;
+                                        } else {
+                                            count = 0; flag = 0;
+                                        }
+                                    }
+                                }
+                            } while (netbuf_next(pxRxBuffer)!=-1);
+                            pcRxString=NULL;    // Not used
+                            post_buf[j] = '\0';
+                            // Get post content
                         // TODO
                         } else {
                             Http_SendError404(new_conn);
@@ -220,4 +245,12 @@ static err_t WebPilote_UnpackSendMessage(char *data)
     }
     UTIL_Num32uToStr((uint8_t*)(data), 16, _mes_pkg_send.data);
     return ERR_OK;
+}
+
+/**
+ *
+ */
+static err_t WebPilote_GetPostContent(struct netbuf *, char *)
+{
+
 }
