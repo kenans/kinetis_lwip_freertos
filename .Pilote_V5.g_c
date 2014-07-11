@@ -626,7 +626,7 @@
     </GenFiles>
     <SignalListFile>Documentation\Pilote_V5_SIGNALS.txt</SignalListFile>
     <DestinationCompiler>GNUC</DestinationCompiler>
-    <ProjectModificationStamp>31</ProjectModificationStamp>
+    <ProjectModificationStamp>32</ProjectModificationStamp>
   </Options>
   <CpuID_4>
     <Generated>true</Generated>

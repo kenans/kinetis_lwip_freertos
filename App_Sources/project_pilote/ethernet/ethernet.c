@@ -12,8 +12,7 @@
 // Methods
 static void Eth_NetifInit(void);
 // Variables
-struct netif _eth_netif;
-
+static struct netif _eth_netif;
 /**
  *  Eth_Task
  *      A system level task, called by RunTasks(). Detect Ethernet connection and polling messages.
@@ -36,7 +35,7 @@ void Eth_Task(void *pvParameters)
 	/**
 	 *  Create HTTPServer_Task
 	 */
-    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+150, NULL, configMAX_PRIORITIES-3, NULL) != pdPASS) {
+    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-3, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }

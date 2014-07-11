@@ -39,7 +39,7 @@ p1{font-size:25px;}\
 /**
  *  Web page resources for static pages
  */
-#define WEB_PILOTE_HTML_SIZE    7460U
+#define WEB_PILOTE_HTML_SIZE   7398
 extern const char web_pilote_html[WEB_PILOTE_HTML_SIZE];
 
 #endif /* WEBPAGES_H_ */

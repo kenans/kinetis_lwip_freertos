@@ -44,11 +44,11 @@
     </IncludePaths>
     <SourceCodePaths>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\resources\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\structure\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\usb\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\tools\</Path>
@@ -68,14 +68,14 @@
   <FILES>
     <GeneratedCs>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\Applications.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\ethernet.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\http_server.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\image.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\resources\webpages.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\ir_manager.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\ir_transmitter.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\config_accessor.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\config_manager.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\ethernet.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\http_server.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\resources\image.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\resources\webpages.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\structure\pilote_config.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\structure\pilote_mes.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\usb\usb_manager.c</PathName>
@@ -184,16 +184,16 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\lwIP_Sources\netif\slipif.c</PathName>
     </GeneratedCs>
     <GeneratedHs>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\include\ethernet.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\http_server.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\image.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\ethernet\web_sever\include\webpages.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\include\Applications.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\include\common.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\include\ir_manager.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\IR\include\ir_transmitter.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\include\config_accessor.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\config\include\config_manager.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\include\ethernet.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\include\http_server.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\include\image.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\ethernet\web_sever\include\webpages.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\include\pilote_error.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\include\pilote_types.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\Pilote_V5\App_Sources\project_pilote\structure\include\pilote_config.h</PathName>

@@ -256,6 +256,7 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
     }
 
     switch (mes_pkg_recv->target) {
+        mes_pkg_send->data = 0;
         case PILOTE_MES_TARGET_ENABLE:
             mes_pkg_send->data = (uint32_t)_pilote_config.enabled;
             break;
