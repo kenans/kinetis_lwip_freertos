@@ -76,7 +76,7 @@ void HttpServer_Task(void* pvParameters)
     while (1) {
         new_conn = netconn_accept(listener_conn);                   // Wait for a new connection
         if (new_conn != NULL) {                                     // If got a connection
-            WebPilote_StopIR();
+//            WebPilote_StopIR();
             while (1) {
                 in_netbuf =  netconn_recv(new_conn);                // Block and receive data
                 if (in_netbuf != NULL) {
@@ -119,7 +119,7 @@ void HttpServer_Task(void* pvParameters)
                                 target = strtok(NULL, "&");
                             }
                             in_buf_ptr = NULL;  // Not used
-                            _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&', should be done later in JS
+                            _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&'
                             netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
                             netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             // Restart IR
@@ -130,7 +130,7 @@ void HttpServer_Task(void* pvParameters)
                     } else if (!strncmp(http_request, "POST", 4)) { // POST Request
                         if (!strncmp(http_url, "/config.txt", 11)) {
                             // Firstly stop IR
-//                            WebPilote_StopIR();
+                            WebPilote_StopIR();
                             // Parse URL for POST request
                             char post_content[32];
                             char target[16], data[16];
@@ -146,7 +146,7 @@ void HttpServer_Task(void* pvParameters)
                             strcat(_web_buf, data);
                             netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             // Restart IR
-//                            WebPilote_RestartIR();
+                            WebPilote_RestartIR();
                         } else {
                             Http_SendError404(new_conn);
                         }
@@ -166,7 +166,7 @@ void HttpServer_Task(void* pvParameters)
             while (netconn_delete(new_conn) != ERR_OK) {
                 vTaskDelay(5/portTICK_PERIOD_MS);
             }
-            WebPilote_RestartIR();
+//            WebPilote_RestartIR();
         } else {
             // Accept timeout
         }
