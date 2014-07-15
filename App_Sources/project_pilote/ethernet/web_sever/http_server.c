@@ -100,7 +100,7 @@ void HttpServer_Task(void* pvParameters)
                             char *target;
                             char data[16];
                             // Firstly stop IR
-//                            WebPilote_StopIR();
+                            WebPilote_StopIR();
                             // Then parse message
                             // 1. Get a target
                             target = strtok(&http_url[12], "&");        // After "/config.txt?" in url
@@ -123,7 +123,7 @@ void HttpServer_Task(void* pvParameters)
                             netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
                             netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             // Restart IR
-//                            WebPilote_RestartIR();
+                            WebPilote_RestartIR();
                         } else {                                            // Other resource, ERROR 404
                             Http_SendError404(new_conn);
                         }
@@ -252,6 +252,36 @@ static err_t WebPilote_CreateRecvMessage(char *target, char *data)
         _mes_pkg_recv.target = PILOTE_MES_TARGET_CODE;
     } else if (!strncmp(target, "time_bt", 7)) {
         _mes_pkg_recv.target = PILOTE_MES_TARGET_TIME_BT_FRAMES;
+    } else if (!strncmp(target, "output_mode", 11)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_OUTPUT_MODE;
+    } else if (!strncmp(target, "source_mode", 11)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_SOURCE_MODE;
+    } else if (!strncmp(target, "video_mode", 10)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_VIDEO_MODE;
+    } else if (!strncmp(target, "token_ring", 10)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_TOKEN_RING;
+    } else if (!strncmp(target, "video_mode", 10)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_VIDEO_MODE;
+    } else if (!strncmp(target, "group", 5)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_GROUP;
+    } else if (!strncmp(target, "udp_id", 6)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_UDP_ID;
+    } else if (!strncmp(target, "udp_data", 8)) {
+        // TODO
+    } else if (!strncmp(target, "command_param", 13)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_COMMAND_PARAM;
+    } else if (!strncmp(target, "command_data", 12)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_COMMAND_DATA;
+    } else if (!strncmp(target, "delay_source", 12)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_DELAY_SOURCE;
+    } else if (!strncmp(target, "delay_output", 12)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_DELAY_OUTPUT;
+    } else if (!strncmp(target, "start_time", 10)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_START_TIME;
+    } else if (!strncmp(target, "end_time", 8)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_END_TIME;
+    } else if (!strncmp(target, "weekday", 8)) {
+        _mes_pkg_recv.target = PILOTE_MES_TARGET_WEEKDAY;
     } else {
         return ERR_COMMON;
     }

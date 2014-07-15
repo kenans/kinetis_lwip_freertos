@@ -46,7 +46,7 @@ typedef struct {
 
     PiloteTimeMs        start_time;
     PiloteTimeMs        end_time;
-    PiloteWeekday       week_day;
+    PiloteWeekday       weekday;
 } PiloteConfigurations;
 
 /**

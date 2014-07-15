@@ -241,7 +241,7 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                     _pilote_config.end_time = (PiloteTimeMs)mes_pkg_recv->data;
                     break;
                 case PILOTE_MES_TARGET_WEEKDAY:
-                    _pilote_config.week_day = (PiloteWeekday)mes_pkg_recv->data;
+                    _pilote_config.weekday = (PiloteWeekday)mes_pkg_recv->data;
                     break;
                 default:
                     return ERR_COMMON;
@@ -314,7 +314,7 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
             mes_pkg_send->data = (uint32_t)_pilote_config.end_time;
             break;
         case PILOTE_MES_TARGET_WEEKDAY:
-            mes_pkg_send->data = (uint32_t)_pilote_config.week_day;
+            mes_pkg_send->data = (uint32_t)_pilote_config.weekday;
             break;
         default:
             return ERR_COMMON;

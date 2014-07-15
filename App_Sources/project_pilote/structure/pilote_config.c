@@ -39,7 +39,7 @@ err_t PiloteConfigInit(PiloteConfigurations *pilote_config)
         pilote_config->end_time = 0;
         // Mask
         pilote_config->output_mode = PILOTE_OUTPUT_IR;
-        pilote_config->week_day = PILOTE_WEEKDAY_OFF;
+        pilote_config->weekday = PILOTE_WEEKDAY_OFF;
         // Array filled with zeros
         for (i = 0; i < PILOTE_UDP_ID_COUNT ; i++) {
             pilote_config->udp_id[i] = 0;
