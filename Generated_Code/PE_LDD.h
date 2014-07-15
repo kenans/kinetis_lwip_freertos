@@ -5,7 +5,7 @@
 **     Processor   : MK60FN1M0VLQ12
 **     Version     : Component 01.006, Driver 01.04, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-15, 18:01, # CodeGen: 1
 **     Abstract    :
 **
 **     Settings    :
@@ -80,6 +80,8 @@
 #include "TI1.h"
 #include "TU2.h"
 #include "ETH1.h"
+#include "Cmp1.h"
+#include "ACompLdd1.h"
 
 
 /*

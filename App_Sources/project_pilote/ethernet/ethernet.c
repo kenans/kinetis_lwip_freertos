@@ -13,6 +13,8 @@
 static void Eth_NetifInit(void);
 // Variables
 static struct netif _eth_netif;
+static const uint16_t _eth_polling_ms = 2;
+static const uint16_t _eth_time_out_ms = 5000;
 /**
  *  Eth_Task
  *      A system level task, called by RunTasks(). Detect Ethernet connection and polling messages.
@@ -26,8 +28,9 @@ void Eth_Task(void *pvParameters)
     /**
      *  Local variables
      */
-//    bool link_up = FALSE;
-//	uint16_t count = 0;
+    bool http_server_task_suspend = FALSE;
+    uint16_t polling_count = 0;
+    TaskHandle_t http_server_task_handle;
     /**
      *  Initialize Ethernet
      */
@@ -35,7 +38,8 @@ void Eth_Task(void *pvParameters)
 	/**
 	 *  Create HTTPServer_Task
 	 */
-    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+300, NULL, configMAX_PRIORITIES-4, NULL) != pdPASS) {
+    if (xTaskCreate(HttpServer_Task, "HTTPServer", configMINIMAL_STACK_SIZE+300, NULL,
+        configMAX_PRIORITIES-4, &http_server_task_handle) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }
@@ -45,22 +49,24 @@ void Eth_Task(void *pvParameters)
      */
 	while (1) {
         // Check if link is up every 2 seconds
-//        if (count == 200 || !link_up) {
-//    	    if (!Eth_IsLinkUp()) {
-//    	        link_up = FALSE;
-//    	    } else {
-//                count = 0;
-//    	        link_up = TRUE;
-//    	    }
-//        }
-//		// Polling
-//        if (link_up) {
-            ethernetif_input(&_eth_netif);
-            vTaskDelay(2/portTICK_PERIOD_MS);
-//            count++;
-//        } else {
-//            vTaskDelay(2000/portTICK_PERIOD_MS);
-//        }
+        if (polling_count == _eth_time_out_ms/_eth_polling_ms) {
+            while (!Eth_IsLinkUp()) {
+                if (!http_server_task_suspend) {
+                    http_server_task_suspend = TRUE;
+                    vTaskSuspend(http_server_task_handle);
+                }
+                vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
+            }
+            if (http_server_task_suspend) {
+                http_server_task_suspend = FALSE;
+                vTaskResume(http_server_task_handle);
+            }
+            polling_count = 0;
+        }
+		// Polling
+        ethernetif_input(&_eth_netif);
+        vTaskDelay(_eth_polling_ms/portTICK_PERIOD_MS);
+        polling_count++;
 	}
 }
 

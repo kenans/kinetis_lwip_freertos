@@ -93,9 +93,9 @@
 #define configUSE_IDLE_HOOK                       1 /* 1: use Idle hook; 0: no Idle hook */
 #define configUSE_TICK_HOOK                       1 /* 1: use Tick hook; 0: no Tick hook */
 #define configUSE_MALLOC_FAILED_HOOK              1 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
-#define configTICK_RATE_HZ                        ((TickType_t)100) /* frequency of tick interrupt */
-#define configSYSTICK_USE_LOW_POWER_TIMER         0 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
-#define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ    1 /* 1 kHz LPO timer. Set to 1 if not used */
+#define configTICK_RATE_HZ                        ((TickType_t)1000) /* frequency of tick interrupt */
+#define configSYSTICK_USE_LOW_POWER_TIMER         1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
+#define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ    1000 /* 1 kHz LPO timer. Set to 1 if not used */
 #if configPEX_KINETIS_SDK
 /* The SDK variable SystemCoreClock contains the current clock speed */
 #define configCPU_CLOCK_HZ                        SystemCoreClock /* CPU clock frequency */
@@ -131,9 +131,9 @@
 #define configUSE_COUNTING_SEMAPHORES             1
 #define configUSE_APPLICATION_TASK_TAG            0
 /* Tickless Idle Mode ----------------------------------------------------------*/
-#define configUSE_TICKLESS_IDLE                   0 /* set to 1 for tickless idle mode, 0 otherwise */
-#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP     2 /* number of ticks must be larger than this to enter tickless idle mode */
-#define configUSE_TICKLESS_IDLE_DECISION_HOOK     0 /* set to 1 to enable application hook, zero otherwise */
+#define configUSE_TICKLESS_IDLE                   1 /* set to 1 for tickless idle mode, 0 otherwise */
+#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP     100 /* number of ticks must be larger than this to enter tickless idle mode */
+#define configUSE_TICKLESS_IDLE_DECISION_HOOK     1 /* set to 1 to enable application hook, zero otherwise */
 #define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME xEnterTicklessIdle /* function name of decision hook */
 
 #define configMAX_PRIORITIES                      ((unsigned portBASE_TYPE)8)

@@ -37,6 +37,8 @@
 #include "TI1.h"
 #include "TU2.h"
 #include "ETH1.h"
+#include "Cmp1.h"
+#include "ACompLdd1.h"
 /* Including shared modules, which are used for whole project */
 #include "PE_Types.h"
 #include "PE_Error.h"
@@ -48,6 +50,7 @@
 #include "stdio.h"
 /* Tool includes */
 #include "crc.h"
+#include "low_power.h"
 /* lwIP/Ethernet driver includes */
 #include "eth.h"
 #include "lwip/tcpip.h"

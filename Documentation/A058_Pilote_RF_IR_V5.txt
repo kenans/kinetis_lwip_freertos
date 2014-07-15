@@ -464,6 +464,16 @@ Module "ETH1"      (component Ethernet_LDD)
    - ETH1_GetMIIResult -If the MII operation has finished, the variable pointed by the Data parameter will contain the value of 
                 the addressed MII register. This method is available only if management bus is enabled.
 
+Module "Cmp1"      (component FreescaleAnalogComp)
+   - Cmp1_GetAnalogComparatorOutputValue -This method returns current value of the analog comparator output.
+
 Module "Cpu"       (component MK60FN1M0LQ15)
+   - Cpu_SetOperationMode -This method requests to change the component's operation mode (RUN, WAIT, SLEEP, STOP). The target 
+                operation mode will be entered immediately.   See <Operation mode settings> for further details of the 
+                operation modes mapping to low power modes of the cpu.
+   - Cpu_GetLLSWakeUpFlags -This method returns the current status of the LLWU wake-up flags indicating which wake-up source 
+                caused the MCU to exit LLS or VLLSx low power mode.   The following predefined constants can be used to 
+                determine the wake-up source:   LLWU_EXT_PIN0, ... LLWU_EXT_PIN15 - external pin 0 .. 15 caused the wake-up   
+                LLWU_INT_MODULE0 .. LLWU_INT_MODULE7 - internal module 0..15 caused the wake-up.
 
 ===================================================================================

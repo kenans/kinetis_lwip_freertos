@@ -6,7 +6,7 @@
 **     Component   : FreeRTOS
 **     Version     : Component 01.368, Driver 01.00, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-15, 18:01, # CodeGen: 1
 **     Abstract    :
 **          This component implements the FreeRTOS Realtime Operating System
 **     Settings    :
@@ -34,7 +34,7 @@
 **              Compiler Optimization Level                : 0
 **              SysTick                                    : Enabled
 **                Core Clock                               : yes
-**              Low Power Timer                            : Disabled
+**              Low Power Timer                            : Enabled
 **            non-LDD SWI                                  : Disabled
 **            Preemptive                                   : yes
 **            Use Co-Routines                              : no
@@ -46,8 +46,10 @@
 **            Stackoverflow checking method                : Method 1
 **            Cleanup Resources                            : yes
 **          Ticks                                          : Settings for the periodic tick timer
-**            Tickless Idle Mode                           : Disabled
-**            Tick Rate (Hz)                               : 100
+**            Tickless Idle Mode                           : Enabled
+**              Stopped Timer Compensation                 : 45
+**              Expected Idle Time (Ticks) before Sleep    : 100
+**            Tick Rate (Hz)                               : 1000
 **            Use 16bit ticks                              : no
 **            non-LDD Tick                                 : Disabled
 **            LDD Tick                                     : Disabled

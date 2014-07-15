@@ -80,11 +80,14 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\structure\pilote_mes.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\usb\usb_manager.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\tools\crc.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\tools\low_power.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ACompLdd1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\AS1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ASerialLdd1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CDC1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CI2C1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CS1.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cmp1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cpu.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\EE241.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ETH1.c</PathName>
@@ -200,11 +203,14 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\structure\include\pilote_mes.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\usb\include\usb_manager.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\tools\inlcude\crc.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\tools\inlcude\low_power.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ACompLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\AS1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ASerialLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CDC1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CI2C1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CS1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cmp1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cpu.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\EE241.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ETH1.h</PathName>

@@ -5,7 +5,7 @@
 **     Processor   : MK60FN1M0VLQ12
 **     Version     : Component 01.006, Driver 01.04, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-15, 18:01, # CodeGen: 1
 **     Abstract    :
 **
 **     Settings    :
@@ -74,6 +74,8 @@
   #include "TI1.h"
   #include "TU2.h"
   #include "ETH1.h"
+  #include "Cmp1.h"
+  #include "ACompLdd1.h"
   #include "Events.h"
 
 
@@ -108,7 +110,7 @@
     (tIsrFunc)&Cpu_Interrupt,          /* 0x0C  0x00000030   -   ivINT_DebugMonitor             unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x0D  0x00000034   -   ivINT_Reserved13               unused by PE */
     (tIsrFunc)&vPortPendSVHandler,     /* 0x0E  0x00000038   -   ivINT_PendableSrvReq           used by PE */
-    (tIsrFunc)&vPortTickHandler,       /* 0x0F  0x0000003C   -   ivINT_SysTick                  used by PE */
+    (tIsrFunc)&Cpu_Interrupt,          /* 0x0F  0x0000003C   -   ivINT_SysTick                  unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x10  0x00000040   -   ivINT_DMA0_DMA16               unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x11  0x00000044   -   ivINT_DMA1_DMA17               unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x12  0x00000048   -   ivINT_DMA2_DMA18               unused by PE */
@@ -130,7 +132,7 @@
     (tIsrFunc)&Cpu_Interrupt,          /* 0x22  0x00000088   -   ivINT_FTFE                     unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x23  0x0000008C   -   ivINT_Read_Collision           unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x24  0x00000090   -   ivINT_LVD_LVW                  unused by PE */
-    (tIsrFunc)&Cpu_Interrupt,          /* 0x25  0x00000094   -   ivINT_LLW                      unused by PE */
+    (tIsrFunc)&Cpu_INT_LLWInterrupt,   /* 0x25  0x00000094   -   ivINT_LLW                      used by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x26  0x00000098   -   ivINT_Watchdog                 unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x27  0x0000009C   -   ivINT_RNG                      unused by PE */
     (tIsrFunc)&CI2C1_Interrupt,        /* 0x28  0x000000A0   8   ivINT_I2C0                     used by PE */
@@ -194,7 +196,7 @@
     (tIsrFunc)&Cpu_Interrupt,          /* 0x62  0x00000188   -   ivINT_DAC1                     unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x63  0x0000018C   -   ivINT_TSI0                     unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x64  0x00000190   -   ivINT_MCG                      unused by PE */
-    (tIsrFunc)&Cpu_Interrupt,          /* 0x65  0x00000194   -   ivINT_LPTimer                  unused by PE */
+    (tIsrFunc)&vPortTickHandler,       /* 0x65  0x00000194   -   ivINT_LPTimer                  used by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x66  0x00000198   -   ivINT_Reserved102              unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x67  0x0000019C   -   ivINT_PORTA                    unused by PE */
     (tIsrFunc)&Cpu_Interrupt,          /* 0x68  0x000001A0   -   ivINT_PORTB                    unused by PE */

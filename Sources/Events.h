@@ -54,6 +54,12 @@
 #include "TI1.h"
 #include "TU2.h"
 #include "ETH1.h"
+#include "Cmp1.h"
+#include "ACompLdd1.h"
+/**
+ *  Event method includes
+ */
+#include "LPTMR_PDD.h"
 #include "eth.h"
 
 #ifdef __cplusplus
@@ -262,6 +268,43 @@ void ETH1_OnFrameReceived(LDD_TUserData *UserDataPtr, uint16_t FragCount, uint16
 */
 /* ===================================================================*/
 void ETH1_OnFatalError(LDD_TUserData *UserDataPtr);
+
+void FRTOS_vOnPreSleepProcessing(portTickType expectedIdleTicks);
+/*
+** ===================================================================
+**     Event       :  FRTOS_vOnPreSleepProcessing (module Events)
+**
+**     Component   :  FRTOS [FreeRTOS]
+**     Description :
+**         Used in tickless idle mode only, but required in this mode.
+**         Hook for the application to enter low power mode.
+**     Parameters  :
+**         NAME            - DESCRIPTION
+**         expectedIdleTicks - expected idle
+**                           time, in ticks
+**     Returns     : Nothing
+** ===================================================================
+*/
+
+/*
+** ===================================================================
+**     Event       :  Cpu_OnLLSWakeUpINT (module Events)
+**
+**     Component   :  Cpu [MK60FN1M0LQ15]
+*/
+/*!
+**     @brief
+**         This event is called when Low Leakage WakeUp interrupt
+**         occurs. LLWU flags indicating source of the wakeup can be
+**         obtained by calling the [GetLLSWakeUpFlags] method. Flags
+**         indicating the external pin wakeup source are automatically
+**         cleared after this event is executed. It is responsibility
+**         of user to clear flags corresponding to internal modules.
+**         This event is automatically enabled when [LLWU interrupt
+**         request] is enabled.
+*/
+/* ===================================================================*/
+void Cpu_OnLLSWakeUpINT(void);
 
 /* END Events */
 
