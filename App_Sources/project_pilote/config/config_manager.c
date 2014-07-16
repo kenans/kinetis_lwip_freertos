@@ -42,9 +42,11 @@ void ConfigThread(void *pvParameters)
     extern xQueueHandle mbox_pilote_send;
 
     /**
-     *  Counts start times; if receives start packet, config_recursive++. if receives
-     *  end packet, config_recursive--. Only when config_recursive==0, we start IR;
-     *  otherwise keep IR stopped.
+     *  Counts start times:
+     *      If got START packet, config_recursive++; if got END packet,
+     *  config_recursive--. Only when config_recursive==0, that is to
+     *  say, got the same times START and STOP, we start IR; otherwise
+     *  keep IR stopped.
      *
      *  Attention: config_recursive should never be negative.
      */
@@ -52,13 +54,11 @@ void ConfigThread(void *pvParameters)
     PiloteMessagePackage mes_pkg_recv;
     PiloteMessagePackage mes_pkg_send;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
-
     if (PiloteConfigInit(&_pilote_config) != ERR_OK) {        // Initialization pilote_config
         while (1) {
             // Initialization error
         }
     }
-
     PiloteInitRecvMesPackage(mes_pkg_recv);                    // Initialization mes_pkg_recv
     PiloteInitSendMesPackage(mes_pkg_send);                    // Initialization mes_pkg_send
 

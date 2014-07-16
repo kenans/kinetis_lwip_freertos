@@ -160,8 +160,17 @@ void USB_Task(void *pvParameters)
                         }
                         // Send the message package to mbox_recv, if mbox full, block and wait
                         xQueueSend(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
-                        // Receive message package in mbox_send, if mbox empty, block and wait
-                        xQueueReceive(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                        // Wait for an USB packet
+                        do {
+                            xQueueReceive(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                            if (mes_pkg_send.mes_type!=PILOTE_MES_TYPE_USB) {
+                                // If not an USB packet, send it back to the front (still might be disordered)
+                                xQueueSendToFront(mbox_pilote_send, &mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+                            } else {
+                                // If got an USB packet, then unpack it.
+                                break;
+                            }
+                        } while (1);
                         // Unpack the mes_pkg_send just received
                         if (UnpackSendMessage(&mes_pkg_send, &operation, &target, &data) != ERR_OK) {
                             while (1) {

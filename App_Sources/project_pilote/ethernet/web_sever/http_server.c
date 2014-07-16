@@ -209,9 +209,18 @@ static err_t WebPilote_SubmitToConfigManager(char *target, char *data,  WebPilot
     }
     // Send message to config_manager
     xQueueSend(mbox_pilote_recv, &_mes_pkg_recv, MBOX_TIMEOUT_INFINIT);
-    // Wait a reply from config_manager
-    xQueueReceive(mbox_pilote_send, &_mes_pkg_send, MBOX_TIMEOUT_INFINIT);
-    // Unpach the message
+    // Wait for an HTTP message packet
+    do {
+        xQueueReceive(mbox_pilote_send, &_mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+        if (_mes_pkg_send.mes_type!=PILOTE_MES_TYPE_HTTP) {
+            // If not an HTTP packet, send it back to the front (still might be disordered)
+            xQueueSendToFront(mbox_pilote_send, &_mes_pkg_send, MBOX_TIMEOUT_INFINIT);
+        } else {
+            // If got an HTTP packet, then unpack it.
+            break;
+        }
+    } while (1);
+    // Unpack the message
     error = WebPilote_UnpackSendMessage(data);
     if (error != ERR_OK) {
         return error;
