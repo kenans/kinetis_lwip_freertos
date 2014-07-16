@@ -14,15 +14,12 @@
 /**
  *  Methods
  */
-static err_t IR_InitFrame(void);
-static err_t IR_GenerateFrame(void);
+static err_t IR_InitFrame(uint8_t *);
+static err_t IR_GenerateFrame(uint8_t *, const PiloteConfigurations* );
 
 /**
  *  Variables
  */
-static const PiloteConfigurations*  _pilote_config_ptr = NULL;   // Pointer to the configuration structure
-static uint8_t                      _ir_frame[IR_FRAME_COUNT];   // IR frame array
-static bool                         _transmit_started = FALSE;   // Flag of transmit state (volatile?)
 /**
  * IR task function. Called by RunTasks().
  */
@@ -31,57 +28,61 @@ void IR_Thread(void *pvParameters)
     (void)pvParameters;                                          // Suppress unused variable warning
     extern xQueueHandle mbox_pilote_config;                      // Global message queue
 
-    if (IR_InitFrame() != ERR_OK) {
+    bool                         transmit_started = FALSE;       // Flag of transmit state (volatile?)
+    PiloteTimeMs                 last_time_bt_frames = 0;        // a copy of time_bt_frames before stopping IR
+    uint8_t                      ir_frame[IR_FRAME_COUNT];       // IR frame array
+    const PiloteConfigurations*  pilote_config_ptr = NULL;       // Pointer to the configuration structure
+
+    if (IR_InitFrame(ir_frame) != ERR_OK) {
         while (1) {
             // Initialization error
         }
     }
-
     // Start IR_TransmitThread
     if (xTaskCreate(IR_TransmitThread, "ir_tranmit", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, NULL) != pdPASS) {
         while(1) {
             // Error, often out of heap size. Should never get hear.
         }
     }
-
     while (mbox_pilote_config == NULL) {                        // Wait for mailbox being created
         vTaskDelay(FREE_RTOS_DELAY_50MS);
     }
-
     while (1) {                                                 // Main loop
         // Start or stop transmitting
-        if (xQueueReceive(mbox_pilote_config, &_pilote_config_ptr, MBOX_TIMEOUT_INFINIT) == pdTRUE) {
-            if (_pilote_config_ptr != NULL) {                   // If not NULL pointer, start IR
-                if (!_transmit_started &&                       // If transmit not started,
-                    _pilote_config_ptr->enabled &&              // device and IR are both enabled
-                    (_pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR) != 0) {
-                    if (IR_GenerateFrame() != ERR_OK) {         // Create a frame
+        if (xQueueReceive(mbox_pilote_config, &pilote_config_ptr, MBOX_TIMEOUT_INFINIT) == pdTRUE) {
+            if (pilote_config_ptr != NULL) {                   // If not NULL pointer, start IR
+                if (!transmit_started &&                       // If transmit not started,
+                    pilote_config_ptr->enabled &&              // device and IR are both enabled
+                    (pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR) != 0) {
+                    // First store a copy of time_bt_frames
+                    last_time_bt_frames = pilote_config_ptr->time_between_frames;
+                    if (IR_GenerateFrame(ir_frame,
+                            pilote_config_ptr) != ERR_OK) {     // Create a frame
                         while (1) {
                         // Create frame error
                         }
                     }
-                    if (IR_StartTransmit(
-                            _ir_frame,
-                            IR_FRAME_COUNT,
-                            _pilote_config_ptr)!= ERR_OK) {     // Start transmit
+                    if (IR_StartTransmit(ir_frame, IR_FRAME_COUNT,
+                            pilote_config_ptr)!= ERR_OK) {      // Start transmit
                         while (1) {
                         // Start transmit error
                         }
                     }
-                    _transmit_started = TRUE;                   // Set transmitting
+                    transmit_started = TRUE;                    // Set transmitting
                 } else {
                     // If IR transmit already started, or device or IR are not enabled
                     // then do not restart IR
                 }
-            } else {                                            // If NULL pointer, stop IR
-                if (_transmit_started) {                        // Should stop transmitting if is running
+            } else {                                           // If NULL pointer, stop IR
+                if (transmit_started) {                        // Should stop transmitting if is running
                     if (IR_StopTransmit() != ERR_OK) {
                         while (1) {
                             // Stop transmit error
                         }
                     }
-                    _transmit_started = FALSE;                  // Clear _transmit_started
-                    vTaskDelay(FREE_RTOS_DELAY_1S);
+                    transmit_started = FALSE;                  // Clear transmit_started
+                    // Wait at least time_bt_frames before restart IR
+                    vTaskDelay((TickType_t)last_time_bt_frames/portTICK_PERIOD_MS);
                 }
             }
         } // QueueReceive
@@ -99,16 +100,16 @@ void IR_Thread(void *pvParameters)
  *      ERR_OK: no error
  *      ERR_MEM: error occurs
  */
-static err_t IR_InitFrame(void)
+static err_t IR_InitFrame(uint8_t *ir_frame)
 {
-    int i = 0;
+    uint8_t i = 0;
     err_t error = ERR_OK;
 
-    if (_ir_frame != NULL)
+    if (ir_frame != NULL)
     {
-        _ir_frame[0] = IR_FRAME_START;
+        ir_frame[0] = IR_FRAME_START;
         for (i = 1; i < IR_FRAME_COUNT ; i++) {
-            _ir_frame[i] = 0U;
+            ir_frame[i] = 0U;
         }
     } else {
         // Error should never get here
@@ -128,43 +129,43 @@ static err_t IR_InitFrame(void)
  *      ERR_OK: no error
  *      ERR_MEM: error occurs
  */
-static err_t IR_GenerateFrame(void)
+static err_t IR_GenerateFrame(uint8_t *ir_frame,
+        const PiloteConfigurations* pilote_config_ptr)
 {
     err_t error = ERR_OK;
-
-    if (_ir_frame!=NULL && _pilote_config_ptr!=NULL) {
+    if (ir_frame!=NULL && pilote_config_ptr!=NULL) {
         // Start Byte
-        _ir_frame[0] = IR_FRAME_START;
+        ir_frame[0] = IR_FRAME_START;
         // Fill with frame except START and CKS
         /**
          * Attention:
          *      IR transmit protocol is Big-Endian mode, while the storage of Kinetis is Little-Endian mode.
          */
-        switch (_pilote_config_ptr->mode) {
+        switch (pilote_config_ptr->mode) {
             case PILOTE_TRIGGER:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
-                _ir_frame[2] = _pilote_config_ptr->command_param[1];                // CMD2
-                _ir_frame[3] = IR_FRAME_CMD_DATA_1;
-                _ir_frame[4] = IR_FRAME_CMD_DATA_2;
-                _ir_frame[5] = (uint8_t)((_pilote_config_ptr->code>>8U)&0x00FFU);   //
-                _ir_frame[6] = (uint8_t)(_pilote_config_ptr->code&0x00FFU);
-                _ir_frame[7] = _pilote_config_ptr->group;
+                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
+                ir_frame[2] = pilote_config_ptr->command_param[1];                // CMD2
+                ir_frame[3] = IR_FRAME_CMD_DATA_1;
+                ir_frame[4] = IR_FRAME_CMD_DATA_2;
+                ir_frame[5] = (uint8_t)((pilote_config_ptr->code>>8U)&0x00FFU);   //
+                ir_frame[6] = (uint8_t)(pilote_config_ptr->code&0x00FFU);
+                ir_frame[7] = pilote_config_ptr->group;
                 break;
             case PILOTE_SYNCHRO:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
-                _ir_frame[2] = (uint8_t)((_pilote_config_ptr->code>>8U)&0x00FFU);
-                _ir_frame[3] = (uint8_t)(_pilote_config_ptr->code&0x00FFU);
+                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
+                ir_frame[2] = (uint8_t)((pilote_config_ptr->code>>8U)&0x00FFU);
+                ir_frame[3] = (uint8_t)(pilote_config_ptr->code&0x00FFU);
                 // TODO
-                _ir_frame[7] = _pilote_config_ptr->group;
+                ir_frame[7] = pilote_config_ptr->group;
                 break;
             case PILOTE_COMMAND:
-                _ir_frame[1] = _pilote_config_ptr->command_param[0];                // CMD1
-                _ir_frame[2] = _pilote_config_ptr->command_param[1];                // CMD2
-                _ir_frame[3] = IR_FRAME_CMD_DATA_1;
-                _ir_frame[4] = IR_FRAME_CMD_DATA_2;
-                _ir_frame[5] = (uint8_t)((_pilote_config_ptr->command_data>>8U)&0x00FFU);
-                _ir_frame[6] = (uint8_t)(_pilote_config_ptr->command_data&0x00FFU);
-                _ir_frame[7] = _pilote_config_ptr->group;
+                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
+                ir_frame[2] = pilote_config_ptr->command_param[1];                // CMD2
+                ir_frame[3] = IR_FRAME_CMD_DATA_1;
+                ir_frame[4] = IR_FRAME_CMD_DATA_2;
+                ir_frame[5] = (uint8_t)((pilote_config_ptr->command_data>>8U)&0x00FFU);
+                ir_frame[6] = (uint8_t)(pilote_config_ptr->command_data&0x00FFU);
+                ir_frame[7] = pilote_config_ptr->group;
                 break;
             default:
                 // Should never get here.
@@ -172,7 +173,7 @@ static err_t IR_GenerateFrame(void)
                 break;
         }
         // Checksum for the first 8 bytes
-        _ir_frame[8] = GetCRC8(_ir_frame, IR_FRAME_COUNT-1);
+        ir_frame[8] = GetCRC8(ir_frame, IR_FRAME_COUNT-1);
     } else {
         error = ERR_MEM;
     }

@@ -30,7 +30,6 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
          MBOX_TIMEOUT_50MS))
 // Variables
 static PiloteConfigurations _pilote_config;                      // Create instance. It's the only instance of program
-
 /**
  *  Configuration task function. Called by RunTasks().
  */
@@ -82,7 +81,6 @@ void ConfigThread(void *pvParameters)
     }
     while (1) {
         /**
-         * TODO
          * 1. Block on a message queue with a timeout;
          * 2. If get a message,
          *      2.1 If is a START, block IR; if is an END, unblock IR.
@@ -152,7 +150,15 @@ void ConfigThread(void *pvParameters)
 }
 
 /**
- *
+ *  ConfigManagerParseMes
+ *      - Parses a receive message packet then creates a new send message packet.
+ *      - If no error occurs, returns ERR_OK; otherwise returns corresponding error number.
+ *  @param
+ *      - mes_pkg_recv: pointer to the receive message package
+ *      - mes_pkg_send: pointer to the send message package
+ *  @return
+ *      - If everything is OK, returns ERR_OK;
+ *      - Otherwise returns error number
  */
 static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                                    PiloteMessagePackage *mes_pkg_send)

@@ -115,7 +115,7 @@ void IR_TransmitThread(void *pvParameters)
                             }
                         }
                     }
-                    vTaskDelayUntil(&last_wake_time, time_between_frames/portTICK_PERIOD_MS);
+                    vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
                     break;
                 case PILOTE_SOURCE_CONTACT_ON:
                     break;
@@ -139,7 +139,10 @@ void IR_TransmitThread(void *pvParameters)
             // If not transmitting
             if (!first_time_start)
                 first_time_start = TRUE;
-            vTaskDelay(FREE_RTOS_DELAY_500MS);
+            if (time_between_frames > 100)
+                vTaskDelay((TickType_t)time_between_frames/portTICK_PERIOD_MS);
+            else
+                vTaskDelay(FREE_RTOS_DELAY_100MS);
         }
     }
 }

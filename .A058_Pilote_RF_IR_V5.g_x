@@ -128,7 +128,7 @@
       <File Name="Generated_Code/USB0.c" FileDate="2014-07-15, 17:54:32" FileAge="1405439672913" FileType="45637" CompNumb="30" />
       <File Name="Static_Code/PDD/FTM_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008881" FileType="1048576" />
       <File Name="Generated_Code/croutine.c" FileDate="2014-07-15, 16:39:07" FileAge="1405435147681" FileType="45637" CompNumb="21" />
-      <File Name="Documentation/A058_Pilote_RF_IR_V5_SIGNALS.txt" FileDate="2014-07-16, 10:04:09" FileAge="1405497849963" FileType="3072" />
+      <File Name="Documentation/A058_Pilote_RF_IR_V5_SIGNALS.txt" FileDate="2014-07-16, 11:57:16" FileAge="1405504636353" FileType="3072" />
       <File Name="Documentation/doxygen/TU1.txt" FileDate="2014-07-15, 16:36:48" FileAge="1405435008620" FileType="45637" CompNumb="44" />
       <File Name="Static_Code/PDD/USBDCD_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008917" FileType="1048576" />
       <File Name="Documentation/doxygen/A058_Pilote_RF_IR_V5.txt" FileDate="2014-07-15, 18:01:45" FileAge="1405440105689" FileType="45637" CompNumb="4" />
@@ -155,8 +155,8 @@
       <File Name="ProjectInfo.xml" FileDate="2014-07-15, 18:57:14" FileAge="1405443434382" FileType="45637" />
       <File Name="Static_Code/PDD/MCM_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008887" FileType="1048576" />
       <File Name="Static_Code/PDD/RTC_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008897" FileType="1048576" />
-      <File Name="Generated_Code/heap_3.c" FileDate="2014-07-15, 16:39:07" FileAge="1405435147733" FileType="45637" CompNumb="21" />
       <File Name="Static_Code/PDD/FTFE_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008875" FileType="1048576" />
+      <File Name="Generated_Code/heap_3.c" FileDate="2014-07-15, 16:39:07" FileAge="1405435147733" FileType="45637" CompNumb="21" />
       <File Name="Generated_Code/Vectors.c" FileDate="2014-07-15, 18:01:45" FileAge="1405440105797" FileType="45637" CompNumb="4" />
       <File Name="Generated_Code/heap_1.c" FileDate="2014-07-15, 16:39:07" FileAge="1405435147713" FileType="45637" CompNumb="21" />
       <File Name="Documentation/doxygen/ASerialLdd1.txt" FileDate="2014-07-15, 16:36:48" FileAge="1405435008611" FileType="45637" CompNumb="28" />
@@ -169,15 +169,15 @@
       <File Name="Generated_Code/FRTOS.h" FileDate="2014-07-15, 18:01:45" FileAge="1405440105524" FileType="45637" CompNumb="21" />
       <File Name="Generated_Code/ASerialLdd1.h" FileDate="2014-07-15, 17:54:33" FileAge="1405439673336" FileType="45637" CompNumb="28" />
       <File Name="Generated_Code/CS1.h" FileDate="2014-07-15, 17:54:34" FileAge="1405439674020" FileType="45637" CompNumb="34" />
-      <File Name="Generated_Code/FRTOS.c" FileDate="2014-07-15, 18:01:45" FileAge="1405440105499" FileType="45637" CompNumb="21" />
       <File Name="Generated_Code/WAIT1.h" FileDate="2014-07-15, 17:54:33" FileAge="1405439673775" FileType="45637" CompNumb="36" />
+      <File Name="Generated_Code/FRTOS.c" FileDate="2014-07-15, 18:01:45" FileAge="1405440105499" FileType="45637" CompNumb="21" />
       <File Name="Generated_Code/ASerialLdd1.c" FileDate="2014-07-15, 17:54:33" FileAge="1405439673378" FileType="45637" CompNumb="28" />
       <File Name="Static_Code/PDD/SysTick_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008911" FileType="1048576" />
       <File Name="Generated_Code/CS1.c" FileDate="2014-07-15, 17:54:33" FileAge="1405439673914" FileType="45637" CompNumb="34" />
-      <File Name="Documentation/A058_Pilote_RF_IR_V5_Settings.xml" FileDate="2014-07-15, 18:01:46" FileAge="1405440106937" FileType="3072" />
-      <File Name="Generated_Code/WAIT1.c" FileDate="2014-07-15, 17:54:33" FileAge="1405439673569" FileType="45637" CompNumb="36" />
       <File Name="Static_Code/PDD/CAN_PDD.h" FileDate="2014-07-15, 16:36:48" FileAge="1405435008819" FileType="1048576" />
+      <File Name="Generated_Code/WAIT1.c" FileDate="2014-07-15, 17:54:33" FileAge="1405439673569" FileType="45637" CompNumb="36" />
+      <File Name="Documentation/A058_Pilote_RF_IR_V5_Settings.xml" FileDate="2014-07-15, 18:01:46" FileAge="1405440106937" FileType="3072" />
     </GeneratedByPE>
   </GeneratedFilesList>
-  <CodeGenReference>4</CodeGenReference>
+  <CodeGenReference>5</CodeGenReference>
 </CodeGenerationInfo>

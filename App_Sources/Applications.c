@@ -62,7 +62,7 @@ void RunTasks(void)
     }
 
     // --------------------------        Create Tasks         --------------------------------------
-    if (xTaskCreate(IR_Thread, "ir_manag", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-2, NULL) != pdPASS) {
+    if (xTaskCreate(IR_Thread, "ir_manag", configMINIMAL_STACK_SIZE+100, NULL, configMAX_PRIORITIES-2, NULL) != pdPASS) {
         while (1) {
         // Error occurs, often out of heap size. Should never get hear.
         }
