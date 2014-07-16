@@ -16,20 +16,20 @@
  */
 static err_t IR_InitFrame(void);
 static err_t IR_GenerateFrame(void);
+
 /**
  *  Variables
  */
-static const PiloteConfigurations*  _pilote_config_ptr = NULL;      // Pointer to the configuration structure
-static uint8_t                      _ir_frame[IR_FRAME_COUNT];      // IR frame array
-static bool                         _transmit_started = FALSE;      // Flag of transmit state (volatile?)
-
+static const PiloteConfigurations*  _pilote_config_ptr = NULL;   // Pointer to the configuration structure
+static uint8_t                      _ir_frame[IR_FRAME_COUNT];   // IR frame array
+static bool                         _transmit_started = FALSE;   // Flag of transmit state (volatile?)
 /**
  * IR task function. Called by RunTasks().
  */
 void IR_Thread(void *pvParameters)
 {
-    (void)pvParameters;                                             // Suppress unused variable warning
-    extern xQueueHandle mbox_pilote_config;                         // Global message queue
+    (void)pvParameters;                                          // Suppress unused variable warning
+    extern xQueueHandle mbox_pilote_config;                      // Global message queue
 
     if (IR_InitFrame() != ERR_OK) {
         while (1) {
@@ -44,19 +44,17 @@ void IR_Thread(void *pvParameters)
         }
     }
 
-    while (mbox_pilote_config == NULL) {                            // Wait for mailbox being created
+    while (mbox_pilote_config == NULL) {                        // Wait for mailbox being created
         vTaskDelay(FREE_RTOS_DELAY_50MS);
     }
 
-    while (1) {                                                     // Main loop
-        // Should we start or stop transmitting ?
-//        if (xQueuePeek(mbox_pilote_config, &_pilote_config_ptr, MBOX_TIMEOUT_500MS) == pdTRUE) {
-        if (xQueuePeek(mbox_pilote_config, &_pilote_config_ptr, MBOX_ZERO_TIMEOUT) == pdTRUE) {
-            if (_pilote_config_ptr != NULL) {
+    while (1) {                                                 // Main loop
+        // Start or stop transmitting
+        if (xQueueReceive(mbox_pilote_config, &_pilote_config_ptr, MBOX_TIMEOUT_INFINIT) == pdTRUE) {
+            if (_pilote_config_ptr != NULL) {                   // If not NULL pointer, start IR
                 if (!_transmit_started &&                       // If transmit not started,
                     _pilote_config_ptr->enabled &&              // device and IR are both enabled
                     (_pilote_config_ptr->output_mode&PILOTE_OUTPUT_IR) != 0) {
-
                     if (IR_GenerateFrame() != ERR_OK) {         // Create a frame
                         while (1) {
                         // Create frame error
@@ -73,27 +71,21 @@ void IR_Thread(void *pvParameters)
                     _transmit_started = TRUE;                   // Set transmitting
                 } else {
                     // If IR transmit already started, or device or IR are not enabled
-                    // then block for a while
-                    vTaskDelay(FREE_RTOS_DELAY_500MS);
+                    // then do not restart IR
                 }
-            } else {
-                while (1) {
-                // Error: got NULL message. Should never get here
-                }
-            }
-        } else {
-            // If timeout
-            if (_transmit_started) {                                // Should stop transmitting if is running
-                if (IR_StopTransmit() != ERR_OK) {
-                    while (1) {
-                    // Stop transmit error
+            } else {                                            // If NULL pointer, stop IR
+                if (_transmit_started) {                        // Should stop transmitting if is running
+                    if (IR_StopTransmit() != ERR_OK) {
+                        while (1) {
+                            // Stop transmit error
+                        }
                     }
+                    _transmit_started = FALSE;                  // Clear _transmit_started
+                    vTaskDelay(FREE_RTOS_DELAY_1S);
                 }
-                _transmit_started = FALSE;                          // Clear _transmit_started
             }
-            vTaskDelay(FREE_RTOS_DELAY_500MS);
-        }
-    }
+        } // QueueReceive
+    } // Main loop
 }
 
 

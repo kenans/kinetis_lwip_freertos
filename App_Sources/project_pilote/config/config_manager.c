@@ -18,6 +18,16 @@
 // Functions
 static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                                       PiloteMessagePackage *mes_pkg_send);
+#define ConfigManager_StopIR() \
+     (pilote_config_ptr=NULL,\
+      xQueueSend(mbox_pilote_config,\
+      (void*)&(pilote_config_ptr),\
+      MBOX_TIMEOUT_50MS))
+#define ConfigManager_StartIR() \
+        (pilote_config_ptr=&_pilote_config,\
+         xQueueSend(mbox_pilote_config,\
+         (void*)&(pilote_config_ptr),\
+         MBOX_TIMEOUT_50MS))
 // Variables
 static PiloteConfigurations _pilote_config;                      // Create instance. It's the only instance of program
 
@@ -36,7 +46,7 @@ void ConfigThread(void *pvParameters)
     PiloteMessagePackage mes_pkg_send;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
 
-    if (PiloteConfigInit(pilote_config_ptr) != ERR_OK) {        // Initialization pilote_config
+    if (PiloteConfigInit(&_pilote_config) != ERR_OK) {        // Initialization pilote_config
         while (1) {
             // Initialization error
         }
@@ -45,16 +55,16 @@ void ConfigThread(void *pvParameters)
     PiloteInitRecvMesPackage(mes_pkg_recv);                    // Initialization mes_pkg_recv
     PiloteInitSendMesPackage(mes_pkg_send);                    // Initialization mes_pkg_send
 
-#define REWRITE_EEPROM 0                                        // If anything changed, should rewrite the EEPROM
+#define REWRITE_EEPROM 0                                      // If anything changed, should rewrite the EEPROM
 #if REWRITE_EEPROM==1
-    if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
+    if (PiloteSaveConfig(&_pilote_config) != ERR_OK) {        // Save configurations to EEPROM
         while (1) {
             // Save EEPROM error
         }
     }
 #endif  // if REWRITE_EEPROM==1
 
-    if (PiloteLoadConfig(pilote_config_ptr) != ERR_OK) {        // Load configurations from EEPROM
+    if (PiloteLoadConfig(&_pilote_config) != ERR_OK) {        // Load configurations from EEPROM
         while (1) {
             // Load EEPROM error
         }
@@ -65,7 +75,7 @@ void ConfigThread(void *pvParameters)
         vTaskDelay(FREE_RTOS_DELAY_50MS);
     }
     // Start IR by default
-    if (xQueueSend(mbox_pilote_config, (void*)&(pilote_config_ptr), MBOX_ZERO_TIMEOUT) != pdTRUE) {
+    if (ConfigManager_StartIR() != pdTRUE) {
         while (1) {
             // Start IR error
         }
@@ -83,25 +93,36 @@ void ConfigThread(void *pvParameters)
          * 4. Check data consistency
          * 5. If everything is OK, unlock IR; else roll back transaction
          */
-        if (xQueueReceive(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_500MS) == pdTRUE) {
+        if (xQueueReceive(mbox_pilote_recv, &mes_pkg_recv, MBOX_TIMEOUT_INFINIT) == pdTRUE) {
             if (mes_pkg_recv.direction == PILOTE_MES_RECV) {
                 // If got a message
                 switch (mes_pkg_recv.operation) {
                     case PILOTE_MES_OPERATION_START:            // USB connected
                         if (!configuring) {
                             configuring = TRUE;
-                            xQueueReset(mbox_pilote_config);    // Block IR here
+                            ConfigManager_StopIR();             // Block IR here
                         }
                         break;
                     case PILOTE_MES_OPERATION_STOP:             // USB disconnected
                         if (configuring) {
                             configuring = FALSE;
+                            // If no problem, write something to EEPROM
+                            if (PiloteSaveConfig(&_pilote_config) != ERR_OK) { // Save configurations to EEPROM
+                                while (1) {
+                                    // Save EEPROM error
+                                }
+                            }
+                            // TODO
+                            // Check data consistency!
+                            // If still no problem, OK, else try to roll back transaction
+                            // Finally unblock IR
+                            ConfigManager_StartIR();              // Unblock IR here
                         }
                         break;
-                    default:                                    // Do nothing here
+                    default:
+                        // Do nothing here
                         break;
                     }
-
                 if (configuring &&
                     mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
                     mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
@@ -121,30 +142,14 @@ void ConfigThread(void *pvParameters)
                             break;
                     }
                 }
-            }
-        } else {
-            // If timeout
-            if (!configuring && uxQueueMessagesWaiting(mbox_pilote_config) == MBOX_ZERO_ITEM) {
-                // If no problem, write something to EEPROM
-                if (PiloteSaveConfig(pilote_config_ptr) != ERR_OK) {        // Save configurations to EEPROM
-                    while (1) {
-                        // Save EEPROM error
-                    }
-                }
-                // TODO
-                // Check data consistency!
-                // If still no problem, OK, else try to roll back transaction
-                // Finally unblock IR
-                xQueueSend(mbox_pilote_config,
-                          (void*)&(pilote_config_ptr),
-                          MBOX_ZERO_TIMEOUT);                               // Unblock IR here
             } else {
-
+                while (1) {
+                    // Error: received a "send" message. Should never get here
+                }
             }
-        }
-    }
+        } // QueueReceive
+    } // Main loop
 }
-
 
 /**
  *
