@@ -18,16 +18,17 @@
 // Functions
 static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                                       PiloteMessagePackage *mes_pkg_send);
+/**
+ *  Use xQueueOverwrite instead of xQueueSend.
+ */
 #define ConfigManager_StopIR() \
-     (pilote_config_ptr=NULL,\
-      xQueueSend(mbox_pilote_config,\
-      (void*)&(pilote_config_ptr),\
-      MBOX_TIMEOUT_50MS))
+        (pilote_config_ptr=NULL,\
+         xQueueOverwrite(mbox_pilote_config,\
+                        (void*)&(pilote_config_ptr)))
 #define ConfigManager_StartIR() \
         (pilote_config_ptr=&_pilote_config,\
-         xQueueSend(mbox_pilote_config,\
-         (void*)&(pilote_config_ptr),\
-         MBOX_TIMEOUT_50MS))
+         xQueueOverwrite(mbox_pilote_config,\
+                        (void*)&(pilote_config_ptr)))
 // Variables
 static PiloteConfigurations _pilote_config;                      // Create instance. It's the only instance of program
 /**

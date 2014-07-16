@@ -82,8 +82,12 @@ void IR_Thread(void *pvParameters)
                     }
                     transmit_started = FALSE;                  // Clear transmit_started
                     // Wait at least time_bt_frames before restart IR
-                    vTaskDelay((TickType_t)last_time_bt_frames/portTICK_PERIOD_MS);
+                    if (last_time_bt_frames > 500)
+                        vTaskDelay((TickType_t)last_time_bt_frames/portTICK_PERIOD_MS);
+                    else
+                        vTaskDelay(FREE_RTOS_DELAY_500MS);
                 }
+                // If transmit not started and received stop message, do nothing
             }
         } // QueueReceive
     } // Main loop

@@ -139,10 +139,10 @@ void IR_TransmitThread(void *pvParameters)
             // If not transmitting
             if (!first_time_start)
                 first_time_start = TRUE;
-            if (time_between_frames > 100)
+            if (time_between_frames > 500)
                 vTaskDelay((TickType_t)time_between_frames/portTICK_PERIOD_MS);
             else
-                vTaskDelay(FREE_RTOS_DELAY_100MS);
+                vTaskDelay(FREE_RTOS_DELAY_500MS);
         }
     }
 }
