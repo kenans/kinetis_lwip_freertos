@@ -41,7 +41,14 @@ void ConfigThread(void *pvParameters)
     extern xQueueHandle mbox_pilote_recv;
     extern xQueueHandle mbox_pilote_send;
 
-    bool configuring = FALSE;
+    /**
+     *  Counts start times; if receives start packet, config_recursive++. if receives
+     *  end packet, config_recursive--. Only when config_recursive==0, we start IR;
+     *  otherwise keep IR stopped.
+     *
+     *  Attention: config_recursive should never be negative.
+     */
+    uint8_t config_recursive = 0;
     PiloteMessagePackage mes_pkg_recv;
     PiloteMessagePackage mes_pkg_send;
     PiloteConfigurations *pilote_config_ptr = &_pilote_config;  // Used in message queue
@@ -97,32 +104,32 @@ void ConfigThread(void *pvParameters)
                 // If got a message
                 switch (mes_pkg_recv.operation) {
                     case PILOTE_MES_OPERATION_START:            // USB connected
-                        if (!configuring) {
-                            configuring = TRUE;
+                        if (config_recursive == 0) {
                             ConfigManager_StopIR();             // Block IR here
-                        }
+                        }                                       // Otherwise, do not re-stop IR
+                        config_recursive++;
                         break;
                     case PILOTE_MES_OPERATION_STOP:             // USB disconnected
-                        if (configuring) {
-                            configuring = FALSE;
-                            // If no problem, write something to EEPROM
-                            if (PiloteSaveConfig(&_pilote_config) != ERR_OK) { // Save configurations to EEPROM
-                                while (1) {
-                                    // Save EEPROM error
-                                }
+                        // If no problem, write something to EEPROM
+                        if (PiloteSaveConfig(&_pilote_config) != ERR_OK) { // Save configurations to EEPROM
+                            while (1) {
+                                // Save EEPROM error
                             }
-                            // TODO
-                            // Check data consistency!
-                            // If still no problem, OK, else try to roll back transaction
-                            // Finally unblock IR
-                            ConfigManager_StartIR();              // Unblock IR here
                         }
+                        // Check data consistency!
+                        // If still no problem, OK, else try to roll back transaction
+                        // TODO
+                        if (config_recursive > 0) {
+                            if (--config_recursive==0)
+                                ConfigManager_StartIR();        // Unblock IR here
+                        }
+                        // If receive STOP but config_recursive==0, do nothing
                         break;
                     default:
                         // Do nothing here
                         break;
-                    }
-                if (configuring &&
+                }
+                if (config_recursive > 0&&
                     mes_pkg_recv.operation != PILOTE_MES_OPERATION_START &&
                     mes_pkg_recv.operation != PILOTE_MES_OPERATION_STOP) {
                     switch (mes_pkg_recv.mes_type) {
