@@ -124,7 +124,7 @@ low_level_init(struct netif *netif)
     while (Eth_Init(PHY_AUTO_NEG, PHY_NO_LOOPBACK) != ERR_OK)
     {
         // If auto_neg doesn't finish, recheck every 2s
-        vTaskDelay(2000/portTICK_PERIOD_MS);
+        vTaskDelay(5000/portTICK_PERIOD_MS);
     }
 }
 
