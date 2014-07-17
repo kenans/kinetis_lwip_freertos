@@ -18,10 +18,10 @@ typedef enum {
  */
 // Methods
 static void Http_SendError404(struct netconn *new_conn);
-static err_t WebPilote_SubmitToConfigManager(char *target, char *data, WebPiloteSubmitType type);
+static err_t WebPilote_SubmitToConfigManager(char *target, char *data, const WebPiloteSubmitType type);
 static err_t WebPilote_CreateRecvMessage(char *target, char *data);
 static err_t WebPilote_UnpackSendMessage(char *data);
-static err_t WebPilote_GetPostContent(struct netbuf *, char *);
+static err_t WebPilote_GetPostBody(struct netbuf *, struct netconn *, char *);
 //static void WebPilote_StopIR();               // This method is implemented as macro
 #define WebPilote_StopIR()  do{_mes_pkg_recv.operation = PILOTE_MES_OPERATION_START;\
     xQueueSend(mbox_pilote_recv, &_mes_pkg_recv, 0);}while(0)
@@ -132,12 +132,12 @@ void HttpServer_Task(void* pvParameters)
                             // Firstly stop IR
                             WebPilote_StopIR();
                             // Parse URL for POST request
-                            char post_content[32];
+                            char post_body_buf[32];
                             char target[16], data[16];
                             // 1. Get post content
-                            if (WebPilote_GetPostContent(in_netbuf, post_content) == ERR_OK) {
+                            if (WebPilote_GetPostBody(in_netbuf, new_conn, post_body_buf) == ERR_OK) {
                                 // 2. Parse target and value
-                                sscanf(post_content, "%[^=]=%s", target, data);
+                                sscanf(post_body_buf, "%[^=]=%s", target, data);
                                 // 3. Submit message to config_messager
                                 WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
                                 // 4. Send back to web page
@@ -189,7 +189,7 @@ static void Http_SendError404(struct netconn *new_conn)
 /**
  *
  */
-static err_t WebPilote_SubmitToConfigManager(char *target, char *data,  WebPiloteSubmitType type)
+static err_t WebPilote_SubmitToConfigManager(char *target, char *data,  const WebPiloteSubmitType type)
 {
     err_t error = ERR_OK;
     extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
@@ -330,38 +330,67 @@ static err_t WebPilote_UnpackSendMessage(char *data)
 }
 
 /**
- *  WebPilote_GetPostContent
- *      - Gets a post line in the netbuf structure
+ *  WebPilote_GetPostBody
+ *      - Gets the body of a POST request in the netbuf structure. In a POST request, the header part and
+ *        the body is separated by "\r\n\r\n". So firstly find this separator, then the remaining text is
+ *        the post content.
+ *        Attention: For some browsers, like IEs, a POST request is sent by two TCP packets: the first of
+ *        which contains the request header while the second contains the corresponding body. In this case,
+ *        we should receive the following TCP packet to get the post content.
  *      - If no error, returns ERR_OK; otherwise returns ERR_MEM
  */
-static err_t WebPilote_GetPostContent(struct netbuf *in_netbuf, char *post_content)
+static err_t WebPilote_GetPostBody(struct netbuf *in_netbuf,
+        struct netconn *new_conn, char *post_body_buf)
 {
     char *in_buf_ptr = NULL;
     uint16_t len = 0;
-    uint16_t i = 0, j = 0;
-    uint8_t count = 0;
-    bool flag = 0;      // 0 for '\r'; 1 for '\n'
-    if (in_netbuf==NULL || post_content==NULL) {
+    uint16_t i = 0;
+    uint16_t post_body_count = 0;
+    uint8_t r_and_n_count = 0;
+    bool find_next_n = FALSE;      // TRUE: should find a '\n' next; FALSE: should find a '\r' next
+    if (in_netbuf==NULL || post_body_buf==NULL) {
         return ERR_MEM;
     }
     do {
         netbuf_data(in_netbuf, (void**)&in_buf_ptr, &len);
         for (i=0 ; i<len ; i++, in_buf_ptr++) {
-            if (count==4) {
-                post_content[j++] = *in_buf_ptr;
+            if (r_and_n_count==4) {
+                post_body_buf[post_body_count++] = *in_buf_ptr;
             } else {
-                if (*in_buf_ptr=='\r'&&flag==0) {
-                    count++; flag = 1;          // Found a '\r', look for the next '\n'
-                } else if (*in_buf_ptr=='\n'&&flag==1) {
-                    count++; flag = 0;          // Found a '\n' after '\r', look for the next '\r'
+                if (*in_buf_ptr=='\r' && !find_next_n) {
+                    r_and_n_count++; find_next_n = TRUE;          // Found a '\r', look for the next '\n'
+                } else if (*in_buf_ptr=='\n' && find_next_n) {
+                    r_and_n_count++; find_next_n = FALSE;          // Found a '\n' after '\r', look for the next '\r'
                 } else {
-                    count = 0; flag = 0;        // Otherwise, restart the research of the first '\r'
+                    r_and_n_count = 0; find_next_n = FALSE;        // Otherwise, restart the research of the first '\r'
                 }
             }
         }
     } while (netbuf_next(in_netbuf)!=-1);
     in_buf_ptr=NULL;    // Not used
-    post_content[j] = '\0';
+    // Should receive the next TCP packet in case post_body_count==0
+    if (post_body_count==0) {
+        struct netbuf *temp_netbuf;
+        uint8_t time_out_count = 3;
+        for (;time_out_count>0;time_out_count--) {
+            temp_netbuf =  netconn_recv(new_conn);
+            if (temp_netbuf != NULL) {
+                netbuf_data(temp_netbuf, (void**)&in_buf_ptr, &len);
+                for (i=0;i<len;i++, in_buf_ptr++) {
+                    post_body_buf[post_body_count++] = *in_buf_ptr;
+                }
+                // Delete temp_netbuf
+                netbuf_delete(temp_netbuf);
+            }
+            if (post_body_count != 0) break;
+        }
+    }
+    in_buf_ptr=NULL;    // Not used
+    // If still post_body_count==0, POST message cannot be parsed.
+    if (post_body_count==0)
+        return ERR_COMMON;
+    post_body_buf[post_body_count] = '\0';
+
     return ERR_OK;
 }
 
