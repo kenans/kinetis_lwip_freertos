@@ -135,17 +135,18 @@ void HttpServer_Task(void* pvParameters)
                             char post_content[32];
                             char target[16], data[16];
                             // 1. Get post content
-                            WebPilote_GetPostContent(in_netbuf, post_content);
-                            // 2. Parse target and value
-                            sscanf(post_content, "%[^=]=%s", target, data);
-                            // 3. Submit message to config_messager
-                            WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
-                            // 4. Send back to web page
-                            strcpy(_web_buf, HTTP_TXT_PLAIN_OK);
-                            strcat(_web_buf, target);
-                            strcat(_web_buf, "=");
-                            strcat(_web_buf, data);
-                            netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
+                            if (WebPilote_GetPostContent(in_netbuf, post_content) == ERR_OK) {
+                                // 2. Parse target and value
+                                sscanf(post_content, "%[^=]=%s", target, data);
+                                // 3. Submit message to config_messager
+                                WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
+                                // 4. Send back to web page
+                                strcpy(_web_buf, HTTP_TXT_PLAIN_OK);
+                                strcat(_web_buf, target);
+                                strcat(_web_buf, "=");
+                                strcat(_web_buf, data);
+                                netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
+                            }
                             // Restart IR
                             WebPilote_RestartIR();
                         } else {
