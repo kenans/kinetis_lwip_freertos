@@ -81,6 +81,8 @@ void IR_TransmitThread(void *pvParameters)
     PiloteTimeMs time_between_frames = 0;
     PiloteSourceMode source_mode = PILOTE_SOURCE_OFF;
 
+    // Flag for the
+
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
 
@@ -106,37 +108,31 @@ void IR_TransmitThread(void *pvParameters)
                 }
             }
             switch (source_mode) {
-                case PILOTE_SOURCE_CONTACT_OFF:
-                case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_OFF:
-                    last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
-                    for (i = 0; i < nums_of_frames ; i++) {
-                        if (IR_SendFrame() != ERR_OK) {
-                            while (1) {
-                            // IR error
-                            }
-                        }
-                    }
-                    vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
-                    break;
-//                case PILOTE_SOURCE_CONTACT_ON:
-//                    break;
-//                    // TODO
-//                case PILOTE_SOURCE_CONTACT_OFF:
-//                    break;
-//                    // TODO
+                   break;
+                case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_TTL_ON:
                     break;
                     // TODO
+                case PILOTE_SOURCE_CONTACT_OFF:
                 case PILOTE_SOURCE_TTL_OFF:
                     break;
                     // TODO
-                case PILOTE_SOURCE_ANALOG_1KHZ:
+                case PILOTE_SOURCE_UDP:
                     break;
                     // TODO
                 default:
                     break;
             }
+            last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
+            for (i = 0; i < nums_of_frames ; i++) {
+                if (IR_SendFrame() != ERR_OK) {
+                    while (1) {
+                        // IR error
+                    }
+                }
+            }
+            vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
         } else {
             // If not transmitting
             if (!first_time_start)

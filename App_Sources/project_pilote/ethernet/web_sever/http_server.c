@@ -99,29 +99,41 @@ void HttpServer_Task(void* pvParameters)
                         } else if (!strncmp(http_url, "/config.txt", 11)) {
                             char *target;
                             char data[16];
+                            err_t error;
                             // Firstly stop IR
                             WebPilote_StopIR();
                             // Then parse message
                             // 1. Get a target
-                            target = strtok(&http_url[12], "&");        // After "/config.txt?" in url
-                            strcpy(_web_buf,"");                            // Clean _web_buf
-                            while (target != NULL) {
-                                if (!strncmp(target, "rand", 4))        // Not a valid item to parse
-                                    break;
-                                // 2. Submit message to config_manager
-                                WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_READ_MESSAGE);
-                                // 3. Create reply message
-                                strcat(_web_buf, target);
-                                strcat(_web_buf, "=");
-                                strcat(_web_buf, data);
-                                strcat(_web_buf, "&");
-                                // 4. Next item
-                                target = strtok(NULL, "&");
+                            if (strlen(http_url) > 12) {          // If not contains data in url, do nothing
+                                target = strtok(&http_url[12], "&");        // After "/config.txt?" in url
+                                strcpy(_web_buf,"");                        // Clean _web_buf
+                                while (target != NULL) {
+                                    if (!strncmp(target, "rand", 4))        // Not a valid item to parse
+                                        break;
+                                    // 2. Submit message to config_manager
+                                    error = WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_READ_MESSAGE);
+                                    if (error == ERR_MEM) {
+                                        while (1) {
+                                            // Memory error, should never get here
+                                        }
+                                    }
+                                    if (error == ERR_OK) {  // For unknown items, ignore them
+                                        // 3. Create reply message
+                                        strcat(_web_buf, target);
+                                        strcat(_web_buf, "=");
+                                        strcat(_web_buf, data);
+                                        strcat(_web_buf, "&");
+                                    }
+                                    // 4. Next item
+                                    target = strtok(NULL, "&");
+                                }
+                                in_buf_ptr = NULL;  // Not used
+                                if (_web_buf[0] != '\0') {
+                                    _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&'
+                                }
+                                netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
+                                netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             }
-                            in_buf_ptr = NULL;  // Not used
-                            _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&'
-                            netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
-                            netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             // Restart IR
                             WebPilote_RestartIR();
                         } else {                                            // Other resource, ERROR 404
@@ -139,13 +151,15 @@ void HttpServer_Task(void* pvParameters)
                                 // 2. Parse target and value
                                 sscanf(post_body_buf, "%[^=]=%s", target, data);
                                 // 3. Submit message to config_messager
-                                WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE);
+                                if (WebPilote_SubmitToConfigManager(target, data, WEB_PILOTE_MODIFY_MESSAGE)
+                                        == ERR_OK) {
                                 // 4. Send back to web page
-                                strcpy(_web_buf, HTTP_TXT_PLAIN_OK);
-                                strcat(_web_buf, target);
-                                strcat(_web_buf, "=");
-                                strcat(_web_buf, data);
-                                netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
+                                    strcpy(_web_buf, HTTP_TXT_PLAIN_OK);
+                                    strcat(_web_buf, target);
+                                    strcat(_web_buf, "=");
+                                    strcat(_web_buf, data);
+                                    netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
+                                }
                             }
                             // Restart IR
                             WebPilote_RestartIR();
