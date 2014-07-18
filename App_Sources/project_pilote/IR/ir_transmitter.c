@@ -106,6 +106,8 @@ void IR_TransmitThread(void *pvParameters)
                 }
             }
             switch (source_mode) {
+                case PILOTE_SOURCE_CONTACT_OFF:
+                case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_OFF:
                     last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
                     for (i = 0; i < nums_of_frames ; i++) {
@@ -117,12 +119,12 @@ void IR_TransmitThread(void *pvParameters)
                     }
                     vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
                     break;
-                case PILOTE_SOURCE_CONTACT_ON:
-                    break;
-                    // TODO
-                case PILOTE_SOURCE_CONTACT_OFF:
-                    break;
-                    // TODO
+//                case PILOTE_SOURCE_CONTACT_ON:
+//                    break;
+//                    // TODO
+//                case PILOTE_SOURCE_CONTACT_OFF:
+//                    break;
+//                    // TODO
                 case PILOTE_SOURCE_TTL_ON:
                     break;
                     // TODO

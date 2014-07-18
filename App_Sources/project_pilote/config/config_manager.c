@@ -231,8 +231,8 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                 case PILOTE_MES_TARGET_UDP_ID:
                     _pilote_config.udp_id[0] = (uint8_t)((mes_pkg_recv->data&0xff000000U)>>24);
                     _pilote_config.udp_id[1] = (uint8_t)((mes_pkg_recv->data&0x00ff0000U)>>16);
-                    _pilote_config.udp_id[2] = (uint8_t)((mes_pkg_recv->data&0xff00ff00U)>>8);
-                    _pilote_config.udp_id[3] = (uint8_t)((mes_pkg_recv->data&0xff000000U));
+                    _pilote_config.udp_id[2] = (uint8_t)((mes_pkg_recv->data&0x0000ff00U)>>8);
+                    _pilote_config.udp_id[3] = (uint8_t)((mes_pkg_recv->data&0x000000ffU));
                     break;
                 case PILOTE_MES_TARGET_UDP_DATA:
                     // TODO
