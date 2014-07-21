@@ -122,7 +122,6 @@ void IR_TransmitThread(void *pvParameters)
                         transmit_allowed = FALSE;
                     }
                     break;
-                    // TODO
                 case PILOTE_SOURCE_CONTACT_OFF:
                 case PILOTE_SOURCE_TTL_OFF:
                     if (ContactSec_GetVal()==1) { // high level
@@ -131,7 +130,6 @@ void IR_TransmitThread(void *pvParameters)
                         transmit_allowed = FALSE;
                     }
                     break;
-                    // TODO
                 case PILOTE_SOURCE_UDP:
                     break;
                     // TODO
