@@ -21,6 +21,9 @@ static volatile uint32_t            _interrupt_flag = 0;    // Interrupt flag. I
 // Methods
 static void IR_SendByte(uint8_t data);
 static err_t IR_SendFrame();
+#define IR_TimeBtFramesIsLongEnough() \
+    (_pilote_config_ptr->time_between_frames>=IR_PROTOCOL_TIME_BETWEEN_FRAME_MIN_MS &&\
+     _pilote_config_ptr->time_between_frames>=(_pilote_config_ptr->nums_of_frames*IR_PROTOCOL_FRAME_MIN_LENGTH_MS))
 
 /**
  *  Start the IR transmit session.
@@ -76,12 +79,13 @@ void IR_TransmitThread(void *pvParameters)
     bool first_time_start = TRUE;
     TickType_t last_wake_time = 0;
 
+    // Transmit allowed flag
+    bool transmit_allowed = FALSE;
+
     // Own copy of configuration data
     uint8_t nums_of_frames = 0;
     PiloteTimeMs time_between_frames = 0;
     PiloteSourceMode source_mode = PILOTE_SOURCE_OFF;
-
-    // Flag for the
 
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
@@ -92,14 +96,13 @@ void IR_TransmitThread(void *pvParameters)
             _pilote_config_ptr != NULL &&                       // If get the configuration structure and
             _frame != NULL) {                                   // frame address
             if (first_time_start) {                             // If first time starts, get new configurations
-                if (_pilote_config_ptr->time_between_frames >= IR_PROTOCOL_TIME_BETWEEN_FRAME_MIN_MS &&
-                    _pilote_config_ptr->time_between_frames >=
-                    (_pilote_config_ptr->nums_of_frames*IR_PROTOCOL_FRAME_MIN_LENGTH_MS)) {
+                if (IR_TimeBtFramesIsLongEnough()) {
                     // Save a copy of some configurations of the pilote
                     nums_of_frames = _pilote_config_ptr->nums_of_frames;
                     time_between_frames = _pilote_config_ptr->time_between_frames;
                     source_mode = _pilote_config_ptr->source_mode;
                     first_time_start = FALSE;
+                    transmit_allowed = FALSE;
                 } else {
                     while (1) {
                     // Configuration error
@@ -109,13 +112,24 @@ void IR_TransmitThread(void *pvParameters)
             }
             switch (source_mode) {
                 case PILOTE_SOURCE_OFF:
+                    transmit_allowed = TRUE;
                    break;
                 case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_TTL_ON:
+                    if (ContactSec_GetVal()==0) { // low level
+                        transmit_allowed = TRUE;
+                    } else {
+                        transmit_allowed = FALSE;
+                    }
                     break;
                     // TODO
                 case PILOTE_SOURCE_CONTACT_OFF:
                 case PILOTE_SOURCE_TTL_OFF:
+                    if (ContactSec_GetVal()==1) { // high level
+                        transmit_allowed = TRUE;
+                    } else {
+                        transmit_allowed = FALSE;
+                    }
                     break;
                     // TODO
                 case PILOTE_SOURCE_UDP:
@@ -124,17 +138,21 @@ void IR_TransmitThread(void *pvParameters)
                 default:
                     break;
             }
-            last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
-            for (i = 0; i < nums_of_frames ; i++) {
-                if (IR_SendFrame() != ERR_OK) {
-                    while (1) {
-                        // IR error
+            if (transmit_allowed) {
+                last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
+                for (i = 0; i < nums_of_frames ; i++) {
+                    if (IR_SendFrame() != ERR_OK) {
+                        while (1) {
+                            // IR error
+                        }
                     }
                 }
+                vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
+            } else {
+                vTaskDelay(FREE_RTOS_DELAY_500MS);          // If transmit not allowed, polling every 500ms
             }
-            vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
         } else {
-            // If not transmitting
+            // If not transmitting (configuring or disabled)
             if (!first_time_start)
                 first_time_start = TRUE;
             if (time_between_frames > 500)

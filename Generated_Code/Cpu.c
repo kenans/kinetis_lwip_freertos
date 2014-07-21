@@ -7,7 +7,7 @@
 **     Version     : Component 01.006, Driver 01.04, CPU db: 3.00.000
 **     Datasheet   : K60P144M150SF3RM, Rev. 2, Dec 2011
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 18:01, # CodeGen: 1
+**     Date/Time   : 2014-07-21, 17:42, # CodeGen: 5
 **     Abstract    :
 **
 **     Settings    :
@@ -83,6 +83,9 @@
 #include "ETH1.h"
 #include "Cmp1.h"
 #include "ACompLdd1.h"
+#include "PTA.h"
+#include "ContactSec.h"
+#include "BitIoLdd1.h"
 #include "PE_Types.h"
 #include "PE_Error.h"
 #include "PE_Const.h"
@@ -585,10 +588,23 @@ void PE_low_level_init(void)
   /* Common initialization of the CPU registers */
   /* NVICIP73: PRI73=0 */
   NVICIP73 = NVIC_IP_PRI73(0x00);
+  /* NVICIP87: PRI87=0 */
+  NVICIP87 = NVIC_IP_PRI87(0x00);
   /* NVICIP20: PRI20=0 */
   NVICIP20 = NVIC_IP_PRI20(0x00);
   /* NVICIP21: PRI21=0 */
   NVICIP21 = NVIC_IP_PRI21(0x00);
+  /* PORTA_PCR19: ISF=0,PE=1,PS=1 */
+  PORTA_PCR19 = (uint32_t)((PORTA_PCR19 & (uint32_t)~(uint32_t)(
+                 PORT_PCR_ISF_MASK
+                )) | (uint32_t)(
+                 PORT_PCR_PE_MASK |
+                 PORT_PCR_PS_MASK
+                ));
+  /* PORTA_DFCR: CS=0 */
+  PORTA_DFCR &= (uint32_t)~(uint32_t)(PORT_DFCR_CS_MASK);
+  /* PORTA_DFWR: FILT=0 */
+  PORTA_DFWR &= (uint32_t)~(uint32_t)(PORT_DFWR_FILT(0x1F));
   /* NVICISER0: SETENA|=0x00200000 */
   NVICISER0 |= NVIC_ISER_SETENA(0x00200000);
   /* ### FreeRTOS "FRTOS" init code ... */
@@ -615,6 +631,10 @@ void PE_low_level_init(void)
   (void)PwmLdd1_Init(NULL);
   /* ### AnalogComp_LDD "ACompLdd1" component auto initialization. Auto initialization feature can be disabled by component's property "Auto initialization". */
   (void)ACompLdd1_Init(NULL);
+  /* ### Init_GPIO "PTA" init code ... */
+  PTA_Init();
+  /* ### BitIO_LDD "BitIoLdd1" component auto initialization. Auto initialization feature can be disabled by component property "Auto initialization". */
+  (void)BitIoLdd1_Init(NULL);
 }
   /* Flash configuration field */
   __attribute__ ((section (".cfmconfig"))) const uint8_t _cfm[0x10] = {

@@ -467,6 +467,16 @@ Module "ETH1"      (component Ethernet_LDD)
 Module "Cmp1"      (component FreescaleAnalogComp)
    - Cmp1_GetAnalogComparatorOutputValue -This method returns current value of the analog comparator output.
 
+Module "PTA"       (component Init_GPIO_VAR0)
+   - PTA_Init -This method initializes registers of the GPIO module according to the Peripheral Initialization settings. Call 
+                this method in user code to initialize the module. By default, the method is called by PE automatically; see 
+                "Call Init method" property of the component for more details.
+
+Module "ContactSec" (component BitIO)
+   - ContactSec_GetVal -Returns the input/output value. If the direction is [input] then the input value of the pin is read and 
+                returned. If the direction is [output] then the last written value is returned (see <Safe mode> property for 
+                limitations). This method cannot be disabled if direction is [input].
+
 Module "Cpu"       (component MK60FN1M0LQ15)
    - Cpu_SetOperationMode -This method requests to change the component's operation mode (RUN, WAIT, SLEEP, STOP). The target 
                 operation mode will be entered immediately.   See <Operation mode settings> for further details of the 

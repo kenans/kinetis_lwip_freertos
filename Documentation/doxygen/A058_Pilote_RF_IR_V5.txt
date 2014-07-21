@@ -41,6 +41,8 @@
 - \subpage TI1
 - \subpage ETH1
 - \subpage ACompLdd1
+- \subpage PTA
+- \subpage BitIoLdd1
 
 
 */

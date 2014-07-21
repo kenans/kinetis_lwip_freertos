@@ -84,16 +84,19 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ACompLdd1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\AS1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ASerialLdd1.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\BitIoLdd1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CDC1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CI2C1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CS1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cmp1.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ContactSec.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cpu.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\EE241.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ETH1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\FRTOS.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\GI2C1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PE_LDD.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PTA.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PWM1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PwmLdd1.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Rx1.c</PathName>
@@ -207,10 +210,12 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ACompLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\AS1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ASerialLdd1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\BitIoLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CDC1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CI2C1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\CS1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cmp1.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ContactSec.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Cpu.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\EE241.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\ETH1.h</PathName>
@@ -224,6 +229,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PE_Error.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PE_LDD.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PE_Types.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PTA.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PWM1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\PwmLdd1.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\Rx1.h</PathName>

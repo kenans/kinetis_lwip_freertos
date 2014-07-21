@@ -56,6 +56,9 @@
 #include "ETH1.h"
 #include "Cmp1.h"
 #include "ACompLdd1.h"
+#include "PTA.h"
+#include "ContactSec.h"
+#include "BitIoLdd1.h"
 /**
  *  Event method includes
  */
