@@ -91,7 +91,7 @@ void IR_TransmitThread(void *pvParameters)
         if (_transmitting &&                                    // If transmit is enabled
             _pilote_config_ptr != NULL &&                       // If get the configuration structure and
             _frame != NULL) {                                   // frame address
-            if (first_time_start) {
+            if (first_time_start) {                             // If first time starts, get new configurations
                 if (_pilote_config_ptr->time_between_frames >= IR_PROTOCOL_TIME_BETWEEN_FRAME_MIN_MS &&
                     _pilote_config_ptr->time_between_frames >=
                     (_pilote_config_ptr->nums_of_frames*IR_PROTOCOL_FRAME_MIN_LENGTH_MS)) {
