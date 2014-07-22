@@ -68,18 +68,39 @@ void UDP_Task(void *pvParameters)
  *  @return
  *      - ERR_OK: no error occurs;
  *      - ERR_MEM: error of NULL pointer;
+ *      - ERR_TIMEOUT: error timeout;
  *      - ERR_COMMON: udp command cannot be parsed
  */
 static err_t UDP_Parse(const char *udp_cmd, const char *udp_id)
 {
-    if (udp_cmd==NULL || udp_id==NULL)
+    extern QueueHandle_t mbox_pilote_udp_cmd;   // Mailbox to send udp command message
+    PiloteUdpCmdMes udp_cmd_mes;                // Message to be sent
+    uint8_t i = 0;
+
+    if (udp_cmd==NULL || udp_id==NULL)          // If memory error
         return ERR_MEM;
+
+    for (i = 0; i<PILOTE_UDP_ID_COUNT; i++) {   // Udp ID
+        udp_cmd_mes.udp_id[i] = udp_id[i];
+    }
+
     if (!strncmp(udp_cmd, "P", 2)) {            // Play
+        udp_cmd_mes.cmd_type = PILOTE_UDP_CMD_PLAY;
     } else if (!strncmp(udp_cmd, "PS", 3)) {    // Play with synchro
+        udp_cmd_mes.cmd_type = PILOTE_UDP_CMD_PLAY_SYNCHRO;
     } else if (!strncmp(udp_cmd, "SP", 3)) {    // Stop
+        udp_cmd_mes.cmd_type = PILOTE_UDP_CMD_STOP;
     } else if (!strncmp(udp_cmd, "RM", 3)) {    // Resume
+        udp_cmd_mes.cmd_type = PILOTE_UDP_CMD_RESUME;
     } else {
         return ERR_COMMON;
+    }
+
+    /**
+     *  Send udp_cmd message packet to mailbox
+     */
+    if (xQueueSend(mbox_pilote_udp_cmd, &udp_cmd_mes, MBOX_TIMEOUT_50MS) != pdTRUE) {
+        return ERR_TIMEOUT;
     }
     return ERR_OK;
 }

@@ -84,12 +84,16 @@ void IR_TransmitThread(void *pvParameters)
 
     // Own copy of configuration data
     uint8_t nums_of_frames = 0;
+    uint8_t udp_id[4];
     PiloteTimeMs time_between_frames = 0;
     PiloteSourceMode source_mode = PILOTE_SOURCE_OFF;
 
+    // UDP command mailbox and message packet
+    extern QueueHandle_t mbox_pilote_udp_cmd;
+    PiloteUdpCmdMes udp_cmd_mes;
+
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
-
     // Main loop
     while (1) {
         if (_transmitting &&                                    // If transmit is enabled
@@ -103,6 +107,17 @@ void IR_TransmitThread(void *pvParameters)
                     source_mode = _pilote_config_ptr->source_mode;
                     first_time_start = FALSE;
                     transmit_allowed = FALSE;
+                    /**
+                     *      If first time start an UDP source mode, should clean the mailbox mbox_pilote_udp_cmd
+                     *  in order to remove the command received when not in udp mode.
+                     *      Should also copy udp_id
+                     */
+                    if (_pilote_config_ptr->source_mode==PILOTE_SOURCE_UDP) {
+                        xQueueReset(mbox_pilote_udp_cmd);
+                        for (i = 0; i < PILOTE_UDP_ID_COUNT; i++) {
+                            udp_id[i] = _pilote_config_ptr->udp_id[i];
+                        }
+                    }
                 } else {
                     while (1) {
                     // Configuration error
@@ -131,11 +146,32 @@ void IR_TransmitThread(void *pvParameters)
                     }
                     break;
                 case PILOTE_SOURCE_UDP:
-                    // TODO
+                    // First disable transmit
+                    transmit_allowed = FALSE;
                     // Wait for an UDP command with a timeout
-                    // If received an UDP command, parse its type (play, stop, ...)
-                    // Modify the current frame
-                    // Allow transmit
+                    if (xQueueReceive(mbox_pilote_udp_cmd, &udp_cmd_mes, MBOX_TIMEOUT_500MS) == pdTRUE) {
+                        // If received an UDP command, parse its type (play, stop, ...)
+                        if (udp_id[0] == udp_cmd_mes.udp_id[0] &&
+                            udp_id[1] == udp_cmd_mes.udp_id[1] &&
+                            udp_id[2] == udp_cmd_mes.udp_id[2] &&
+                            udp_id[3] == udp_cmd_mes.udp_id[3]) {
+                            switch (udp_cmd_mes.cmd_type) {
+                                case PILOTE_UDP_CMD_PLAY:
+                                    // Modify the current frame
+                                    // Allow transmit
+                                    transmit_allowed = TRUE;
+                                    break;
+                                case PILOTE_UDP_CMD_PLAY_SYNCHRO:
+                                    break;
+                                case PILOTE_UDP_CMD_PAUSE:
+                                    break;
+                                case PILOTE_UDP_CMD_RESUME:
+                                    break;
+                                case PILOTE_UDP_CMD_STOP:
+                                    break;
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;

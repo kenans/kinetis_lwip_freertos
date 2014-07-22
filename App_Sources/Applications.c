@@ -16,6 +16,7 @@
 QueueHandle_t mbox_pilote_config;
 QueueHandle_t mbox_pilote_send;
 QueueHandle_t mbox_pilote_recv;
+QueueHandle_t mbox_pilote_udp_cmd;
 
 /**
  * Static declarations
@@ -60,7 +61,15 @@ void RunTasks(void)
         // Error create a queue
         }
     }
-
+    /**
+     * mbox_pilote_udp_cmd
+     */
+    mbox_pilote_udp_cmd = xQueueCreate(MBOX_UDP_CMD_COUNT, sizeof(PiloteUdpCmdMes));
+    if (mbox_pilote_udp_cmd == NULL) {
+        // Error create a queue
+        while (1) {}
+            ;
+    }
     // --------------------------        Create Tasks         --------------------------------------
     if (xTaskCreate(IR_Thread, "ir_manag", configMINIMAL_STACK_SIZE+100, NULL, configMAX_PRIORITIES-2, NULL) != pdPASS) {
         while (1) {

@@ -16,6 +16,7 @@
 #include "pilote_config.h"
 #include "pilote_error.h"
 #include "pilote_types.h"
+#include "pilote_mes.h"
 
 /**
  * -------------------------------------------------------------------------------------------

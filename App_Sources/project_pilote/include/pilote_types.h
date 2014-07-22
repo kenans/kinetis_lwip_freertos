@@ -109,7 +109,7 @@ typedef uint8_t PiloteWeekday;
 #define PILOTE_WEEKDAY_SATUSDAY    0x40U
 /**
  * -----------------------------------------------------------------------------
- *                           Structure PiloteMessage
+ *                       Structure PiloteMessagePackage
  * -----------------------------------------------------------------------------
  */
 typedef enum {
@@ -154,6 +154,19 @@ typedef enum {
     PILOTE_MES_TARGET_END_TIME,
     PILOTE_MES_TARGET_WEEKDAY
 } PiloteMesTarget;
+
+/**
+ * -----------------------------------------------------------------------------
+ *                       Structure PiloteUdpCmdMes
+ * -----------------------------------------------------------------------------
+ */
+typedef enum {
+    PILOTE_UDP_CMD_PLAY,
+    PILOTE_UDP_CMD_PLAY_SYNCHRO,
+    PILOTE_UDP_CMD_STOP,
+    PILOTE_UDP_CMD_PAUSE,
+    PILOTE_UDP_CMD_RESUME
+} PiloteUdpCmdType;
 
 /**
  * -------------------------------------------------------------------------------------
@@ -231,6 +244,15 @@ typedef enum {
 #define MBOX_RECV_COUNT           3U
 #define MBOX_SEND_COUNT           3U
 
+/**
+ * -------------------------------------------------------------------------------------
+ *            UDP Command Mailbox (between UDP and IR_transmitter)
+ * -------------------------------------------------------------------------------------
+ */
+/**
+ *  mbox_pilote_udp_cmd
+ */
+#define MBOX_UDP_CMD_COUNT        3U
 /**
  * -------------------------------------------------------------------------------------
  *                              EEPROM 24AA1026

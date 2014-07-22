@@ -35,8 +35,12 @@ typedef struct {
 } PiloteMessagePackage;
 
 /**
- *
+ *  PiloteUdpCmdMes structure.
  */
+typedef struct {
+    PiloteUdpCmdType   cmd_type;
+    uint8_t            udp_id[PILOTE_UDP_ID_COUNT];
+} PiloteUdpCmdMes;
 
 /**
  * -------------------------------------------------------------------------------------------
