@@ -29,8 +29,10 @@ void Eth_Task(void *pvParameters)
      *  Local variables
      */
     bool http_server_task_suspend = FALSE;
+    bool udp_task_suspend = FALSE;
     uint16_t polling_count = 0;
     TaskHandle_t http_server_task_handle;
+    TaskHandle_t udp_task_handle;
     /**
      *  Initialize Ethernet
      */
@@ -45,6 +47,15 @@ void Eth_Task(void *pvParameters)
         }
     }
     /**
+     *  Create UDP_Task
+     */
+    if (xTaskCreate(UDP_Task, "UDP", configMINIMAL_STACK_SIZE+100, NULL,
+            configMAX_PRIORITIES-2, &udp_task_handle) != pdPASS) {
+        while (1) {
+            // Error occurs, often out of heap size. Should never get hear.
+        }
+    }
+    /**
      *  Main loop
      */
 	while (1) {
@@ -55,11 +66,19 @@ void Eth_Task(void *pvParameters)
                     http_server_task_suspend = TRUE;
                     vTaskSuspend(http_server_task_handle);
                 }
+                if (!udp_task_suspend) {
+                    udp_task_suspend = TRUE;
+                    vTaskSuspend(udp_task_handle);
+                }
                 vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
             }
             if (http_server_task_suspend) {
                 http_server_task_suspend = FALSE;
                 vTaskResume(http_server_task_handle);
+            }
+            if (udp_task_suspend) {
+                udp_task_suspend = FALSE;
+                vTaskResume(udp_task_handle);
             }
             polling_count = 0;
         }

@@ -47,6 +47,7 @@
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\IR\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\config\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\udp\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\resources\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\structure\</Path>
@@ -73,6 +74,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\config\config_accessor.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\config\config_manager.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\ethernet.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\udp\udp.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\http_server.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\resources\image.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\resources\webpages.c</PathName>
@@ -197,6 +199,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\config\include\config_accessor.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\config\include\config_manager.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\include\ethernet.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\udp\include\udp.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\include\http_server.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\include\image.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\App_Sources\project_pilote\ethernet\web_sever\include\webpages.h</PathName>

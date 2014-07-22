@@ -286,8 +286,6 @@ static err_t WebPilote_CreateRecvMessage(char *target, char *data)
         _mes_pkg_recv.target = PILOTE_MES_TARGET_VIDEO_MODE;
     } else if (!strncmp(target, "token_ring", 10)) {
         _mes_pkg_recv.target = PILOTE_MES_TARGET_TOKEN_RING;
-    } else if (!strncmp(target, "video_mode", 10)) {
-        _mes_pkg_recv.target = PILOTE_MES_TARGET_VIDEO_MODE;
     } else if (!strncmp(target, "group", 5)) {
         _mes_pkg_recv.target = PILOTE_MES_TARGET_GROUP;
     } else if (!strncmp(target, "udp_id", 6)) {

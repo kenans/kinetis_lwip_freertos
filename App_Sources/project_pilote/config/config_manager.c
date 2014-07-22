@@ -197,6 +197,9 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
             mes_pkg_send->operation = PILOTE_MES_OPERATION_REPLY_CONFIG;        // Set mes_pkg_send operation
             mes_pkg_send->target = mes_pkg_recv->target;                                // Set mes_pkg_send target
             break;
+        /**
+         *  Modify configurations
+         */
         case PILOTE_MES_OPERATION_MODIFY:
             mes_pkg_send->operation = PILOTE_MES_OPERATION_REPLY_MODIFY;        // Set mes_pkg_send operation
             mes_pkg_send->target = mes_pkg_recv->target;                                // Set mes_pkg_send target
@@ -229,10 +232,14 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
                     _pilote_config.nums_of_frames = (uint8_t)mes_pkg_recv->data;
                     break;
                 case PILOTE_MES_TARGET_UDP_ID:
-                    _pilote_config.udp_id[0] = (uint8_t)((mes_pkg_recv->data&0xff000000U)>>24);
-                    _pilote_config.udp_id[1] = (uint8_t)((mes_pkg_recv->data&0x00ff0000U)>>16);
-                    _pilote_config.udp_id[2] = (uint8_t)((mes_pkg_recv->data&0x0000ff00U)>>8);
-                    _pilote_config.udp_id[3] = (uint8_t)((mes_pkg_recv->data&0x000000ffU));
+//                    _pilote_config.udp_id[0] = (uint8_t)(((mes_pkg_recv->data&0xff000000U)>>24)+'0');
+//                    _pilote_config.udp_id[1] = (uint8_t)(((mes_pkg_recv->data&0x00ff0000U)>>16)+'0');
+//                    _pilote_config.udp_id[2] = (uint8_t)(((mes_pkg_recv->data&0x0000ff00U)>>8)+'0');
+//                    _pilote_config.udp_id[3] = (uint8_t)(((mes_pkg_recv->data&0x000000ffU))+'0');
+                    _pilote_config.udp_id[0] = (uint8_t)(((mes_pkg_recv->data)/1000U)%10U + '0');
+                    _pilote_config.udp_id[1] = (uint8_t)(((mes_pkg_recv->data)/100U)%10U + '0');
+                    _pilote_config.udp_id[2] = (uint8_t)(((mes_pkg_recv->data)/10U)%10U + '0');
+                    _pilote_config.udp_id[3] = (uint8_t)(((mes_pkg_recv->data)/1U)%10U + '0');
                     break;
                 case PILOTE_MES_TARGET_UDP_DATA:
                     // TODO
@@ -272,6 +279,9 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
             break;
     }
 
+    /**
+     *  Create send back message
+     */
     switch (mes_pkg_recv->target) {
         mes_pkg_send->data = 0;
         case PILOTE_MES_TARGET_ENABLE:
@@ -302,10 +312,14 @@ static err_t ConfigManagerParseMes(PiloteMessagePackage *mes_pkg_recv,
             mes_pkg_send->data = (uint32_t)_pilote_config.nums_of_frames;
             break;
         case PILOTE_MES_TARGET_UDP_ID:
-            mes_pkg_send->data = (uint32_t)(((_pilote_config.udp_id[0]<<24)&0xff000000U)+
-                                            ((_pilote_config.udp_id[1]<<16)&0x00ff0000U)+
-                                            ((_pilote_config.udp_id[2]<<8)&0x0000ff00U)+
-                                            ((_pilote_config.udp_id[3])&0x000000ffU));
+//            mes_pkg_send->data = (uint32_t)((((_pilote_config.udp_id[0]-'0')<<24)&0xff000000U)+
+//                                            (((_pilote_config.udp_id[1]-'0')<<16)&0x00ff0000U)+
+//                                            (((_pilote_config.udp_id[2]-'0')<<8)&0x0000ff00U)+
+//                                            (((_pilote_config.udp_id[3]-'0'))&0x000000ffU));
+            mes_pkg_send->data = (uint32_t)((_pilote_config.udp_id[0]-'0')*1000U+
+                                            (_pilote_config.udp_id[1]-'0')*100U+
+                                            (_pilote_config.udp_id[2]-'0')*10U+
+                                            (_pilote_config.udp_id[3]-'0')*1U);
             break;
         case PILOTE_MES_TARGET_UDP_DATA:
             // TODO

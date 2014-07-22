@@ -52,9 +52,14 @@ void UDP_Task(void *pvParameters)
                     // Memory error, should never get here
                 }
             }
+
+            struct ip_addr  xIpAddr;
+            IP4_ADDR( &xIpAddr, 192, 168, 1, 43 );
+            netconn_sendto(conn, in_netbuf, &xIpAddr, 1234);
+
             netbuf_delete(in_netbuf);       // Finally delete netbuf
         } else {                            // If timeout
-            // Do nothing but re-block to netconn_recv()
+            // Do nothing but re-block onto netconn_recv()
         }
     }
 }
@@ -77,7 +82,7 @@ static err_t UDP_Parse(const char *udp_cmd, const char *udp_id)
     PiloteUdpCmdMes udp_cmd_mes;                // Message to be sent
     uint8_t i = 0;
 
-    if (udp_cmd==NULL || udp_id==NULL)          // If memory error
+    if (udp_cmd==NULL || udp_id==NULL || mbox_pilote_udp_cmd==NULL) // If memory error
         return ERR_MEM;
 
     for (i = 0; i<PILOTE_UDP_ID_COUNT; i++) {   // Udp ID

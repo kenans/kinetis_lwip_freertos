@@ -108,9 +108,9 @@ void IR_TransmitThread(void *pvParameters)
                     first_time_start = FALSE;
                     transmit_allowed = FALSE;
                     /**
-                     *      If first time start an UDP source mode, should clean the mailbox mbox_pilote_udp_cmd
-                     *  in order to remove the command received when not in udp mode.
-                     *      Should also copy udp_id
+                     *  - If first time start an UDP source mode, should clean the mailbox mbox_pilote_udp_cmd
+                     *    in order to remove the command received when not in udp mode.
+                     *  - Should also copy udp_id
                      */
                     if (_pilote_config_ptr->source_mode==PILOTE_SOURCE_UDP) {
                         xQueueReset(mbox_pilote_udp_cmd);
@@ -176,19 +176,30 @@ void IR_TransmitThread(void *pvParameters)
                 default:
                     break;
             }
-            if (transmit_allowed) {
-                last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
-                for (i = 0; i < nums_of_frames ; i++) {
-                    if (IR_SendFrame() != ERR_OK) {
-                        while (1) {
-                            // IR error
+            if (source_mode != PILOTE_SOURCE_UDP) {      // If source mode==UDP, do not delay
+                if (transmit_allowed) {
+                    last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
+                    for (i = 0; i < nums_of_frames ; i++) {
+                        if (IR_SendFrame() != ERR_OK) {
+                            while (1) {
+                                // IR error
+                            }
+                        }
+                    }
+                    vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
+                } else {
+                    vTaskDelay(FREE_RTOS_DELAY_500MS);      // If transmit not allowed, polling every 500ms
+                }
+            } else {
+                if (transmit_allowed) {
+                    for (i = 0; i < nums_of_frames ; i++) {
+                        if (IR_SendFrame() != ERR_OK) {
+                            while (1) {
+                                // IR error
+                            }
                         }
                     }
                 }
-                vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
-            } else {
-                if (source_mode != PILOTE_SOURCE_UDP)       // If source mode==UDP, do not delay
-                    vTaskDelay(FREE_RTOS_DELAY_500MS);      // If transmit not allowed, polling every 500ms
             }
         } else {
             // If not transmitting (configuring or disabled)

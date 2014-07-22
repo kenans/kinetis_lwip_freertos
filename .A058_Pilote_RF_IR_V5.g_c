@@ -18,7 +18,7 @@
         <Line>PE_Const</Line>
         <Line>IO_Map</Line>
       </GenSharedModules>
-      <ShrdHeaderAge0>1156943202</ShrdHeaderAge0>
+      <ShrdHeaderAge0>1156944409</ShrdHeaderAge0>
       <ShrdCodeAge0>-1</ShrdCodeAge0>
       <ShrdAsemblAge0>-1</ShrdAsemblAge0>
       <ShrdHeaderAge1>1156550353</ShrdHeaderAge1>
@@ -159,10 +159,10 @@
       <XtraAge53>1156547811</XtraAge53>
       <XtraAge54>1156547811</XtraAge54>
       <XtraAge55>1156547811</XtraAge55>
-      <XtraAge69>1156943202</XtraAge69>
-      <XtraAge70>1156943202</XtraAge70>
+      <XtraAge69>1156944409</XtraAge69>
+      <XtraAge70>1156944409</XtraAge70>
       <XtraAge72>1156547736</XtraAge72>
-      <XtraAge73>1156943203</XtraAge73>
+      <XtraAge73>1156944409</XtraAge73>
       <GenExtraFileType73>4</GenExtraFileType73>
       <GenExtraFileType72>5</GenExtraFileType72>
       <GenExtraFileType71>4</GenExtraFileType71>
@@ -644,7 +644,7 @@
     </GenFiles>
     <SignalListFile>Documentation\A058_Pilote_RF_IR_V5_SIGNALS.txt</SignalListFile>
     <DestinationCompiler>GNUC</DestinationCompiler>
-    <ProjectModificationStamp>39</ProjectModificationStamp>
+    <ProjectModificationStamp>41</ProjectModificationStamp>
   </Options>
   <CpuID_4>
     <Generated>true</Generated>
@@ -653,7 +653,7 @@
     <GenDriverVersion>01.04</GenDriverVersion>
     <GenEventModule>Events</GenEventModule>
     <HeaderAge>1156604849</HeaderAge>
-    <CodeAge>1156943202</CodeAge>
+    <CodeAge>1156944409</CodeAge>
     <AsemblAge>-1</AsemblAge>
     <GenNumMethods>11</GenNumMethods>
     <SetClockConfiguration>false</SetClockConfiguration>
@@ -5296,8 +5296,8 @@
     <GenComponentVersion>01.006</GenComponentVersion>
     <GenDriverVersion>01.06</GenDriverVersion>
     <GenEventModule />
-    <HeaderAge>1156943202</HeaderAge>
-    <CodeAge>1156943202</CodeAge>
+    <HeaderAge>1156944409</HeaderAge>
+    <CodeAge>1156944409</CodeAge>
     <AsemblAge>-1</AsemblAge>
     <GenNumMethods>1</GenNumMethods>
     <Init>true</Init>
@@ -5330,8 +5330,8 @@
     <GenComponentVersion>02.086</GenComponentVersion>
     <GenDriverVersion>01.00</GenDriverVersion>
     <GenEventModule />
-    <HeaderAge>1156943202</HeaderAge>
-    <CodeAge>1156943202</CodeAge>
+    <HeaderAge>1156944409</HeaderAge>
+    <CodeAge>1156944409</CodeAge>
     <AsemblAge>-1</AsemblAge>
     <GenNumMethods>11</GenNumMethods>
     <GetDir>false</GetDir>
@@ -5371,8 +5371,8 @@
       <GenComponentVersion>01.033</GenComponentVersion>
       <GenDriverVersion>01.03</GenDriverVersion>
       <GenEventModule />
-      <HeaderAge>1156943202</HeaderAge>
-      <CodeAge>1156943202</CodeAge>
+      <HeaderAge>1156944409</HeaderAge>
+      <CodeAge>1156944409</CodeAge>
       <AsemblAge>-1</AsemblAge>
       <GenNumMethods>13</GenNumMethods>
       <Init>true</Init>

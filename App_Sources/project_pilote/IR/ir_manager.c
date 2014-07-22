@@ -39,7 +39,7 @@ void IR_Thread(void *pvParameters)
         }
     }
     // Start IR_TransmitThread
-    if (xTaskCreate(IR_TransmitThread, "ir_tranmit", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES-1, NULL) != pdPASS) {
+    if (xTaskCreate(IR_TransmitThread, "ir_tranmit", configMINIMAL_STACK_SIZE+50, NULL, configMAX_PRIORITIES-1, NULL) != pdPASS) {
         while(1) {
             // Error, often out of heap size. Should never get hear.
         }
