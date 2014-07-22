@@ -26,9 +26,10 @@
  */
 
 /**
- *
+ *  UDP_Task
+ *      - An UDP task, called by Eth_Task()
  */
-
+void UDP_Task(void *pvParameters);
 
 
 #endif /* UDP_H_ */

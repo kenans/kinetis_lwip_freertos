@@ -34,7 +34,8 @@ static PiloteMessagePackage _mes_pkg_recv;      // Mes package for recv mbox
 static PiloteMessagePackage _mes_pkg_send;      // Mes package for send mbox
 /**
  *  HttpServer_Task
- *      - Creates a simple HTTP web server
+ *      - An http server, doing configuration from a web page.
+ *      - This task is called by Eth_Task();
  */
 void HttpServer_Task(void* pvParameters)
 {

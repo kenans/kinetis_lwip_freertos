@@ -29,7 +29,7 @@
 
 /**
  *  HttpServer_Task
- *      - Creates a simple HTTP web server
+ *      - An HTTP web server
  */
 void HttpServer_Task(void* pvParameters);
 
