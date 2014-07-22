@@ -180,6 +180,8 @@ typedef enum {
  */
 #define IR_FRAME_COUNT             9U
 #define IR_FRAME_START             0xB7U
+#define IR_FRAME_CMD_PARAM_1_PLAY  0x4BU
+#define IR_FRAME_CMD_PARAM_2_PLAY  0x91U
 #define IR_FRAME_CMD_DATA_1        0x5AU
 #define IR_FRAME_CMD_DATA_2        0x5BU
 /**

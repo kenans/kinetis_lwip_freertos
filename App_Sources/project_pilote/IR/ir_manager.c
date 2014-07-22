@@ -147,8 +147,8 @@ static err_t IR_GenerateFrame(uint8_t *ir_frame,
          */
         switch (pilote_config_ptr->mode) {
             case PILOTE_TRIGGER:
-                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
-                ir_frame[2] = pilote_config_ptr->command_param[1];                // CMD2
+                ir_frame[1] = 0x4BU;                // CMD1
+                ir_frame[2] = 0x91U;                // CMD2
                 ir_frame[3] = IR_FRAME_CMD_DATA_1;
                 ir_frame[4] = IR_FRAME_CMD_DATA_2;
                 ir_frame[5] = (uint8_t)((pilote_config_ptr->code>>8U)&0x00FFU);   //
@@ -163,12 +163,16 @@ static err_t IR_GenerateFrame(uint8_t *ir_frame,
                 ir_frame[7] = pilote_config_ptr->group;
                 break;
             case PILOTE_COMMAND:
-                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
-                ir_frame[2] = pilote_config_ptr->command_param[1];                // CMD2
+//                ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
+//                ir_frame[2] = pilote_config_ptr->command_param[1];                // CMD2
+                ir_frame[1] = 0U;                // CMD1
+                ir_frame[2] = 0U;                // CMD2
                 ir_frame[3] = IR_FRAME_CMD_DATA_1;
                 ir_frame[4] = IR_FRAME_CMD_DATA_2;
-                ir_frame[5] = (uint8_t)((pilote_config_ptr->command_data>>8U)&0x00FFU);
-                ir_frame[6] = (uint8_t)(pilote_config_ptr->command_data&0x00FFU);
+//                ir_frame[5] = (uint8_t)((pilote_config_ptr->command_data>>8U)&0x00FFU);
+//                ir_frame[6] = (uint8_t)(pilote_config_ptr->command_data&0x00FFU);
+                ir_frame[5] = 0x5CU;            // Default value, might be modified by UDP command
+                ir_frame[6] = 0x5DU;
                 ir_frame[7] = pilote_config_ptr->group;
                 break;
             default:

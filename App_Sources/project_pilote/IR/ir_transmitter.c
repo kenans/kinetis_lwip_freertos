@@ -131,8 +131,12 @@ void IR_TransmitThread(void *pvParameters)
                     }
                     break;
                 case PILOTE_SOURCE_UDP:
-                    break;
                     // TODO
+                    // Wait for an UDP command with a timeout
+                    // If received an UDP command, parse its type (play, stop, ...)
+                    // Modify the current frame
+                    // Allow transmit
+                    break;
                 default:
                     break;
             }
@@ -147,7 +151,8 @@ void IR_TransmitThread(void *pvParameters)
                 }
                 vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
             } else {
-                vTaskDelay(FREE_RTOS_DELAY_500MS);          // If transmit not allowed, polling every 500ms
+                if (source_mode != PILOTE_SOURCE_UDP)       // If source mode==UDP, do not delay
+                    vTaskDelay(FREE_RTOS_DELAY_500MS);      // If transmit not allowed, polling every 500ms
             }
         } else {
             // If not transmitting (configuring or disabled)

@@ -23,7 +23,7 @@
  * -------------------------------------------------------------------------------------------
  */
 /**
- *  PiloteMessagePackage structure. A message USB/UDP/http/etc package, for IN or OUT
+ *  PiloteMessagePackage structure. A message USB/UDP/http/etc package, used for configuring
  */
 typedef struct {
     PiloteMesDirection          direction;              // Recv: from PC to MCU; Send: from MCU to PC
@@ -33,6 +33,10 @@ typedef struct {
     uint32_t                    data;                   // Message value
     //void                        *data_ptr;              // A pointer to the message value if is needed
 } PiloteMessagePackage;
+
+/**
+ *
+ */
 
 /**
  * -------------------------------------------------------------------------------------------

@@ -39,6 +39,9 @@
 #include "ETH1.h"
 #include "Cmp1.h"
 #include "ACompLdd1.h"
+#include "PTA.h"
+#include "ContactSec.h"
+#include "BitIoLdd1.h"
 /* Including shared modules, which are used for whole project */
 #include "PE_Types.h"
 #include "PE_Error.h"
