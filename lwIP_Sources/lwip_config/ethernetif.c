@@ -167,7 +167,9 @@ low_level_output(struct netif *netif, struct pbuf *p)
 		_send_len += q->len;
 	}
 
-    Eth_SendFrame(_eth_frame_buf, _send_len);
+    if (!Eth_SendFrame(_eth_frame_buf, _send_len)){
+        return ERR_MEM;
+    }
 	//signal that packet should be sent();
 
 #if ETH_PAD_SIZE

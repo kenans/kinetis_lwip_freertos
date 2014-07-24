@@ -44,15 +44,13 @@ void UDP_Task(void *pvParameters)
         in_netbuf = netconn_recv(conn);     // Receive a message (with a timeout 100ms)
         if (in_netbuf != NULL) {            // If got a message
             netbuf_copy(in_netbuf, udp_buf, in_netbuf->p->tot_len);
+            udp_buf[in_netbuf->p->tot_len] = '\0';
             sscanf(udp_buf, "%[^#]#%s", udp_cmd, udp_id);
             if (UDP_Parse(udp_cmd, udp_id) == ERR_MEM) {
                 while (1) {
                     // Memory error, should never get here
                 }
             }
-//            struct ip_addr  xIpAddr;
-//            IP4_ADDR( &xIpAddr, 192, 168, 1, 43 );
-//            netconn_sendto(conn, in_netbuf, &xIpAddr, 1234);
             netbuf_delete(in_netbuf);       // Finally delete netbuf
         } else {                            // If timeout
             // Do nothing but re-block onto netconn_recv()
@@ -80,6 +78,10 @@ static err_t UDP_Parse(const char *udp_cmd, const char *udp_id)
 
     if (udp_cmd==NULL || udp_id==NULL || mbox_pilote_udp_cmd==NULL) // If memory error
         return ERR_MEM;
+
+    if (strlen(udp_id) != PILOTE_UDP_ID_COUNT) {
+        return ERR_COMMON;
+    }
 
     for (i = 0; i<PILOTE_UDP_ID_COUNT; i++) {   // Udp ID
         udp_cmd_mes.udp_id[i] = udp_id[i];
