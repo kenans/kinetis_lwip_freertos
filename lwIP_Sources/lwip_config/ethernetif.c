@@ -198,7 +198,9 @@ low_level_input(struct netif *netif)
 
 	/* Obtain the size of the packet and put it into the "len"
      variable. */
-    Eth_ReadFrame(_eth_frame_buf, &len);
+    if (!Eth_ReadFrame(_eth_frame_buf, &len)) {
+        return NULL;
+    }
 
 #if ETH_PAD_SIZE
 	len += ETH_PAD_SIZE; /* allow room for Ethernet padding */

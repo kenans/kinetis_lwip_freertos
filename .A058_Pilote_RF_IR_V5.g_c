@@ -644,7 +644,7 @@
     </GenFiles>
     <SignalListFile>Documentation\A058_Pilote_RF_IR_V5_SIGNALS.txt</SignalListFile>
     <DestinationCompiler>GNUC</DestinationCompiler>
-    <ProjectModificationStamp>41</ProjectModificationStamp>
+    <ProjectModificationStamp>42</ProjectModificationStamp>
   </Options>
   <CpuID_4>
     <Generated>true</Generated>

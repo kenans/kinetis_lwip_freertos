@@ -29,9 +29,8 @@ void UDP_Task(void *pvParameters)
      */
     struct netconn *conn;
     struct netbuf *in_netbuf;
-    char *in_buf_ptr;
     uint16_t port = 1234;                   // port: default 1234
-    uint16_t len = 0;                       // len: temporary variable for length
+    char udp_buf[16];
     char udp_cmd[8], udp_id[8];             // buffer for udp data, should be long enough to hold '\0'
     /**
      *  Initialization
@@ -42,21 +41,18 @@ void UDP_Task(void *pvParameters)
      *  Main loop
      */
     while (1) {
-        in_netbuf = netconn_recv(conn);     // Receive a message (with a timeout of 100ms,
-                                            //        see conn->recv_timeout in api_msg.c)
+        in_netbuf = netconn_recv(conn);     // Receive a message (with a timeout 100ms)
         if (in_netbuf != NULL) {            // If got a message
-            netbuf_data(in_netbuf, (void**)&in_buf_ptr, &len);
-            sscanf(in_buf_ptr, "%[^#]#%s", udp_cmd, udp_id);
+            netbuf_copy(in_netbuf, udp_buf, in_netbuf->p->tot_len);
+            sscanf(udp_buf, "%[^#]#%s", udp_cmd, udp_id);
             if (UDP_Parse(udp_cmd, udp_id) == ERR_MEM) {
                 while (1) {
                     // Memory error, should never get here
                 }
             }
-
-            struct ip_addr  xIpAddr;
-            IP4_ADDR( &xIpAddr, 192, 168, 1, 43 );
-            netconn_sendto(conn, in_netbuf, &xIpAddr, 1234);
-
+//            struct ip_addr  xIpAddr;
+//            IP4_ADDR( &xIpAddr, 192, 168, 1, 43 );
+//            netconn_sendto(conn, in_netbuf, &xIpAddr, 1234);
             netbuf_delete(in_netbuf);       // Finally delete netbuf
         } else {                            // If timeout
             // Do nothing but re-block onto netconn_recv()
