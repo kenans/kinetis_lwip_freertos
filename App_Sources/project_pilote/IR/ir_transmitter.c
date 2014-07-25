@@ -14,7 +14,7 @@
 // Variables
 static volatile bool                _transmitting = FALSE;  // volatile ?
 static uint8_t                      _size = 0;
-static const uint8_t                *_frame = NULL;
+static uint8_t                      *_frame = NULL;
 static const PiloteConfigurations   *_pilote_config_ptr = NULL;
 static LDD_TDeviceData              *_interrupt_device_ptr = NULL;
 static volatile uint32_t            _interrupt_flag = 0;    // Interrupt flag. It's changed in Events.c
@@ -75,22 +75,24 @@ err_t IR_StopTransmit(void)
 void IR_TransmitThread(void *pvParameters)
 {
     (void)pvParameters;
+
     uint16_t i = 0;
     bool first_time_start = TRUE;
     TickType_t last_wake_time = 0;
-
     // Transmit allowed flag
     bool transmit_allowed = FALSE;
-
     // Own copy of configuration data
     uint8_t nums_of_frames = 0;
     uint8_t udp_id[4];
     PiloteTimeMs time_between_frames = 0;
-    PiloteSourceMode source_mode = PILOTE_SOURCE_OFF;
-
+    PiloteMode mode;
+    PiloteSourceMode source_mode;
     // UDP command mailbox and message packet
     extern QueueHandle_t mbox_pilote_udp_cmd;
     PiloteUdpCmdMes udp_cmd_mes;
+    // Synchro video variables
+    uint32_t delta_video_code = 0;
+    uint32_t video_code = 0;
 
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
@@ -105,6 +107,7 @@ void IR_TransmitThread(void *pvParameters)
                     nums_of_frames = _pilote_config_ptr->nums_of_frames;
                     time_between_frames = _pilote_config_ptr->time_between_frames;
                     source_mode = _pilote_config_ptr->source_mode;
+                    mode = _pilote_config_ptr->mode;
                     first_time_start = FALSE;
                     transmit_allowed = FALSE;
                     /**
@@ -118,6 +121,16 @@ void IR_TransmitThread(void *pvParameters)
                             udp_id[i] = _pilote_config_ptr->udp_id[i];
                         }
                     }
+                    /**
+                     *  - If mode is Synchro, should set time_between_frames the multiple of
+                     *    PILOTE_VIDEO_FRAMES_GAP_MS
+                     */
+                    if (mode == PILOTE_SYNCHRO) {
+                        time_between_frames +=
+                                (PILOTE_VIDEO_FRAMES_GAP_MS -
+                                 (time_between_frames%PILOTE_VIDEO_FRAMES_GAP_MS));
+                        delta_video_code = time_between_frames/PILOTE_VIDEO_FRAMES_GAP_MS;
+                    }
                 } else {
                     while (1) {
                     // Configuration error
@@ -127,22 +140,31 @@ void IR_TransmitThread(void *pvParameters)
             }
             switch (source_mode) {
                 case PILOTE_SOURCE_OFF:
-                    transmit_allowed = TRUE;
-                   break;
+                    if (!transmit_allowed)
+                        transmit_allowed = TRUE;
+                    break;
                 case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_TTL_ON:
                     if (ContactSec_GetVal()==0) { // low level
-                        transmit_allowed = TRUE;
+                        if (!transmit_allowed) {
+                            video_code = 0;
+                            transmit_allowed = TRUE;
+                        }
                     } else {
-                        transmit_allowed = FALSE;
+                        if (transmit_allowed)
+                            transmit_allowed = FALSE;
                     }
                     break;
                 case PILOTE_SOURCE_CONTACT_OFF:
                 case PILOTE_SOURCE_TTL_OFF:
                     if (ContactSec_GetVal()==1) { // high level
-                        transmit_allowed = TRUE;
+                        if (!transmit_allowed) {
+                            video_code = 0;
+                            transmit_allowed = TRUE;
+                        }
                     } else {
-                        transmit_allowed = FALSE;
+                        if (transmit_allowed)
+                            transmit_allowed = FALSE;
                     }
                     break;
                 case PILOTE_SOURCE_UDP:
@@ -176,6 +198,15 @@ void IR_TransmitThread(void *pvParameters)
                 default:
                     break;
             }
+            // If Synchro and with source mode, calculate video frame numbers
+            if (mode == PILOTE_SYNCHRO && source_mode != PILOTE_SOURCE_OFF) {
+                video_code+=delta_video_code;
+                // 3 bytes in an IR frame for video code
+                _frame[4] = (uint8_t)(video_code>>16u);
+                _frame[5] = (uint8_t)(video_code>>8u);
+                _frame[6] = (uint8_t)video_code;
+            }
+            // Send IR frames
             if (source_mode != PILOTE_SOURCE_UDP) {      // If source mode==UDP, do not delay
                 if (transmit_allowed) {
                     last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.

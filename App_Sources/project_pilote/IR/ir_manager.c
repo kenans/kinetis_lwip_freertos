@@ -159,7 +159,9 @@ static err_t IR_GenerateFrame(uint8_t *ir_frame,
                 ir_frame[1] = pilote_config_ptr->command_param[0];                // CMD1
                 ir_frame[2] = (uint8_t)((pilote_config_ptr->code>>8U)&0x00FFU);
                 ir_frame[3] = (uint8_t)(pilote_config_ptr->code&0x00FFU);
-                // TODO
+                ir_frame[4] = 0;
+                ir_frame[5] = 0;
+                ir_frame[6] = 0;
                 ir_frame[7] = pilote_config_ptr->group;
                 break;
             case PILOTE_COMMAND:
