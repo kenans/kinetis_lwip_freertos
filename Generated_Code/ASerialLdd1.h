@@ -6,7 +6,7 @@
 **     Component   : Serial_LDD
 **     Version     : Component 01.187, Driver 01.12, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-25, 12:32, # CodeGen: 11
 **     Abstract    :
 **         This component "Serial_LDD" implements an asynchronous serial
 **         communication. The component supports different settings of
@@ -36,9 +36,7 @@
 **            Transmitter output                           : Not inverted
 **            Receiver input                               : Not inverted
 **            Break generation length                      : 10/11 bits
-**            Receiver                                     : Enabled
-**              RxD                                        : ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4
-**              RxD pin signal                             : 
+**            Receiver                                     : Disabled
 **            Transmitter                                  : Enabled
 **              TxD                                        : ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3
 **              TxD pin signal                             : 
@@ -48,10 +46,10 @@
 **            Auto initialization                          : no
 **            Event mask                                   : 
 **              OnBlockSent                                : Enabled
-**              OnBlockReceived                            : Enabled
+**              OnBlockReceived                            : Disabled
 **              OnTxComplete                               : Disabled
 **              OnError                                    : Enabled
-**              OnBreak                                    : Enabled
+**              OnBreak                                    : Disabled
 **          CPU clock/configuration selection              : 
 **            Clock configuration 0                        : This component enabled
 **            Clock configuration 1                        : This component disabled
@@ -62,10 +60,9 @@
 **            Clock configuration 6                        : This component disabled
 **            Clock configuration 7                        : This component disabled
 **     Contents    :
-**         Init         - LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr);
-**         SendBlock    - LDD_TError ASerialLdd1_SendBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
-**         ReceiveBlock - LDD_TError ASerialLdd1_ReceiveBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
-**         GetError     - LDD_TError ASerialLdd1_GetError(LDD_TDeviceData *DeviceDataPtr,...
+**         Init      - LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr);
+**         SendBlock - LDD_TError ASerialLdd1_SendBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
+**         GetError  - LDD_TError ASerialLdd1_GetError(LDD_TDeviceData *DeviceDataPtr,...
 **
 **     Copyright : 1997 - 2014 Freescale Semiconductor, Inc. 
 **     All Rights Reserved.
@@ -133,13 +130,10 @@ extern "C" {
 /* Methods configuration constants - generated for all enabled component's methods */
 #define ASerialLdd1_Init_METHOD_ENABLED /*!< Init method of the component ASerialLdd1 is enabled (generated) */
 #define ASerialLdd1_SendBlock_METHOD_ENABLED /*!< SendBlock method of the component ASerialLdd1 is enabled (generated) */
-#define ASerialLdd1_ReceiveBlock_METHOD_ENABLED /*!< ReceiveBlock method of the component ASerialLdd1 is enabled (generated) */
 #define ASerialLdd1_GetError_METHOD_ENABLED /*!< GetError method of the component ASerialLdd1 is enabled (generated) */
 
 /* Events configuration constants - generated for all enabled component's events */
-#define ASerialLdd1_OnBlockReceived_EVENT_ENABLED /*!< OnBlockReceived event of the component ASerialLdd1 is enabled (generated) */
 #define ASerialLdd1_OnBlockSent_EVENT_ENABLED /*!< OnBlockSent event of the component ASerialLdd1 is enabled (generated) */
-#define ASerialLdd1_OnBreak_EVENT_ENABLED /*!< OnBreak event of the component ASerialLdd1 is enabled (generated) */
 #define ASerialLdd1_OnError_EVENT_ENABLED /*!< OnError event of the component ASerialLdd1 is enabled (generated) */
 
 #define ENABLED_TX_INT        0x01U    /*!< TX interrupt enabled      */
@@ -151,9 +145,6 @@ extern "C" {
 typedef struct {
   uint16_t SerFlag;                    /*!< Flags for serial communication */
   LDD_SERIAL_TError ErrFlag;           /*!< Error flags mirror of SerFlag */
-  uint16_t InpRecvDataNum;             /*!< The counter of received characters */
-  uint8_t *InpDataPtr;                 /*!< The buffer pointer for received characters */
-  uint16_t InpDataNumReq;              /*!< The counter of characters to receive by ReceiveBlock() */
   uint16_t OutSentDataNum;             /*!< The counter of sent characters */
   uint8_t *OutDataPtr;                 /*!< The buffer pointer for data to be transmitted */
   uint16_t OutDataNumReq;              /*!< The counter of characters to be send by SendBlock() */
@@ -184,51 +175,6 @@ typedef ASerialLdd1_TDeviceData *ASerialLdd1_TDeviceDataPtr ; /*!< Pointer to th
 */
 /* ===================================================================*/
 LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr);
-
-/*
-** ===================================================================
-**     Method      :  ASerialLdd1_ReceiveBlock (component Serial_LDD)
-*/
-/*!
-**     @brief
-**         Specifies the number of data to receive. The method returns
-**         ERR_BUSY until the specified number of characters is
-**         received. Method [CancelBlockReception] can be used to
-**         cancel a running receive operation. If a receive operation
-**         is not in progress (the method was not called or a previous
-**         operation has already finished) all received characters will
-**         be lost without any notification. To prevent the loss of
-**         data call the method immediately after the last receive
-**         operation has finished (e.g. from the [OnBlockReceived]
-**         event). This method finishes immediately after calling it -
-**         it doesn't wait the end of data reception. Use event
-**         [OnBlockReceived] to check the end of data reception.
-**     @param
-**         DeviceDataPtr   - Device data structure
-**                           pointer returned by [Init] method.
-**     @param
-**         BufferPtr       - Pointer to a buffer where
-**                           received characters will be stored. In case
-**                           of 8bit character width each character in
-**                           buffer occupies 1 byte. In case of 9 and
-**                           more bit long character width each
-**                           character in buffer occupies 2 bytes.
-**     @param
-**         Size            - Number of characters to receive
-**     @return
-**                         - Error code, possible codes:
-**                           ERR_OK - OK
-**                           ERR_SPEED - The component does not work in
-**                           the active clock configuration.
-**                           ERR_PARAM_SIZE - Parameter Size is out of
-**                           expected range.
-**                           ERR_DISABLED - The component or device is
-**                           disabled.
-**                           ERR_BUSY - The previous receive request is
-**                           pending.
-*/
-/* ===================================================================*/
-LDD_TError ASerialLdd1_ReceiveBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData *BufferPtr, uint16_t Size);
 
 /*
 ** ===================================================================

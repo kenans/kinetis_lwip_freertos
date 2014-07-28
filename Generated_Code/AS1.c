@@ -6,7 +6,7 @@
 **     Component   : AsynchroSerial
 **     Version     : Component 02.611, Driver 01.01, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-25, 12:32, # CodeGen: 11
 **     Abstract    :
 **         This component "AsynchroSerial" implements an asynchronous serial
 **         communication. The component supports different settings of
@@ -42,16 +42,13 @@
 **         ----------------------------------------------------------
 **           Function | On package           |    Name
 **         ----------------------------------------------------------
-**            Input   |     12               |  ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4
 **            Output  |     11               |  ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3
 **         ----------------------------------------------------------
 **
 **
 **
 **     Contents    :
-**         RecvChar        - byte AS1_RecvChar(AS1_TComData *Chr);
 **         SendChar        - byte AS1_SendChar(AS1_TComData Chr);
-**         GetCharsInRxBuf - word AS1_GetCharsInRxBuf(void);
 **         GetCharsInTxBuf - word AS1_GetCharsInTxBuf(void);
 **
 **     Copyright : 1997 - 2014 Freescale Semiconductor, Inc. 
@@ -153,54 +150,6 @@ static AS1_TComData OutBuffer;         /* Output char for SCI communication */
 */
 static void HWEnDi(void)
 {
-  (void)ASerialLdd1_ReceiveBlock(ASerialLdd1_DeviceDataPtr, &BufferRead, 1U); /* Receive one data byte */
-}
-
-/*
-** ===================================================================
-**     Method      :  AS1_RecvChar (component AsynchroSerial)
-**     Description :
-**         If any data is received, this method returns one character,
-**         otherwise it returns an error code (it does not wait for
-**         data). This method is enabled only if the receiver property
-**         is enabled.
-**         [Note:] Because the preferred method to handle error and
-**         break exception in the interrupt mode is to use events
-**         <OnError> and <OnBreak> the return value ERR_RXEMPTY has
-**         higher priority than other error codes. As a consequence the
-**         information about an exception in interrupt mode is returned
-**         only if there is a valid character ready to be read.
-**     Parameters  :
-**         NAME            - DESCRIPTION
-**       * Chr             - Pointer to a received character
-**     Returns     :
-**         ---             - Error code, possible codes:
-**                           ERR_OK - OK
-**                           ERR_SPEED - This device does not work in
-**                           the active speed mode
-**                           ERR_RXEMPTY - No data in receiver
-**                           ERR_BREAK - Break character is detected
-**                           (only when the <Interrupt service> property
-**                           is disabled and the <Break signal> property
-**                           is enabled)
-**                           ERR_COMMON - common error occurred (the
-**                           <GetError> method can be used for error
-**                           specification)
-** ===================================================================
-*/
-byte AS1_RecvChar(AS1_TComData *Chr)
-{
-  byte Result = ERR_OK;                /* Return error code */
-
-  if ((SerFlag & CHAR_IN_RX) == 0U) {  /* Is any char in RX buffer? */
-    return ERR_RXEMPTY;                /* If no then error */
-  }
-  EnterCritical();                     /* Disable global interrupts */
-  *Chr = BufferRead;                   /* Received char */
-  Result = (byte)((SerFlag & (OVERRUN_ERR|COMMON_ERR))? ERR_COMMON : ERR_OK);
-  SerFlag &= (word)~(word)(OVERRUN_ERR|COMMON_ERR|CHAR_IN_RX); /* Clear all errors in the status variable */
-  ExitCritical();                      /* Enable global interrupts */
-  return Result;                       /* Return error code */
 }
 
 /*
@@ -240,23 +189,6 @@ byte AS1_SendChar(AS1_TComData Chr)
 
 /*
 ** ===================================================================
-**     Method      :  AS1_GetCharsInRxBuf (component AsynchroSerial)
-**     Description :
-**         Returns the number of characters in the input buffer. This
-**         method is available only if the receiver property is enabled.
-**     Parameters  : None
-**     Returns     :
-**         ---             - The number of characters in the input
-**                           buffer.
-** ===================================================================
-*/
-word AS1_GetCharsInRxBuf(void)
-{
-  return (word)(((SerFlag & CHAR_IN_RX) != 0U)? 1U : 0U); /* Return number of chars in receive buffer */
-}
-
-/*
-** ===================================================================
 **     Method      :  AS1_GetCharsInTxBuf (component AsynchroSerial)
 **     Description :
 **         Returns the number of characters in the output buffer. This
@@ -289,37 +221,6 @@ void AS1_Init(void)
   SerFlag = 0x00U;                     /* Reset flags */
   ASerialLdd1_DeviceDataPtr = ASerialLdd1_Init(NULL); /* Calling init method of the inherited component */
   HWEnDi();                            /* Enable/disable device according to status flags */
-}
-
-#define ON_ERROR    0x01U
-#define ON_FULL_RX  0x02U
-#define ON_RX_CHAR  0x04U
-/*
-** ===================================================================
-**     Method      :  AS1_ASerialLdd1_OnBlockReceived (component AsynchroSerial)
-**
-**     Description :
-**         This event is called when the requested number of data is 
-**         moved to the input buffer.
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-void ASerialLdd1_OnBlockReceived(LDD_TUserData *UserDataPtr)
-{
-  register byte Flags = 0U;            /* Temporary variable for flags */
-
-  (void)UserDataPtr;                   /* Parameter is not used, suppress unused argument warning */
-  if ((SerFlag & CHAR_IN_RX) != 0U) {  /* Is the overrun error flag set? */
-    SerFlag |= OVERRUN_ERR;            /* If yes then set the Error flag for RecvChar/Block method */
-    Flags |= ON_ERROR;                 /* If yes then set the OnError flag */
-  }
-  SerFlag |= CHAR_IN_RX;               /* Set flag "char in RX buffer" */
-  if ((Flags & ON_ERROR) != 0U) {      /* Is any error flag set? */
-    AS1_OnError();                     /* Invoke user event */
-  } else {
-    AS1_OnRxChar();                    /* Invoke user event */
-  }
-  (void)ASerialLdd1_ReceiveBlock(ASerialLdd1_DeviceDataPtr, &BufferRead, 1U); /* Receive one data byte */
 }
 
 #define ON_FREE_TX  0x01U
@@ -360,32 +261,8 @@ void ASerialLdd1_OnBlockSent(LDD_TUserData *UserDataPtr)
 */
 void ASerialLdd1_OnError(LDD_TUserData *UserDataPtr)
 {
-  LDD_SERIAL_TError SerialErrorMask;   /* Serial error mask variable */
-
   (void)UserDataPtr;                   /* Parameter is not used, suppress unused argument warning */
-  (void)ASerialLdd1_GetError(ASerialLdd1_DeviceDataPtr, &SerialErrorMask); /* Get error state */
-  if (SerialErrorMask != 0U) {
-    SerFlag |= (((SerialErrorMask & LDD_SERIAL_PARITY_ERROR) != 0U ) ? PARITY_ERR : 0U);
-    SerFlag |= (((SerialErrorMask & LDD_SERIAL_NOISE_ERROR) != 0U ) ? NOISE_ERR : 0U);
-    SerFlag |= (((SerialErrorMask & LDD_SERIAL_RX_OVERRUN) != 0U ) ? OVERRUN_ERR : 0U);
-    SerFlag |= (((SerialErrorMask & LDD_SERIAL_FRAMING_ERROR) != 0U ) ? FRAMING_ERR : 0U);
-  }
   AS1_OnError();                       /* Invoke user event */
-}
-
-/*
-** ===================================================================
-**     Method      :  AS1_ASerialLdd1_OnBreak (component AsynchroSerial)
-**
-**     Description :
-**         This event is called when a break occurs on the input channel.
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-void ASerialLdd1_OnBreak(LDD_TUserData *UserDataPtr)
-{
-  (void)UserDataPtr;                   /* Parameter is not used, suppress unused argument warning */
-  SerFlag |= FRAMING_ERR;              /* Set framing error flag */
 }
 
 

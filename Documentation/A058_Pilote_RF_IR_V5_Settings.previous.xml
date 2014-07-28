@@ -809,8 +809,8 @@ PE_DEBUGHALT();
         <Interrupt_TxD_priority v="medium priority" />
         <Interrupt_Error v="INT_UART5_ERR" />
         <Interrupt_Error_priority v="medium priority" />
-        <Input_buffer_size v="0" />
-        <Output_buffer_size v="0" />
+        <Input_buffer_size v="8" />
+        <Output_buffer_size v="1" />
         <group name="Handshake">
           <boolgroup name="CTS" v="Disabled" />
           <boolgroup name="RTS" v="Disabled" />
@@ -970,10 +970,10 @@ PE_DEBUGHALT();
       <DisableEvent v="don&amp;apos;t generate code" />
       <RecvChar v="generate code" />
       <SendChar v="generate code" />
-      <RecvBlock v="don&amp;apos;t generate code" />
-      <SendBlock v="don&amp;apos;t generate code" />
-      <ClearRxBuf v="don&amp;apos;t generate code" />
-      <ClearTxBuf v="don&amp;apos;t generate code" />
+      <RecvBlock v="generate code" />
+      <SendBlock v="generate code" />
+      <ClearRxBuf v="generate code" />
+      <ClearTxBuf v="generate code" />
       <CharsInRxBuf v="don&amp;apos;t generate code" />
       <GetCharsInRxBuf v="generate code" />
       <CharsInTxBuf v="don&amp;apos;t generate code" />
@@ -1006,8 +1006,14 @@ PE_DEBUGHALT();
         <Event_procedure_name v="AS1_OnTxChar" />
         <Priority v="same as interrupt" />
       </event>
-      <event name="OnFullRxBuf" v="don&amp;apos;t generate code" />
-      <event name="OnFreeTxBuf" v="don&amp;apos;t generate code" />
+      <event name="OnFullRxBuf" v="generate code">
+        <Event_procedure_name v="AS1_OnFullRxBuf" />
+        <Priority v="same as interrupt" />
+      </event>
+      <event name="OnFreeTxBuf" v="generate code">
+        <Event_procedure_name v="AS1_OnFreeTxBuf" />
+        <Priority v="same as interrupt" />
+      </event>
       <event name="OnBreak" v="don&amp;apos;t generate code" />
       <event name="OnTxComplete" v="don&amp;apos;t generate code" />
     </Events>
@@ -2249,6 +2255,163 @@ PE_DEBUGHALT();
     <Events>
       <Event_module_name v="Events" />
       <event name="OnCompare" v="don&amp;apos;t generate code" />
+    </Events>
+  </Bean>
+  <Bean name="PTA" type="Init_GPIO">
+    <Enabled v="Y" />
+    <Properties>
+      <Component_name v="PTA" />
+      <Device v="PTA" />
+      <group name="Settings">
+        <boolgroup name="Pin 0" v="Do not initialize" />
+        <boolgroup name="Pin 1" v="Do not initialize" />
+        <boolgroup name="Pin 2" v="Do not initialize" />
+        <boolgroup name="Pin 3" v="Do not initialize" />
+        <boolgroup name="Pin 4" v="Do not initialize" />
+        <boolgroup name="Pin 5" v="Do not initialize" />
+        <boolgroup name="Pin 6" v="Do not initialize" />
+        <boolgroup name="Pin 7" v="Do not initialize" />
+        <boolgroup name="Pin 8" v="Do not initialize" />
+        <boolgroup name="Pin 9" v="Do not initialize" />
+        <boolgroup name="Pin 10" v="Do not initialize" />
+        <boolgroup name="Pin 11" v="Do not initialize" />
+        <boolgroup name="Pin 12" v="Do not initialize" />
+        <boolgroup name="Pin 13" v="Do not initialize" />
+        <boolgroup name="Pin 14" v="Do not initialize" />
+        <boolgroup name="Pin 15" v="Do not initialize" />
+        <boolgroup name="Pin 16" v="Do not initialize" />
+        <boolgroup name="Pin 17" v="Do not initialize" />
+        <boolgroup name="Pin 18" v="Do not initialize" />
+        <boolgroup name="Pin 19" v="Initialize">
+          <Pin_direction v="Input" />
+          <Output_value v="No initialization" />
+          <Open_drain v="No initialization" />
+          <Pull_resistor v="Enabled" />
+          <Pull_selection v="Pull Up" />
+          <Slew_rate v="No initialization" />
+          <Drive_strength v="No initialization" />
+          <Interrupt_DMA_request v="No initialization" />
+          <Digital_filter v="No initialization" />
+          <Passive_filter v="No initialization" />
+          <Lock v="No initialization" />
+        </boolgroup>
+        <boolgroup name="Pin 24" v="Do not initialize" />
+        <boolgroup name="Pin 25" v="Do not initialize" />
+        <boolgroup name="Pin 26" v="Do not initialize" />
+        <boolgroup name="Pin 27" v="Do not initialize" />
+        <boolgroup name="Pin 28" v="Do not initialize" />
+        <boolgroup name="Pin 29" v="Do not initialize" />
+        <Digital_filter_clock_source v="Bus clock" />
+        <Digital_filter_width v="0" />
+      </group>
+      <group name="Pin selection/routing">
+        <boolgroup name="Pin 0" v="Disabled" />
+        <boolgroup name="Pin 1" v="Disabled" />
+        <boolgroup name="Pin 2" v="Disabled" />
+        <boolgroup name="Pin 3" v="Disabled" />
+        <boolgroup name="Pin 4" v="Disabled" />
+        <boolgroup name="Pin 5" v="Disabled" />
+        <boolgroup name="Pin 6" v="Disabled" />
+        <boolgroup name="Pin 7" v="Disabled" />
+        <boolgroup name="Pin 8" v="Disabled" />
+        <boolgroup name="Pin 9" v="Disabled" />
+        <boolgroup name="Pin 10" v="Disabled" />
+        <boolgroup name="Pin 11" v="Disabled" />
+        <boolgroup name="Pin 12" v="Disabled" />
+        <boolgroup name="Pin 13" v="Disabled" />
+        <boolgroup name="Pin 14" v="Disabled" />
+        <boolgroup name="Pin 15" v="Disabled" />
+        <boolgroup name="Pin 16" v="Disabled" />
+        <boolgroup name="Pin 17" v="Disabled" />
+        <boolgroup name="Pin 18" v="Disabled" />
+        <boolgroup name="Pin 19" v="Disabled" />
+        <boolgroup name="Pin 24" v="Disabled" />
+        <boolgroup name="Pin 25" v="Disabled" />
+        <boolgroup name="Pin 26" v="Disabled" />
+        <boolgroup name="Pin 27" v="Disabled" />
+        <boolgroup name="Pin 28" v="Disabled" />
+        <boolgroup name="Pin 29" v="Disabled" />
+      </group>
+      <group name="Interrupts">
+        <boolgroup name="Port interrupt" v="Enabled">
+          <Interrupt v="INT_PORTA" />
+          <Interrupt_request v="Disabled" />
+          <Interrupt_priority v="0 (Highest)" />
+          <ISR_Name v="" />
+        </boolgroup>
+      </group>
+      <group name="Initialization">
+        <Call_Init_method v="yes" />
+      </group>
+    </Properties>
+    <Methods>
+      <Init v="generate code" />
+    </Methods>
+    <Events>
+      <EmptySection_DummyValue />
+    </Events>
+  </Bean>
+  <Bean name="ContactSec" type="BitIO">
+    <Enabled v="Y" />
+    <Properties>
+      <Component_name v="ContactSec" />
+      <Pin_for_I_O v="XTAL0/PTA19/FTM1_FLT0/FTM_CLKIN1/LPTMR0_ALT1" />
+      <inhrbean type="BitIO_LDD">
+        <Enabled v="Y" />
+        <Template v="BitIO_LDD" />
+        <Properties>
+          <Component_name v="BitIoLdd1" />
+          <Pin_for_I_O v="XTAL0/PTA19/FTM1_FLT0/FTM_CLKIN1/LPTMR0_ALT1" />
+          <Direction v="Input" />
+          <group name="Initialization">
+            <Init__direction v="Input" />
+            <Init__value v="0" />
+            <Auto_initialization v="yes" />
+          </group>
+          <Safe_mode v="yes" />
+        </Properties>
+        <Methods>
+          <Init v="generate code" />
+          <Deinit v="don&amp;apos;t generate code" />
+          <GetDir v="don&amp;apos;t generate code" />
+          <SetDir v="don&amp;apos;t generate code" />
+          <SetInput v="don&amp;apos;t generate code" />
+          <SetOutput v="don&amp;apos;t generate code" />
+          <GetVal v="generate code" />
+          <PutVal v="don&amp;apos;t generate code" />
+          <ClrVal v="don&amp;apos;t generate code" />
+          <SetVal v="don&amp;apos;t generate code" />
+          <NegVal v="don&amp;apos;t generate code" />
+          <ConnectPin v="don&amp;apos;t generate code" />
+          <GetRawVal v="don&amp;apos;t generate code" />
+        </Methods>
+        <Events>
+          <EmptySection_DummyValue />
+        </Events>
+      </inhrbean>
+      <Direction v="Input" />
+      <group name="Initialization">
+        <Init__direction v="Input" />
+        <Init__value v="0" />
+      </group>
+      <Safe_mode v="yes" />
+      <Optimization_for v="speed" />
+    </Properties>
+    <Methods>
+      <GetDir v="don&amp;apos;t generate code" />
+      <SetDir v="don&amp;apos;t generate code" />
+      <SetInput v="don&amp;apos;t generate code" />
+      <SetOutput v="don&amp;apos;t generate code" />
+      <GetVal v="generate code" />
+      <PutVal v="don&amp;apos;t generate code" />
+      <ClrVal v="don&amp;apos;t generate code" />
+      <SetVal v="don&amp;apos;t generate code" />
+      <NegVal v="don&amp;apos;t generate code" />
+      <ConnectPin v="don&amp;apos;t generate code" />
+      <GetRawVal v="don&amp;apos;t generate code" />
+    </Methods>
+    <Events>
+      <EmptySection_DummyValue />
     </Events>
   </Bean>
 </PE_PROJECT_SETTINGS_DOCUMENTATION>

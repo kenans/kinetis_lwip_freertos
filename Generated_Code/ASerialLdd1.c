@@ -6,7 +6,7 @@
 **     Component   : Serial_LDD
 **     Version     : Component 01.187, Driver 01.12, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-25, 12:32, # CodeGen: 11
 **     Abstract    :
 **         This component "Serial_LDD" implements an asynchronous serial
 **         communication. The component supports different settings of
@@ -36,9 +36,7 @@
 **            Transmitter output                           : Not inverted
 **            Receiver input                               : Not inverted
 **            Break generation length                      : 10/11 bits
-**            Receiver                                     : Enabled
-**              RxD                                        : ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4
-**              RxD pin signal                             : 
+**            Receiver                                     : Disabled
 **            Transmitter                                  : Enabled
 **              TxD                                        : ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3
 **              TxD pin signal                             : 
@@ -48,10 +46,10 @@
 **            Auto initialization                          : no
 **            Event mask                                   : 
 **              OnBlockSent                                : Enabled
-**              OnBlockReceived                            : Enabled
+**              OnBlockReceived                            : Disabled
 **              OnTxComplete                               : Disabled
 **              OnError                                    : Enabled
-**              OnBreak                                    : Enabled
+**              OnBreak                                    : Disabled
 **          CPU clock/configuration selection              : 
 **            Clock configuration 0                        : This component enabled
 **            Clock configuration 1                        : This component disabled
@@ -62,10 +60,9 @@
 **            Clock configuration 6                        : This component disabled
 **            Clock configuration 7                        : This component disabled
 **     Contents    :
-**         Init         - LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr);
-**         SendBlock    - LDD_TError ASerialLdd1_SendBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
-**         ReceiveBlock - LDD_TError ASerialLdd1_ReceiveBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
-**         GetError     - LDD_TError ASerialLdd1_GetError(LDD_TDeviceData *DeviceDataPtr,...
+**         Init      - LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr);
+**         SendBlock - LDD_TError ASerialLdd1_SendBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData...
+**         GetError  - LDD_TError ASerialLdd1_GetError(LDD_TDeviceData *DeviceDataPtr,...
 **
 **     Copyright : 1997 - 2014 Freescale Semiconductor, Inc. 
 **     All Rights Reserved.
@@ -128,7 +125,7 @@ extern "C" {
 #endif
 
 /*! The mask of available events used to enable/disable events during runtime. */
-#define AVAILABLE_EVENTS_MASK (LDD_SERIAL_ON_BLOCK_RECEIVED | LDD_SERIAL_ON_BLOCK_SENT | LDD_SERIAL_ON_BREAK | LDD_SERIAL_ON_ERROR)
+#define AVAILABLE_EVENTS_MASK (LDD_SERIAL_ON_BLOCK_SENT | LDD_SERIAL_ON_ERROR)
 
 /* {FreeRTOS RTOS Adapter} Static object used for simulation of dynamic driver memory allocation */
 static ASerialLdd1_TDeviceData DeviceDataPrv__DEFAULT_RTOS_ALLOC;
@@ -165,10 +162,6 @@ LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr)
   /* {FreeRTOS RTOS Adapter} Driver memory allocation: Dynamic allocation is simulated by a pointer to the static object */
   DeviceDataPrv = &DeviceDataPrv__DEFAULT_RTOS_ALLOC;
 
-  /* Clear the receive counters and pointer */
-  DeviceDataPrv->InpRecvDataNum = 0x00U; /* Clear the counter of received characters */
-  DeviceDataPrv->InpDataNumReq = 0x00U; /* Clear the counter of characters to receive by ReceiveBlock() */
-  DeviceDataPrv->InpDataPtr = NULL;    /* Clear the buffer pointer for received characters */
   /* Clear the transmit counters and pointer */
   DeviceDataPrv->OutSentDataNum = 0x00U; /* Clear the counter of sent characters */
   DeviceDataPrv->OutDataNumReq = 0x00U; /* Clear the counter of characters to be send by SendBlock() */
@@ -181,13 +174,6 @@ LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr)
   INT_UART5_ERR__BAREBOARD_RTOS_ISRPARAM = DeviceDataPrv;
   /* SIM_SCGC1: UART5=1 */
   SIM_SCGC1 |= SIM_SCGC1_UART5_MASK;
-  /* PORTE_PCR9: ISF=0,MUX=3 */
-  PORTE_PCR9 = (uint32_t)((PORTE_PCR9 & (uint32_t)~(uint32_t)(
-                PORT_PCR_ISF_MASK |
-                PORT_PCR_MUX(0x04)
-               )) | (uint32_t)(
-                PORT_PCR_MUX(0x03)
-               ));
   /* PORTE_PCR8: ISF=0,MUX=3 */
   PORTE_PCR8 = (uint32_t)((PORTE_PCR8 & (uint32_t)~(uint32_t)(
                 PORT_PCR_ISF_MASK |
@@ -204,7 +190,6 @@ LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr)
   /* NVICISER1: SETENA|=0x01000000 */
   NVICISER1 |= NVIC_ISER_SETENA(0x01000000);
   UART_PDD_EnableTransmitter(UART5_BASE_PTR, PDD_DISABLE); /* Disable transmitter. */
-  UART_PDD_EnableReceiver(UART5_BASE_PTR, PDD_DISABLE); /* Disable receiver. */
   DeviceDataPrv->SerFlag = 0x00U;      /* Reset flags */
   DeviceDataPrv->ErrFlag = 0x00U;      /* Reset error flags */
   /* UART5_C1: LOOPS=0,UARTSWAI=0,RSRC=0,M=0,WAKE=0,ILT=0,PE=0,PT=0 */
@@ -219,77 +204,13 @@ LDD_TDeviceData* ASerialLdd1_Init(LDD_TUserData *UserDataPtr)
   UART5_MODEM = 0x00U;                 /*  Set the MODEM register */
   UART_PDD_SetBaudRateFineAdjust(UART5_BASE_PTR, 4u); /* Set baud rate fine adjust */
   UART_PDD_SetBaudRate(UART5_BASE_PTR, 27U); /* Set the baud rate register. */
-  UART_PDD_EnableFifo(UART5_BASE_PTR, (UART_PDD_TX_FIFO_ENABLE | UART_PDD_RX_FIFO_ENABLE)); /* Enable RX and TX FIFO */
-  UART_PDD_FlushFifo(UART5_BASE_PTR, (UART_PDD_TX_FIFO_FLUSH | UART_PDD_RX_FIFO_FLUSH)); /* Flush RX and TX FIFO */
+  UART_PDD_EnableFifo(UART5_BASE_PTR, UART_PDD_TX_FIFO_ENABLE); /* Enable TX FIFO */
+  UART_PDD_FlushFifo(UART5_BASE_PTR, UART_PDD_TX_FIFO_FLUSH); /* Flush TX FIFO */
   UART_PDD_EnableTransmitter(UART5_BASE_PTR, PDD_ENABLE); /* Enable transmitter */
-  UART_PDD_EnableReceiver(UART5_BASE_PTR, PDD_ENABLE); /* Enable receiver */
-  UART_PDD_EnableInterrupt(UART5_BASE_PTR, ( UART_PDD_INTERRUPT_RECEIVER | UART_PDD_INTERRUPT_PARITY_ERROR | UART_PDD_INTERRUPT_FRAMING_ERROR | UART_PDD_INTERRUPT_NOISE_ERROR | UART_PDD_INTERRUPT_OVERRUN_ERROR )); /* Enable interrupts */
+  UART_PDD_EnableInterrupt(UART5_BASE_PTR, ( UART_PDD_INTERRUPT_PARITY_ERROR | UART_PDD_INTERRUPT_FRAMING_ERROR | UART_PDD_INTERRUPT_NOISE_ERROR | UART_PDD_INTERRUPT_OVERRUN_ERROR )); /* Enable interrupts */
   /* Registration of the device structure */
   PE_LDD_RegisterDeviceStructure(PE_LDD_COMPONENT_ASerialLdd1_ID,DeviceDataPrv);
   return ((LDD_TDeviceData *)DeviceDataPrv);
-}
-
-/*
-** ===================================================================
-**     Method      :  ASerialLdd1_ReceiveBlock (component Serial_LDD)
-*/
-/*!
-**     @brief
-**         Specifies the number of data to receive. The method returns
-**         ERR_BUSY until the specified number of characters is
-**         received. Method [CancelBlockReception] can be used to
-**         cancel a running receive operation. If a receive operation
-**         is not in progress (the method was not called or a previous
-**         operation has already finished) all received characters will
-**         be lost without any notification. To prevent the loss of
-**         data call the method immediately after the last receive
-**         operation has finished (e.g. from the [OnBlockReceived]
-**         event). This method finishes immediately after calling it -
-**         it doesn't wait the end of data reception. Use event
-**         [OnBlockReceived] to check the end of data reception.
-**     @param
-**         DeviceDataPtr   - Device data structure
-**                           pointer returned by [Init] method.
-**     @param
-**         BufferPtr       - Pointer to a buffer where
-**                           received characters will be stored. In case
-**                           of 8bit character width each character in
-**                           buffer occupies 1 byte. In case of 9 and
-**                           more bit long character width each
-**                           character in buffer occupies 2 bytes.
-**     @param
-**         Size            - Number of characters to receive
-**     @return
-**                         - Error code, possible codes:
-**                           ERR_OK - OK
-**                           ERR_SPEED - The component does not work in
-**                           the active clock configuration.
-**                           ERR_PARAM_SIZE - Parameter Size is out of
-**                           expected range.
-**                           ERR_DISABLED - The component or device is
-**                           disabled.
-**                           ERR_BUSY - The previous receive request is
-**                           pending.
-*/
-/* ===================================================================*/
-LDD_TError ASerialLdd1_ReceiveBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData *BufferPtr, uint16_t Size)
-{
-  ASerialLdd1_TDeviceDataPtr DeviceDataPrv = (ASerialLdd1_TDeviceDataPtr)DeviceDataPtr;
-
-  if (Size == 0U) {                    /* Is the parameter Size within an expected range? */
-    return ERR_PARAM_SIZE;             /* If no then error */
-  }
-  if (DeviceDataPrv->InpDataNumReq != 0x00U) { /* Is the previous receive operation pending? */
-    return ERR_BUSY;                   /* If yes then error */
-  }
-  /* {FreeRTOS RTOS Adapter} Critical section begin (RTOS function call is defined by FreeRTOS RTOS Adapter property) */
-  taskENTER_CRITICAL();
-  DeviceDataPrv->InpDataPtr = (uint8_t*)BufferPtr; /* Store a pointer to the input data. */
-  DeviceDataPrv->InpDataNumReq = Size; /* Store a number of characters to be received. */
-  DeviceDataPrv->InpRecvDataNum = 0x00U; /* Set number of received characters to zero. */
-  /* {FreeRTOS RTOS Adapter} Critical section ends (RTOS function call is defined by FreeRTOS RTOS Adapter property) */
-  taskEXIT_CRITICAL();
-  return ERR_OK;                       /* OK */
 }
 
 /*
@@ -355,31 +276,6 @@ LDD_TError ASerialLdd1_SendBlock(LDD_TDeviceData *DeviceDataPtr, LDD_TData *Buff
 
 /*
 ** ===================================================================
-**     Method      :  InterruptRx (component Serial_LDD)
-**
-**     Description :
-**         The method services the receive interrupt of the selected 
-**         peripheral(s) and eventually invokes the bean's event(s).
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-static void InterruptRx(ASerialLdd1_TDeviceDataPtr DeviceDataPrv)
-{
-  register uint16_t Data;              /* Temporary variable for data */
-
-  Data = (uint16_t)UART_PDD_GetChar8(UART5_BASE_PTR); /* Read an 8-bit character from the receiver */
-  if (DeviceDataPrv->InpDataNumReq != 0x00U) { /* Is the receive block operation pending? */
-    *(DeviceDataPrv->InpDataPtr++) = (uint8_t)Data; /* Put an 8-bit character to the receive buffer */
-    DeviceDataPrv->InpRecvDataNum++;   /* Increment received char. counter */
-    if (DeviceDataPrv->InpRecvDataNum == DeviceDataPrv->InpDataNumReq) { /* Is the requested number of characters received? */
-      DeviceDataPrv->InpDataNumReq = 0x00U; /* If yes then clear number of requested characters to be received. */
-      ASerialLdd1_OnBlockReceived(DeviceDataPrv->UserDataPtr);
-    }
-  }
-}
-
-/*
-** ===================================================================
 **     Method      :  InterruptTx (component Serial_LDD)
 **
 **     Description :
@@ -420,18 +316,12 @@ PE_ISR(ASerialLdd1_Interrupt)
   ASerialLdd1_TDeviceDataPtr DeviceDataPrv = INT_UART5_RX_TX__BAREBOARD_RTOS_ISRPARAM;
   register uint32_t StatReg = UART_PDD_ReadInterruptStatusReg(UART5_BASE_PTR); /* Read status register */
   register uint16_t OnErrorFlags = 0U; /* Temporary variable for flags */
-  register uint8_t  OnBreakFlag = 0U;  /* Temporary variable flag for OnBreak event */
   register uint16_t Data;              /* Temporary variable for data */
 
   if (StatReg & (UART_S1_NF_MASK | UART_S1_OR_MASK | UART_S1_FE_MASK | UART_S1_PF_MASK)) { /* Is any error flag set? */
     Data = (uint16_t)UART_PDD_GetChar8(UART5_BASE_PTR); /* Read an 8-bit character from receiver */
     if ((StatReg & UART_S1_FE_MASK) != 0U) { /* Is the framing error detected? */
-      if (((StatReg & UART_S1_RDRF_MASK) != 0U) && (Data == 0U)) { /* Is the zero character in the receiver? */
-        OnBreakFlag++;
-        DeviceDataPrv->SerFlag |= BREAK_DETECTED; /* If yes then set the flag */
-      } else {
-        OnErrorFlags |= LDD_SERIAL_FRAMING_ERROR; /* If yes then set the flag */
-      }
+      OnErrorFlags |= LDD_SERIAL_FRAMING_ERROR; /* If yes then set the flag */
     }
     if ((StatReg & UART_S1_OR_MASK) != 0U) { /* Is the overrun error flag set? */
       OnErrorFlags |= LDD_SERIAL_RX_OVERRUN; /* If yes then set the flag */
@@ -444,14 +334,7 @@ PE_ISR(ASerialLdd1_Interrupt)
     }
     DeviceDataPrv->ErrFlag |= OnErrorFlags; /* Copy flags status to ErrFlag status variable */
     StatReg &= (uint32_t)(~(uint32_t)UART_S1_RDRF_MASK); /* Clear the receive data flag to discard the errorneous data */
-    if (OnBreakFlag != 0U) {
-      ASerialLdd1_OnBreak(DeviceDataPrv->UserDataPtr); /* If yes then invoke user event */
-    } else {
-      ASerialLdd1_OnError(DeviceDataPrv->UserDataPtr); /* Invoke user event */
-    }
-  }
-  if (StatReg & UART_S1_RDRF_MASK) {   /* Is the receiver's interrupt flag set? */
-    InterruptRx(DeviceDataPrv);        /* If yes, then invoke the internal service routine. This routine is inlined. */
+    ASerialLdd1_OnError(DeviceDataPrv->UserDataPtr); /* Invoke user event */
   }
   if (DeviceDataPrv->SerFlag & ENABLED_TX_INT) { /* Is the transmitter interrupt enabled? */
     if (StatReg & UART_S1_TDRE_MASK) { /* Is the transmitter empty? */

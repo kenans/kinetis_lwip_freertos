@@ -4,8 +4,6 @@
  *  Created on: 10 juin 2014
  *      Author: OrpheoXlite
  */
-
-
 #include "ir_transmitter.h"
 
 /**
@@ -31,10 +29,8 @@ static err_t IR_SendFrame();
 err_t IR_StartTransmit(uint8_t *frame, uint8_t size, const PiloteConfigurations *pilote_config_ptr)
 {
     err_t error = ERR_OK;
-
     if (_transmitting)
         return ERR_IR;
-
     _frame = frame;
     _size = size;
     _pilote_config_ptr = pilote_config_ptr;
@@ -46,7 +42,6 @@ err_t IR_StartTransmit(uint8_t *frame, uint8_t size, const PiloteConfigurations 
      *  priority inversion problem
      */
     _transmitting = TRUE;
-
     return error;
 }
 
@@ -56,15 +51,12 @@ err_t IR_StartTransmit(uint8_t *frame, uint8_t size, const PiloteConfigurations 
 err_t IR_StopTransmit(void)
 {
     err_t error = ERR_OK;
-
     if (!_transmitting)
         return ERR_IR;
-
     /**
      *  Similarly, _transmitting should be clear at last
      */
     _transmitting = FALSE;
-
     return error;
 }
 
@@ -93,7 +85,6 @@ void IR_TransmitThread(void *pvParameters)
     // Synchro video variables
     uint32_t delta_video_code = 0;
     uint32_t video_code = 0;
-
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
     // Main loop
@@ -217,6 +208,14 @@ void IR_TransmitThread(void *pvParameters)
                             }
                         }
                     }
+#if 0
+#include "AS1.h"
+                    // Video code debug
+                    while (AS1_SendChar((byte)_frame[4]) != ERR_OK);
+                    while (AS1_SendChar((byte)_frame[5]) != ERR_OK);
+                    while (AS1_SendChar((byte)_frame[6]) != ERR_OK);
+                    while (AS1_SendChar((byte)'\n') != ERR_OK);
+#endif
                     vTaskDelayUntil(&last_wake_time, (TickType_t)time_between_frames/portTICK_PERIOD_MS);
                 } else {
                     vTaskDelay(FREE_RTOS_DELAY_500MS);      // If transmit not allowed, polling every 500ms
@@ -254,20 +253,15 @@ static err_t IR_SendFrame()
 {
     err_t error = ERR_OK;
     uint8_t i = 0;
-
     if (_frame==NULL)
         return ERR_MEM;
-
     if (TI1_Enable(_interrupt_device_ptr) != ERR_OK)
         return ERR_IR;
-
     for (i = 0; i < _size ; i++) {
         IR_SendByte(_frame[i]);
     }
-
     if (TI1_Disable(_interrupt_device_ptr) != ERR_OK)
         return ERR_IR;
-
     return error;
 }
 
@@ -279,13 +273,11 @@ static err_t IR_SendFrame()
 static void IR_SendByte(uint8_t data)
 {
     uint16_t i = 0;
-
     // Bit0 Start: UART 0  <->  IR 1
     while (_interrupt_flag == 0)                // Wait for the interrupt
         ;
     PWM1_SetRatio16(0x7FFFU);                   // Set value
     _interrupt_flag = 0u;                       // Clear interrupt flag
-
     // Bit 1~8 data: Should be inverse
     for (i = 0; i < 8 ; i++) {
         while (_interrupt_flag == 0)
@@ -298,13 +290,11 @@ static void IR_SendByte(uint8_t data)
         _interrupt_flag = 0u;
         data >>= 1;
     }
-
     // Bit9 END: UART 1  <->  IR 0
     while (_interrupt_flag == 0)
         ;
     PWM1_SetRatio16(0x0000U);
     _interrupt_flag = 0u;
-
     // Reset to zero
     while (_interrupt_flag == 0)
         ;

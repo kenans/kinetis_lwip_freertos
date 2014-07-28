@@ -6,7 +6,7 @@
 **     Component   : AsynchroSerial
 **     Version     : Component 02.611, Driver 01.01, CPU db: 3.00.000
 **     Compiler    : GNU C Compiler
-**     Date/Time   : 2014-07-15, 16:38, # CodeGen: 0
+**     Date/Time   : 2014-07-25, 12:32, # CodeGen: 11
 **     Abstract    :
 **         This component "AsynchroSerial" implements an asynchronous serial
 **         communication. The component supports different settings of
@@ -42,16 +42,13 @@
 **         ----------------------------------------------------------
 **           Function | On package           |    Name
 **         ----------------------------------------------------------
-**            Input   |     12               |  ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4
 **            Output  |     11               |  ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3
 **         ----------------------------------------------------------
 **
 **
 **
 **     Contents    :
-**         RecvChar        - byte AS1_RecvChar(AS1_TComData *Chr);
 **         SendChar        - byte AS1_SendChar(AS1_TComData Chr);
-**         GetCharsInRxBuf - word AS1_GetCharsInRxBuf(void);
 **         GetCharsInTxBuf - word AS1_GetCharsInTxBuf(void);
 **
 **     Copyright : 1997 - 2014 Freescale Semiconductor, Inc. 
@@ -140,40 +137,6 @@ extern "C" {
 
 /*
 ** ===================================================================
-**     Method      :  AS1_RecvChar (component AsynchroSerial)
-**     Description :
-**         If any data is received, this method returns one character,
-**         otherwise it returns an error code (it does not wait for
-**         data). This method is enabled only if the receiver property
-**         is enabled.
-**         [Note:] Because the preferred method to handle error and
-**         break exception in the interrupt mode is to use events
-**         <OnError> and <OnBreak> the return value ERR_RXEMPTY has
-**         higher priority than other error codes. As a consequence the
-**         information about an exception in interrupt mode is returned
-**         only if there is a valid character ready to be read.
-**     Parameters  :
-**         NAME            - DESCRIPTION
-**       * Chr             - Pointer to a received character
-**     Returns     :
-**         ---             - Error code, possible codes:
-**                           ERR_OK - OK
-**                           ERR_SPEED - This device does not work in
-**                           the active speed mode
-**                           ERR_RXEMPTY - No data in receiver
-**                           ERR_BREAK - Break character is detected
-**                           (only when the <Interrupt service> property
-**                           is disabled and the <Break signal> property
-**                           is enabled)
-**                           ERR_COMMON - common error occurred (the
-**                           <GetError> method can be used for error
-**                           specification)
-** ===================================================================
-*/
-byte AS1_RecvChar(AS1_TComData *Chr);
-
-/*
-** ===================================================================
 **     Method      :  AS1_SendChar (component AsynchroSerial)
 **     Description :
 **         Sends one character to the channel. If the component is
@@ -195,20 +158,6 @@ byte AS1_RecvChar(AS1_TComData *Chr);
 ** ===================================================================
 */
 byte AS1_SendChar(AS1_TComData Chr);
-
-/*
-** ===================================================================
-**     Method      :  AS1_GetCharsInRxBuf (component AsynchroSerial)
-**     Description :
-**         Returns the number of characters in the input buffer. This
-**         method is available only if the receiver property is enabled.
-**     Parameters  : None
-**     Returns     :
-**         ---             - The number of characters in the input
-**                           buffer.
-** ===================================================================
-*/
-word AS1_GetCharsInRxBuf(void);
 
 /*
 ** ===================================================================
@@ -240,18 +189,6 @@ void AS1_Init(void);
 
 /*
 ** ===================================================================
-**     Method      :  AS1_ASerialLdd1_OnBlockReceived (component AsynchroSerial)
-**
-**     Description :
-**         This event is called when the requested number of data is 
-**         moved to the input buffer.
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-void ASerialLdd1_OnBlockReceived(LDD_TUserData *UserDataPtr);
-
-/*
-** ===================================================================
 **     Method      :  AS1_ASerialLdd1_OnBlockSent (component AsynchroSerial)
 **
 **     Description :
@@ -273,17 +210,6 @@ void ASerialLdd1_OnBlockSent(LDD_TUserData *UserDataPtr);
 ** ===================================================================
 */
 void ASerialLdd1_OnError(LDD_TUserData *UserDataPtr);
-
-/*
-** ===================================================================
-**     Method      :  AS1_ASerialLdd1_OnBreak (component AsynchroSerial)
-**
-**     Description :
-**         This event is called when a break occurs on the input channel.
-**         This method is internal. It is used by Processor Expert only.
-** ===================================================================
-*/
-void ASerialLdd1_OnBreak(LDD_TUserData *UserDataPtr);
 
 
 /* END AS1. */

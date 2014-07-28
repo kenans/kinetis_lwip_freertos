@@ -820,9 +820,7 @@ PE_DEBUGHALT();
         <Parity v="none" />
         <Width v="8 bits" />
         <Stop_bit v="1" />
-        <boolgroup name="Receiver" v="Enabled">
-          <RxD v="ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4" />
-        </boolgroup>
+        <boolgroup name="Receiver" v="Disabled" />
         <boolgroup name="Transmitter" v="Enabled">
           <TxD v="ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3" />
         </boolgroup>
@@ -870,9 +868,7 @@ PE_DEBUGHALT();
               <Transmitter_output v="Not inverted" />
               <Receiver_input v="Not inverted" />
               <Break_generation_length v="10/11 bits" />
-              <boolgroup name="Receiver" v="Enabled">
-                <RxD v="ADC2_SE17/PTE9/I2S0_TXD1/UART5_RX/I2S0_RX_BCLK/FTM3_CH4" />
-              </boolgroup>
+              <boolgroup name="Receiver" v="Disabled" />
               <boolgroup name="Transmitter" v="Enabled">
                 <TxD v="ADC2_SE16/PTE8/I2S0_RXD1/UART5_TX/I2S0_RX_FS/FTM3_CH3" />
               </boolgroup>
@@ -887,10 +883,10 @@ PE_DEBUGHALT();
               </list>
               <group name="Event mask">
                 <OnBlockSent v="Enabled" />
-                <OnBlockReceived v="Enabled" />
+                <OnBlockReceived v="Disabled" />
                 <OnTxComplete v="Disabled" />
                 <OnError v="Enabled" />
-                <OnBreak v="Enabled" />
+                <OnBreak v="Disabled" />
               </group>
             </group>
             <list name="CPU clock/configuration selection (included)" v="1">
@@ -912,7 +908,7 @@ PE_DEBUGHALT();
             <Enable v="don&amp;apos;t generate code" />
             <Disable v="don&amp;apos;t generate code" />
             <SendBlock v="generate code" />
-            <ReceiveBlock v="generate code" />
+            <ReceiveBlock v="don&amp;apos;t generate code" />
             <CancelBlockTransmission v="don&amp;apos;t generate code" />
             <CancelBlockReception v="don&amp;apos;t generate code" />
             <GetError v="generate code" />
@@ -946,15 +942,11 @@ PE_DEBUGHALT();
           </Methods>
           <Events>
             <Event_module_name v="Events" />
-            <event name="OnBlockReceived" v="generate code">
-              <Event_procedure_name v="ASerialLdd1_OnBlockReceived" />
-            </event>
+            <event name="OnBlockReceived" v="don&amp;apos;t generate code" />
             <event name="OnBlockSent" v="generate code">
               <Event_procedure_name v="ASerialLdd1_OnBlockSent" />
             </event>
-            <event name="OnBreak" v="generate code">
-              <Event_procedure_name v="ASerialLdd1_OnBreak" />
-            </event>
+            <event name="OnBreak" v="don&amp;apos;t generate code" />
             <event name="OnError" v="generate code">
               <Event_procedure_name v="ASerialLdd1_OnError" />
             </event>
@@ -968,14 +960,14 @@ PE_DEBUGHALT();
       <Disable v="don&amp;apos;t generate code" />
       <EnableEvent v="don&amp;apos;t generate code" />
       <DisableEvent v="don&amp;apos;t generate code" />
-      <RecvChar v="generate code" />
+      <RecvChar v="don&amp;apos;t generate code" />
       <SendChar v="generate code" />
       <RecvBlock v="don&amp;apos;t generate code" />
       <SendBlock v="don&amp;apos;t generate code" />
       <ClearRxBuf v="don&amp;apos;t generate code" />
       <ClearTxBuf v="don&amp;apos;t generate code" />
       <CharsInRxBuf v="don&amp;apos;t generate code" />
-      <GetCharsInRxBuf v="generate code" />
+      <GetCharsInRxBuf v="don&amp;apos;t generate code" />
       <CharsInTxBuf v="don&amp;apos;t generate code" />
       <GetCharsInTxBuf v="generate code" />
       <SetBaudRateMode v="don&amp;apos;t generate code" />
@@ -997,10 +989,7 @@ PE_DEBUGHALT();
         <Event_procedure_name v="AS1_OnError" />
         <Priority v="same as interrupt" />
       </event>
-      <event name="OnRxChar" v="generate code">
-        <Event_procedure_name v="AS1_OnRxChar" />
-        <Priority v="same as interrupt" />
-      </event>
+      <event name="OnRxChar" v="don&amp;apos;t generate code" />
       <event name="OnRxCharExt" v="don&amp;apos;t generate code" />
       <event name="OnTxChar" v="generate code">
         <Event_procedure_name v="AS1_OnTxChar" />

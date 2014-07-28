@@ -166,26 +166,6 @@ void AS1_OnError(void)
 
 /*
 ** ===================================================================
-**     Event       :  AS1_OnRxChar (module Events)
-**
-**     Component   :  AS1 [AsynchroSerial]
-**     Description :
-**         This event is called after a correct character is received.
-**         The event is available only when the <Interrupt
-**         service/event> property is enabled and either the <Receiver>
-**         property is enabled or the <SCI output mode> property (if
-**         supported) is set to Single-wire mode.
-**     Parameters  : None
-**     Returns     : Nothing
-** ===================================================================
-*/
-void AS1_OnRxChar(void)
-{
-  /* Write your code here ... */
-}
-
-/*
-** ===================================================================
 **     Event       :  AS1_OnTxChar (module Events)
 **
 **     Component   :  AS1 [AsynchroSerial]
