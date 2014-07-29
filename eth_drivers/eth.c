@@ -16,22 +16,19 @@ static EthFrameData _eth_data;
  *  APIs
  */
 // Initialization
-// If success, returns ERR_OK
 bool Eth_Init(PhyConfig config, PhyLoopback loopback)
 {
-    bool phy_init_success = FALSE;
     // MAC initialization
     _eth_data.eth_device_data = ETH1_Init(&_eth_data);
     // PHY initialization
-    phy_init_success = PHY_Init(_eth_data.eth_device_data, PHY_ADDR, config, loopback);
-    // Queues initialization
-    if (phy_init_success) {
+    if (!PHY_Init(_eth_data.eth_device_data, PHY_ADDR, config, loopback)) {
+        return FALSE;
+    } else {
+        // Queues initialization
         TX_InitQueues(&_eth_data);
         RX_InitQueues(&_eth_data);
-    } else {
-        return 1;
     }
-    return ERR_OK;
+    return TRUE;
 }
 /**
  * Read an Ethernet frame
@@ -59,4 +56,15 @@ bool Eth_SendFrame(uint8_t *data, uint16_t size)
 bool Eth_IsLinkUp(void)
 {
     return PHY_IsLinkUp(&_eth_data, PHY_ADDR);
+}
+/**
+ * Ethernet PHY enters the specific power mode
+ *      If enters power mode successfully, returns TRUE
+ */
+bool Eth_EnterPowerMode(PhyPowerMode mode){
+#if 0
+    return PHY_EnterPowerMode(&_eth_data, PHY_ADDR, mode);
+#else
+    return TRUE;
+#endif
 }

@@ -104,12 +104,12 @@ low_level_init(struct netif *netif)
     netif->hwaddr_len = ETHARP_HWADDR_LEN;
 
     /* set MAC hardware address */
-    netif->hwaddr[0] = 0x00;
-    netif->hwaddr[1] = 0x04;
-    netif->hwaddr[2] = 0x9F;
-    netif->hwaddr[3] = 0x02;
-    netif->hwaddr[4] = 0xF3;
-    netif->hwaddr[5] = 0xD3;
+    netif->hwaddr[0] = ETH_MAC_ADDRESS_0;
+    netif->hwaddr[1] = ETH_MAC_ADDRESS_1;
+    netif->hwaddr[2] = ETH_MAC_ADDRESS_2;
+    netif->hwaddr[3] = ETH_MAC_ADDRESS_3;
+    netif->hwaddr[4] = ETH_MAC_ADDRESS_4;
+    netif->hwaddr[5] = ETH_MAC_ADDRESS_5;
 
     /* maximum transfer unit */
     netif->mtu = 1500;
@@ -120,12 +120,7 @@ low_level_init(struct netif *netif)
 
     /* Do whatever else is needed to initialize interface. */
 
-    // Do init with block, wait until the auto_neg finish
-    while (Eth_Init(PHY_AUTO_NEG, PHY_NO_LOOPBACK) != ERR_OK)
-    {
-        // If auto_neg doesn't finish, recheck every 2s
-        vTaskDelay(5000/portTICK_PERIOD_MS);
-    }
+
 }
 
 /**

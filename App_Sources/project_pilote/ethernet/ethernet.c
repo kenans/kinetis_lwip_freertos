@@ -28,14 +28,23 @@ void Eth_Task(void *pvParameters)
     /**
      *  Local variables
      */
+    bool eth_is_link_up = TRUE;
     bool http_server_task_suspend = FALSE;
     bool udp_task_suspend = FALSE;
+    bool phy_is_power_down = FALSE;
     uint16_t polling_count = 0;
     TaskHandle_t http_server_task_handle;
     TaskHandle_t udp_task_handle;
+
     /**
      *  Initialize Ethernet
      */
+    // Ethernet Auto Negotiation
+    while (!Eth_Init(PHY_AUTO_NEG, PHY_NO_LOOPBACK)) {
+        // If auto_neg doesn't finish, recheck every 5s
+        vTaskDelay(5000/portTICK_PERIOD_MS);
+    }
+    // lwIP Initialization
 	Eth_NetifInit();
 	/**
 	 *  Create HTTPServer_Task
@@ -59,19 +68,36 @@ void Eth_Task(void *pvParameters)
      *  Main loop
      */
 	while (1) {
-        // Check if link is up every 2 seconds
         if (polling_count == _eth_time_out_ms/_eth_polling_ms) {
-            while (!Eth_IsLinkUp()) {
-                if (!http_server_task_suspend) {
-                    http_server_task_suspend = TRUE;
-                    vTaskSuspend(http_server_task_handle);
-                }
-                if (!udp_task_suspend) {
-                    udp_task_suspend = TRUE;
-                    vTaskSuspend(udp_task_handle);
-                }
-                vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
+            // Every 5s, check Ethernet connection
+            if (eth_is_link_up && !Eth_IsLinkUp()) {
+                eth_is_link_up = FALSE;
             }
+            while (!eth_is_link_up) {
+                // Should power on PHY to check the connection state
+                if (phy_is_power_down) {
+                    if (Eth_EnterPowerMode(PHY_POWER_ON))
+                        phy_is_power_down = FALSE;
+                }
+                if (Eth_IsLinkUp()) {
+                    eth_is_link_up = TRUE;
+                } else {
+                    if (!phy_is_power_down) {
+                        if (Eth_EnterPowerMode(PHY_POWER_DOWN))
+                            phy_is_power_down = TRUE;
+                    }
+                    if (!http_server_task_suspend) {
+                        http_server_task_suspend = TRUE;
+                        vTaskSuspend(http_server_task_handle);
+                    }
+                    if (!udp_task_suspend) {
+                        udp_task_suspend = TRUE;
+                        vTaskSuspend(udp_task_handle);
+                    }
+                    vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
+                }
+            }
+            // Ethernet is link up
             if (http_server_task_suspend) {
                 http_server_task_suspend = FALSE;
                 vTaskResume(http_server_task_handle);
@@ -79,6 +105,10 @@ void Eth_Task(void *pvParameters)
             if (udp_task_suspend) {
                 udp_task_suspend = FALSE;
                 vTaskResume(udp_task_handle);
+            }
+            if (phy_is_power_down) {
+                if (Eth_EnterPowerMode(PHY_POWER_ON))
+                    phy_is_power_down = FALSE;
             }
             polling_count = 0;
         }
@@ -104,11 +134,11 @@ static void Eth_NetifInit(void)
 	 */
 	tcpip_init(NULL, NULL);
 	// Ip : 192.168.1.123
-	IP4_ADDR(&xIpAddr, 192, 168, 1, 59);
+	IP4_ADDR(&xIpAddr, ETH_IP_ADDR_0, ETH_IP_ADDR_1, ETH_IP_ADDR_2, ETH_IP_ADDR_3);
 	// NetMask : 255.255.255.0
-	IP4_ADDR(&xNetMask, 255, 255, 255, 0);
+	IP4_ADDR(&xNetMask, ETH_NET_MASK_0, ETH_NET_MASK_1, ETH_NET_MASK_2, ETH_NET_MASK_3);
 	// Gateway : 192.168.1.1
-	IP4_ADDR(&xGateway, 192, 168, 1, 1);
+	IP4_ADDR(&xGateway, ETH_GATE_WAY_0, ETH_GATE_WAY_1, ETH_GATE_WAY_2, ETH_GATE_WAY_3);
     // Setup net interface
 	netif_add(&_eth_netif, &xIpAddr, &xNetMask, &xGateway, NULL, ethernetif_init, tcpip_input);
 	netif_set_default(&_eth_netif);

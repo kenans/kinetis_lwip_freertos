@@ -16,6 +16,33 @@
 #include "common.h"
 #include "http_server.h"
 #include "udp.h"
+/**
+ * -------------------------------------------------------------------------------------------
+ *                                         Configurations
+ * -------------------------------------------------------------------------------------------
+ */
+/**
+ *  IP address
+ */
+#define ETH_IP_ADDR_0   192
+#define ETH_IP_ADDR_1   168
+#define ETH_IP_ADDR_2   1
+#define ETH_IP_ADDR_3   59
+/**
+ *  Net Mask
+ */
+#define ETH_NET_MASK_0  255
+#define ETH_NET_MASK_1  255
+#define ETH_NET_MASK_2  255
+#define ETH_NET_MASK_3  0
+/**
+ *  Gate Way
+ */
+#define ETH_GATE_WAY_0  192
+#define ETH_GATE_WAY_1  168
+#define ETH_GATE_WAY_2  1
+#define ETH_GATE_WAY_3  1
+
 
 /**
  * -------------------------------------------------------------------------------------------

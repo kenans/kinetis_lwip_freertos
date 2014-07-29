@@ -38,8 +38,7 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
     if (config == PHY_AUTO_NEG) {
         /* Perform autonegotiation */
         MII_Read(eth_device_data, phy_adress, MII_CONTROL_REG, &Control);
-        Control |= MII_AUTO_NEG_ENABLE;
-        //Control = MII_AUTO_NEG_ENABLE;
+        Control = MII_AUTO_NEG_ENABLE;
         ETH1_WriteMII(eth_device_data, phy_adress, MII_CONTROL_REG, Control);
         /* Wait for cable connection and autonegotiation completion */
         do {
@@ -75,7 +74,7 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
             // To suppress the PHY_AUTO_NEG not handled warning
             break;
         }
-        MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, Control);
+        MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, Control&(~MII_POWER_DOWN));
     }
     return Timeout < MII_TIMEOUT;
 }
@@ -85,8 +84,8 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
  *      Reads the PHY status register to check if Ethernet link is up. If link is up,
  *      returns TRUE, if not, returns FALSE
  *  @param
- *      *eth_device_data : A pointer to the instance of the ETH_TDeviceData structure
- *      phy_adress : The PHY address
+ *      - *eth_device_data : A pointer to the instance of the ETH_TDeviceData structure
+ *      - phy_adress : The PHY address
  *  @return
  *      If link is up, returns TRUE
  */
@@ -94,12 +93,37 @@ bool PHY_IsLinkUp(LDD_TDeviceData *eth_device_data, uint16_t phy_adress)
 {
     bool link_up = TRUE;
     uint16_t status = 0;
-    MII_Read(eth_device_data, phy_adress, MII_STATUS_REG, &status);
-    if ((status&0x0004U) == 0U)
+    if (!MII_Read(eth_device_data, phy_adress, MII_STATUS_REG, &status)) {
+        return FALSE;
+    }
+    if ((status&MII_LINK_STATUS) == 0U)
         link_up = FALSE;
     return link_up;
 }
-
+/**
+ *  Method: PHY_EnterPowerMode
+ *      Write the PHY control register bit 11 to set its power mode.
+ *  @param:
+ *      - *eth_device_data : A pointer to the instance of the ETH_TDeviceData structure
+ *      - phy_adress : The PHY address
+ *      - mode: PHY power mode
+ *  @return
+ *      If set OK, returns TRUE
+ */
+bool PHY_EnterPowerMode(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyPowerMode mode)
+{
+    uint16_t control_reg;
+    switch (mode) {
+        MII_Read(eth_device_data, phy_adress, MII_CONTROL_REG, &control_reg);
+        case PHY_POWER_ON:
+            return MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, control_reg&(~MII_POWER_DOWN));
+        case PHY_POWER_DOWN:
+            return MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, control_reg|(MII_POWER_DOWN));
+        default:
+            break;
+    }
+    return FALSE;
+}
 // ------------------------- PHY register access functions: ----------------------------------
 /**
  * 	Reads a PHY register by MII(RMII). Returns FALSE if failed.

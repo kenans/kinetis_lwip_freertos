@@ -25,6 +25,10 @@ typedef enum {
 	PHY_ISOLATE    /* Internal (MAC) loopback */
 } PhyLoopback;
 
+typedef enum {
+    PHY_POWER_ON,
+    PHY_POWER_DOWN
+} PhyPowerMode;
 
 #define PHY_ADDR              1        /* Depends on board configuration */
 
@@ -33,18 +37,20 @@ typedef enum {
 /* PHY register access defines */
 #define MII_CONTROL_REG       0
 #define MII_STATUS_REG        1
-#define MII_LOOP_BACK         0x4000
-#define MII_SPEED_100_MBIT    0x2000
-#define MII_AUTO_NEG_ENABLE   0x1000
-#define MII_ISOLATE           0x0400
-#define MII_FULL_DUPLEX       0x0100
-#define MII_AUTO_NEG_COMPLETE 0x0020
-#define MII_LINK_STATUS       0x0004
+#define MII_LOOP_BACK         0x4000U
+#define MII_SPEED_100_MBIT    0x2000U
+#define MII_AUTO_NEG_ENABLE   0x1000U
+#define MII_POWER_DOWN        0x0800U
+#define MII_ISOLATE           0x0400U
+#define MII_FULL_DUPLEX       0x0100U
+#define MII_AUTO_NEG_COMPLETE 0x0020U
+#define MII_LINK_STATUS       0x0004U
 
 /**
  *  PHY APIs
  */
 bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_address, PhyConfig config, PhyLoopback loopback);
 bool PHY_IsLinkUp(LDD_TDeviceData *eth_device_data, uint16_t phy_adress);
+bool PHY_EnterPowerMode(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyPowerMode mode);
 
 #endif /* ETHERNETMANAGER_H_ */
