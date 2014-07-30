@@ -10,6 +10,7 @@
 
 #include "eth_buf.h"
 #include "eth_phy.h"
+#include "eth_mii.h"
 
 /**
  *  Configurations
@@ -24,6 +25,8 @@
 /**
  *  APIs
  */
+// Ethernet PHY reset
+bool Eth_Reset(void);
 // Is Ethernet link up
 bool Eth_IsLinkUp(void);
 // PHY enters power mode
@@ -32,7 +35,9 @@ bool Eth_EnterPowerMode(PhyPowerMode mode);
 bool Eth_ReadFrame(uint8_t *data, uint16_t *size);
 // Send an Ethernet frame
 bool Eth_SendFrame(uint8_t *data, uint16_t size);
-// Initialization
-bool Eth_Init(PhyConfig config, PhyLoopback loopback);
+// Mac initialization
+bool Eth_MacInit(void);
+// PHY initialization
+bool Eth_PhyInit(PhyConfig config, PhyLoopback loopback);
 
 #endif /* ETH_H_ */

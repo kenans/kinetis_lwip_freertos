@@ -79,7 +79,8 @@ struct ethernetif {
 
 
 // Global Definition
-uint8_t _eth_frame_buf[MAX_FRAME_SIZE];
+static uint8_t _eth_frame_in_buf[MAX_FRAME_SIZE];
+static uint8_t _eth_frame_out_buf[MAX_FRAME_SIZE];
 // Static Definition
 static u16_t _recv_len=0;
 static u16_t _send_len=0;
@@ -158,11 +159,11 @@ low_level_output(struct netif *netif, struct pbuf *p)
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
 		//send data from(q->payload, q->len);
-		memcpy((void*)&_eth_frame_buf[_send_len], (void*)q->payload, q->len);
+		memcpy((void*)&_eth_frame_out_buf[_send_len], (void*)q->payload, q->len);
 		_send_len += q->len;
 	}
 
-    if (!Eth_SendFrame(_eth_frame_buf, _send_len)){
+    if (!Eth_SendFrame(_eth_frame_out_buf, _send_len)){
         return ERR_MEM;
     }
 	//signal that packet should be sent();
@@ -195,7 +196,7 @@ low_level_input(struct netif *netif)
 
 	/* Obtain the size of the packet and put it into the "len"
      variable. */
-    if (!Eth_ReadFrame(_eth_frame_buf, &len)) {
+    if (!Eth_ReadFrame(_eth_frame_in_buf, &len)) {
         return NULL;
     }
 
@@ -225,7 +226,7 @@ low_level_input(struct netif *netif)
 			 * pbuf is the sum of the chained pbuf len members.
 			 */
 			//read data into(q->payload, q->len);
-			memcpy((void*)q->payload, (void*)&_eth_frame_buf[_recv_len], q->len);
+			memcpy((void*)q->payload, (void*)&_eth_frame_in_buf[_recv_len], q->len);
 			_recv_len += q->len;
 		}
 		//acknowledge that packet has been read();

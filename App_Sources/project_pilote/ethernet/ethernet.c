@@ -10,11 +10,11 @@
  *  Static declarations
  */
 // Methods
-static void Eth_NetifInit(void);
+static void Ethernet_lwIP_Init(void);
 // Variables
 static struct netif _eth_netif;
 static const uint16_t _eth_polling_ms = 2;
-static const uint16_t _eth_time_out_ms = 5000;
+static const uint16_t _eth_time_out_ms = 4000;
 /**
  *  Eth_Task
  *      A system level task, called by RunTasks(). Detect Ethernet connection and polling messages.
@@ -40,12 +40,18 @@ void Eth_Task(void *pvParameters)
      *  Initialize Ethernet
      */
     // Ethernet Auto Negotiation
-    while (!Eth_Init(PHY_AUTO_NEG, PHY_NO_LOOPBACK)) {
-        // If auto_neg doesn't finish, recheck every 5s
+    Eth_MacInit();
+    Eth_Reset();
+    vTaskDelay(1000/portTICK_PERIOD_MS); // Wait for reset completing
+    while (!Eth_PhyInit(PHY_AUTO_NEG, PHY_NO_LOOPBACK)) {
+        // If AUTO Neg not finished or not link up, enters power down mode
+        Eth_EnterPowerMode(PHY_POWER_DOWN);
         vTaskDelay(5000/portTICK_PERIOD_MS);
+        Eth_EnterPowerMode(PHY_POWER_ON);
+        vTaskDelay(2000/portTICK_PERIOD_MS);
     }
     // lwIP Initialization
-	Eth_NetifInit();
+	Ethernet_lwIP_Init();
 	/**
 	 *  Create HTTPServer_Task
 	 */
@@ -70,16 +76,22 @@ void Eth_Task(void *pvParameters)
 	while (1) {
         if (polling_count == _eth_time_out_ms/_eth_polling_ms) {
             // Every 5s, check Ethernet connection
-            if (eth_is_link_up && !Eth_IsLinkUp()) {
+            if (phy_is_power_down) {
+                if (Eth_EnterPowerMode(PHY_POWER_ON))
+                    phy_is_power_down = FALSE;
+            }
+            if (!phy_is_power_down && !Eth_IsLinkUp()) {
                 eth_is_link_up = FALSE;
             }
             while (!eth_is_link_up) {
                 // Should power on PHY to check the connection state
                 if (phy_is_power_down) {
-                    if (Eth_EnterPowerMode(PHY_POWER_ON))
+                    if (Eth_EnterPowerMode(PHY_POWER_ON)) {
                         phy_is_power_down = FALSE;
+                        vTaskDelay(2500/portTICK_PERIOD_MS);
+                    }
                 }
-                if (Eth_IsLinkUp()) {
+                if (!phy_is_power_down && Eth_IsLinkUp()) {
                     eth_is_link_up = TRUE;
                 } else {
                     if (!phy_is_power_down) {
@@ -94,8 +106,8 @@ void Eth_Task(void *pvParameters)
                         udp_task_suspend = TRUE;
                         vTaskSuspend(udp_task_handle);
                     }
-                    vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
                 }
+                vTaskDelay(_eth_time_out_ms/portTICK_PERIOD_MS);
             }
             // Ethernet is link up
             if (http_server_task_suspend) {
@@ -105,10 +117,6 @@ void Eth_Task(void *pvParameters)
             if (udp_task_suspend) {
                 udp_task_suspend = FALSE;
                 vTaskResume(udp_task_handle);
-            }
-            if (phy_is_power_down) {
-                if (Eth_EnterPowerMode(PHY_POWER_ON))
-                    phy_is_power_down = FALSE;
             }
             polling_count = 0;
         }
@@ -123,7 +131,7 @@ void Eth_Task(void *pvParameters)
  * Initialize lwIP
  * 		This is a static function, used only within the file
  */
-static void Eth_NetifInit(void)
+static void Ethernet_lwIP_Init(void)
 {
 	/**
 	 * Local variables
