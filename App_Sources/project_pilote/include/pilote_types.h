@@ -264,8 +264,21 @@ typedef enum {
  *                                Video mode
  * -------------------------------------------------------------------------------------
  */
-#define PILOTE_VIDEO_FRAMES_COUNT   25U
-#define PILOTE_VIDEO_FRAMES_GAP_MS  (1000U/PILOTE_VIDEO_FRAMES_COUNT)       // What if not an int??
+//#define PILOTE_VIDEO_FRAMES_COUNT   25U
+//#define PILOTE_VIDEO_FRAMES_GAP_MS  (1000U/PILOTE_VIDEO_FRAMES_COUNT)       // What if not an int??
+#define PILOTE_VIDEO_1000_MS                1000U
+
+#define PILOTE_VIDEO_PAL_FPS                25U
+#define PILOTE_VIDEO_PAL_MULTIPLE           40U
+
+#define PILOTE_VIDEO_CINEMA_FPS             24U
+#define PILOTE_VIDEO_CINEMA_MULTIPLE        125U
+
+#define PILOTE_VIDEO_NTSC_FPS               30U     // 29.97 fps for drop frames
+#define PILOTE_VIDEO_NTSC_MULTIPLE          100U
+
+#define PILOTE_VIDEO_NTSC_1_MINUTE_COUNT    1800U   // 60*30
+#define PILOTE_VIDEO_NTSC_10_MINUTES_COUNT  3600U//18000U  // 60*30*10
 
 /**
  * -------------------------------------------------------------------------------------

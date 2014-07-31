@@ -79,12 +79,15 @@ void IR_TransmitThread(void *pvParameters)
     PiloteTimeMs time_between_frames = 0;
     PiloteMode mode;
     PiloteSourceMode source_mode;
+    PiloteVideoMode  video_mode;
     // UDP command mailbox and message packet
     extern QueueHandle_t mbox_pilote_udp_cmd;
     PiloteUdpCmdMes udp_cmd_mes;
-    // Synchro video variables
-    uint32_t delta_video_code = 0;
-    uint32_t video_code = 0;
+    // Synchronization video variables
+    uint32_t delta_time_code = 0;
+    uint32_t time_code = 0;
+    uint32_t count_1_minute = 0;
+    uint32_t count_10_minutes = 0;
     // Initialize periodic interrupt timer
     _interrupt_device_ptr = TI1_Init((LDD_TUserData*)&_interrupt_flag);
     // Main loop
@@ -99,6 +102,7 @@ void IR_TransmitThread(void *pvParameters)
                     time_between_frames = _pilote_config_ptr->time_between_frames;
                     source_mode = _pilote_config_ptr->source_mode;
                     mode = _pilote_config_ptr->mode;
+                    video_mode = _pilote_config_ptr->video_mode;
                     first_time_start = FALSE;
                     transmit_allowed = FALSE;
                     /**
@@ -112,16 +116,57 @@ void IR_TransmitThread(void *pvParameters)
                             udp_id[i] = _pilote_config_ptr->udp_id[i];
                         }
                     }
+#if 0
                     /**
-                     *  - If mode is Synchro, should set time_between_frames the multiple of
+                     *  - If mode is Synchro, should set time_between_frames multiples of
                      *    PILOTE_VIDEO_FRAMES_GAP_MS
                      */
                     if (mode == PILOTE_SYNCHRO) {
                         time_between_frames +=
                                 (PILOTE_VIDEO_FRAMES_GAP_MS -
                                  (time_between_frames%PILOTE_VIDEO_FRAMES_GAP_MS));
-                        delta_video_code = time_between_frames/PILOTE_VIDEO_FRAMES_GAP_MS;
+                        delta_time_code = time_between_frames/PILOTE_VIDEO_FRAMES_GAP_MS;
                     }
+#else
+                    /**
+                     *  - If mode is Synchro, should set time_between_frames multiples of
+                     *    PILOTE_VIDEO_CINEMA_MUTIPLE/ PILOTE_VIDEO_NTSC_MUTIPLE/
+                     *    PILOTE_VIDEO_PAL_MUTIPLE.
+                     */
+                    if (mode == PILOTE_SYNCHRO) {
+                        switch (video_mode) {
+                        case PILOTE_VIDEO_CINEMA:
+                            if (time_between_frames%PILOTE_VIDEO_CINEMA_MULTIPLE) {
+                                time_between_frames +=
+                                    (PILOTE_VIDEO_CINEMA_MULTIPLE -
+                                     (time_between_frames%PILOTE_VIDEO_CINEMA_MULTIPLE));
+                            }
+                            delta_time_code=(PILOTE_VIDEO_CINEMA_FPS*time_between_frames)
+                                /PILOTE_VIDEO_1000_MS;
+                            break;
+                        case PILOTE_VIDEO_NTSC:
+                            if (time_between_frames%PILOTE_VIDEO_NTSC_MULTIPLE) {
+                                time_between_frames +=
+                                    (PILOTE_VIDEO_NTSC_MULTIPLE -
+                                     (time_between_frames%PILOTE_VIDEO_NTSC_MULTIPLE));
+                            }
+                            delta_time_code=(PILOTE_VIDEO_NTSC_FPS*time_between_frames)
+                                /PILOTE_VIDEO_1000_MS;
+                            break;
+                        case PILOTE_VIDEO_PAL_SECAM:
+                            if (time_between_frames%PILOTE_VIDEO_PAL_MULTIPLE) {
+                                time_between_frames +=
+                                    (PILOTE_VIDEO_PAL_MULTIPLE -
+                                     (time_between_frames%PILOTE_VIDEO_PAL_MULTIPLE));
+                            }
+                            delta_time_code=(PILOTE_VIDEO_PAL_FPS*time_between_frames)
+                                /PILOTE_VIDEO_1000_MS;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+#endif
                 } else {
                     while (1) {
                     // Configuration error
@@ -131,31 +176,41 @@ void IR_TransmitThread(void *pvParameters)
             }
             switch (source_mode) {
                 case PILOTE_SOURCE_OFF:
-                    if (!transmit_allowed)
+                    if (!transmit_allowed) {
                         transmit_allowed = TRUE;
+                        last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
+                    }
                     break;
                 case PILOTE_SOURCE_CONTACT_ON:
                 case PILOTE_SOURCE_TTL_ON:
-                    if (ContactSec_GetVal()==0) { // low level
+                    if (ContactSec_GetVal()==0) {   // Low level, starts IR
                         if (!transmit_allowed) {
-                            video_code = 0;
+                            time_code = 0;          // Reset time_code here
+                            count_10_minutes = 0;
+                            count_1_minute = 0;
                             transmit_allowed = TRUE;
+                            last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
                         }
                     } else {
-                        if (transmit_allowed)
+                        if (transmit_allowed) {
                             transmit_allowed = FALSE;
+                        }
                     }
                     break;
                 case PILOTE_SOURCE_CONTACT_OFF:
                 case PILOTE_SOURCE_TTL_OFF:
-                    if (ContactSec_GetVal()==1) { // high level
+                    if (ContactSec_GetVal()==1) { // High level, starts IR
                         if (!transmit_allowed) {
-                            video_code = 0;
+                            time_code = 0;        // Reset time_code here
+                            count_10_minutes = 0;
+                            count_1_minute = 0;
                             transmit_allowed = TRUE;
+                            last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
                         }
                     } else {
-                        if (transmit_allowed)
+                        if (transmit_allowed) {
                             transmit_allowed = FALSE;
+                        }
                     }
                     break;
                 case PILOTE_SOURCE_UDP:
@@ -189,18 +244,36 @@ void IR_TransmitThread(void *pvParameters)
                 default:
                     break;
             }
-            // If Synchro and with source mode, calculate video frame numbers
-            if (mode == PILOTE_SYNCHRO && source_mode != PILOTE_SOURCE_OFF) {
-                video_code+=delta_video_code;
+            // If Synchro and with source mode, calculate video time code
+            if (mode == PILOTE_SYNCHRO && source_mode != PILOTE_SOURCE_OFF &&
+                video_mode != PILOTE_VIDEO_OFF) {
+                /**
+                 *  - Increment time_code here.
+                 *  - If video_mode==NTSC, should drop 00 and 01 frames every 1 minute except
+                 *    multiples of 10 minutes.
+                 */
+                time_code+=delta_time_code;
+                if (video_mode==PILOTE_VIDEO_NTSC) {
+                    if ((time_code/PILOTE_VIDEO_NTSC_1_MINUTE_COUNT) != count_1_minute) {
+                        time_code+=(2u*(time_code/PILOTE_VIDEO_NTSC_1_MINUTE_COUNT - count_1_minute));
+                        count_1_minute = time_code/PILOTE_VIDEO_NTSC_1_MINUTE_COUNT;
+                    }
+                    if ((time_code/PILOTE_VIDEO_NTSC_10_MINUTES_COUNT)!=count_10_minutes) {
+                        time_code-=(2u*(time_code/PILOTE_VIDEO_NTSC_10_MINUTES_COUNT - count_10_minutes));
+                        count_10_minutes = time_code/PILOTE_VIDEO_NTSC_10_MINUTES_COUNT;
+                    }
+                }
                 // 3 bytes in an IR frame for video code
-                _frame[4] = (uint8_t)(video_code>>16u);
-                _frame[5] = (uint8_t)(video_code>>8u);
-                _frame[6] = (uint8_t)video_code;
+                _frame[4] = (uint8_t)(time_code>>16u);
+                _frame[5] = (uint8_t)(time_code>>8u);
+                _frame[6] = (uint8_t)time_code;
             }
             // Send IR frames
             if (source_mode != PILOTE_SOURCE_UDP) {      // If source mode==UDP, do not delay
+                /***
+                 *  This is transmit for non-UDP source mode
+                 */
                 if (transmit_allowed) {
-                    last_wake_time = xTaskGetTickCount();       // Initialize last_wake_time with current time.
                     for (i = 0; i < nums_of_frames ; i++) {
                         if (IR_SendFrame() != ERR_OK) {
                             while (1) {
@@ -208,7 +281,7 @@ void IR_TransmitThread(void *pvParameters)
                             }
                         }
                     }
-#if 0
+#if 1
 #include "AS1.h"
                     // Video code debug
                     while (AS1_SendChar((byte)_frame[4]) != ERR_OK);
@@ -221,6 +294,9 @@ void IR_TransmitThread(void *pvParameters)
                     vTaskDelay(FREE_RTOS_DELAY_500MS);      // If transmit not allowed, polling every 500ms
                 }
             } else {
+                /**
+                 *  This is transmit for UDP source mode
+                 */
                 if (transmit_allowed) {
                     for (i = 0; i < nums_of_frames ; i++) {
                         if (IR_SendFrame() != ERR_OK) {
