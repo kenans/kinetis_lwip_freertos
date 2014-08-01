@@ -264,8 +264,14 @@ typedef enum {
  *                                Video mode
  * -------------------------------------------------------------------------------------
  */
-//#define PILOTE_VIDEO_FRAMES_COUNT   25U
-//#define PILOTE_VIDEO_FRAMES_GAP_MS  (1000U/PILOTE_VIDEO_FRAMES_COUNT)       // What if not an int??
+/**
+ *  PILOTE_VIDEO_MODE_TIME_CODE
+ *      - 1: Send frame time code
+ *      - 0: Send time in ms
+ */
+#define PILOTE_VIDEO_MODE_TIME_CODE         1
+
+#if PILOTE_VIDEO_MODE_TIME_CODE==1
 #define PILOTE_VIDEO_1000_MS                1000U
 
 #define PILOTE_VIDEO_PAL_FPS                25U
@@ -278,7 +284,10 @@ typedef enum {
 #define PILOTE_VIDEO_NTSC_MULTIPLE          100U
 
 #define PILOTE_VIDEO_NTSC_1_MINUTE_COUNT    1800U   // 60*30
-#define PILOTE_VIDEO_NTSC_10_MINUTES_COUNT  3600U//18000U  // 60*30*10
+#define PILOTE_VIDEO_NTSC_10_MINUTES_COUNT  18000U  // 60*30*10
+#elif PILOTE_VIDEO_MODE_TIME_CODE==0
+// Nothing to declare
+#endif  // PILOTE_VIDEO_MODE_TIME_CODE==1
 
 /**
  * -------------------------------------------------------------------------------------
