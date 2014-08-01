@@ -32,6 +32,7 @@ void UDP_Task(void *pvParameters)
     uint16_t port = 1234;                   // port: default 1234
     char udp_buf[16];
     char udp_cmd[8], udp_id[8];             // buffer for udp data, should be long enough to hold '\0'
+    err_t error;
     /**
      *  Initialization
      */
@@ -41,8 +42,8 @@ void UDP_Task(void *pvParameters)
      *  Main loop
      */
     while (1) {
-        in_netbuf = netconn_recv(conn);     // Receive a message (with a timeout 100ms)
-        if (in_netbuf != NULL) {            // If got a message
+        error = netconn_recv(conn, &in_netbuf);     // Receive a message (with a timeout 100ms)
+        if (error == ERR_OK) {                      // If ERR_OK with netconn_recv
             netbuf_copy(in_netbuf, udp_buf, in_netbuf->p->tot_len);
             udp_buf[in_netbuf->p->tot_len] = '\0';
             sscanf(udp_buf, "%[^#]#%s", udp_cmd, udp_id);

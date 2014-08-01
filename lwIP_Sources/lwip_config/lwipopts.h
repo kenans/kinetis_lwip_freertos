@@ -236,7 +236,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_WND                 1500
 #else
 /* TCP Maximum segment size. */
-#define TCP_MSS                 1500
+#define TCP_MSS                 750
 
 /* TCP sender buffer space (bytes). */
 #define TCP_SND_BUF             1500

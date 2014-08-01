@@ -294,7 +294,7 @@ void IR_TransmitThread(void *pvParameters)
                             }
                         }
                     }
-#if 1   // For debug
+#if 0   // For debug
 #include "AS1.h"
                     // Video code debug
                     while (AS1_SendChar((byte)_frame[4]) != ERR_OK);

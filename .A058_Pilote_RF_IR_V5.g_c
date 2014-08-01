@@ -643,7 +643,7 @@
     </GenFiles>
     <SignalListFile>Documentation\A058_Pilote_RF_IR_V5_SIGNALS.txt</SignalListFile>
     <DestinationCompiler>GNUC</DestinationCompiler>
-    <ProjectModificationStamp>47</ProjectModificationStamp>
+    <ProjectModificationStamp>48</ProjectModificationStamp>
   </Options>
   <CpuID_4>
     <Generated>true</Generated>

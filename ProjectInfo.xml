@@ -62,8 +62,8 @@
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\ipv4\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\snmp\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\lwip_config\</Path>
-      <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\</Path>
       <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\</Path>
+      <Path>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\</Path>
     </SourceCodePaths>
   </PATHS>
   <FILES>
@@ -135,6 +135,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Sources\main.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\eth.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\eth_buf.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\eth_mii.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\eth_phy.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\api\api_lib.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\api\api_msg.c</PathName>
@@ -144,6 +145,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\api\netifapi.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\api\sockets.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\api\tcpip.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\def.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\dhcp.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\dns.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\init.c</PathName>
@@ -171,11 +173,11 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\tcp.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\tcp_in.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\tcp_out.c</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\timers.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\core\udp.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\lwip_config\etharp.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\lwip_config\ethernetif.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\lwip_config\sys_arch.c</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\loopif.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\auth.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\chap.c</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\chpms.c</PathName>
@@ -311,6 +313,7 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Static_Code\PDD\WDOG_PDD.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\include\eth.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\include\eth_buf.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\include\eth_mii.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\eth_drivers\include\eth_phy.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\ipv4\lwip\autoip.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\ipv4\lwip\icmp.h</PathName>
@@ -348,10 +351,11 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\stats.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\sys.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\tcp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\tcp_impl.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\tcpip.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\timers.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\lwip\udp.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\netif\etharp.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\netif\loopif.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\netif\ppp_oe.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\include\netif\slipif.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\lwip_config\arch\cc.h</PathName>
@@ -371,10 +375,10 @@
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\md5.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\pap.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\ppp.h</PathName>
+      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\ppp_impl.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\pppdebug.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\randm.h</PathName>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\vj.h</PathName>
-      <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\lwIP_Sources\netif\ppp\vjbsdhdr.h</PathName>
     </GeneratedHs>
     <GeneratedASMs>
       <PathName>C:\Users\OrpheoXlite\workspace.kds\A058_Pilote_RF_IR_V5\Generated_Code\portasm.s</PathName>

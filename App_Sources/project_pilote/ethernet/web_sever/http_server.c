@@ -52,6 +52,7 @@ void HttpServer_Task(void* pvParameters)
     char http_request[5];
     char http_url[128];
     u16_t len = 0;                                                          // A temporary variable storing length
+    err_t accept_err, recv_err;
     extern xQueueHandle mbox_pilote_recv;                                   // Global queue definition
     /**
      *  Initialization
@@ -75,13 +76,13 @@ void HttpServer_Task(void* pvParameters)
      *  Main loop
      */
     while (1) {
-        new_conn = netconn_accept(listener_conn);                   // Wait for a new connection
-        if (new_conn != NULL) {                                     // If got a connection
+        accept_err = netconn_accept(listener_conn, &new_conn);           // Wait for a new connection
+        if (accept_err == ERR_OK) {                                      // If got a connection
 //            WebPilote_StopIR();
             while (1) {
-                in_netbuf =  netconn_recv(new_conn);                // Block and receive data
-                if (in_netbuf != NULL) {
-                    netbuf_data(in_netbuf, (void**)&in_buf_ptr, &len);     // Get in_netbuf data address
+                recv_err =  netconn_recv(new_conn, &in_netbuf);          // Block and receive data
+                if (recv_err == ERR_OK) {
+                    netbuf_data(in_netbuf, (void**)&in_buf_ptr, &len);   // Get in_netbuf data address
                     sscanf(in_buf_ptr, "%s %s", http_request, http_url);   // Parse http_request and http_url
                     if (!strncmp(http_request, "GET", 3)) {         // If GET request
                         if(!strncmp(http_url, "/", 2)  ||
@@ -384,10 +385,11 @@ static err_t WebPilote_GetPostBody(struct netbuf *in_netbuf,
     // Should receive the next TCP packet in case post_body_count==0
     if (post_body_count==0) {
         struct netbuf *temp_netbuf;
+        err_t error;
         uint8_t time_out_count = 3;
         for (;time_out_count>0;time_out_count--) {
-            temp_netbuf =  netconn_recv(new_conn);
-            if (temp_netbuf != NULL) {
+            error =  netconn_recv(new_conn, &temp_netbuf);
+            if (error == ERR_OK) {
                 netbuf_data(temp_netbuf, (void**)&in_buf_ptr, &len);
                 for (i=0;i<len;i++, in_buf_ptr++) {
                     post_body_buf[post_body_count++] = *in_buf_ptr;
