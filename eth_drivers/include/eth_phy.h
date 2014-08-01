@@ -31,23 +31,55 @@ typedef enum {
     PHY_POWER_DOWN
 } PhyPowerMode;
 
-#define PHY_ADDR              1U        /* Depends on board configuration */
-
+/**
+ *  PHY Configurations
+ */
+#define PHY_ADDR              0x01U        /* Depends on board configuration */
 #define PHY_AUTO_NEG_TIMEOUT  10000UL
+/**
+ *  PHY registers
+ */
+#define PHY_REG_BASIC_CONTROL               0x00U
+#define PHY_REG_BASIC_STATUS                0x01U
+#define PHY_REG_IDENTIFIER_1                0x02U
+#define PHY_REG_IDENTIFIER_2                0x03U
+#define PHY_REG_AUTO_NEG_ADVERTISE          0x04U
+#define PHY_REG_AUTO_NEG_LINK_ABLILITY      0x05U
+#define PHY_REG_AUTO_NEG_ECPANSION          0x06U
+#define PHY_REG_AUTO_NEG_NEXT_PAGE          0x07U
+#define PHY_REG_LINK_NEXT_PAGE_ABILITY      0x08U
+#define PHY_REG_RXER_COUNTER                0x15U
+#define PHY_REG_INTERRUPT_CONTROL_STATUS    0x1BU
+#define PHY_REG_PHY_CONTROL_1               0x1EU
+#define PHY_REG_PHY_CONTROL_2               0X1FU
 
-
-/* PHY register access defines */
-#define MII_CONTROL_REG       0U
-#define MII_STATUS_REG        1U
-#define MII_RESET             0x8000U
-#define MII_LOOP_BACK         0x4000U
-#define MII_SPEED_100_MBIT    0x2000U
-#define MII_AUTO_NEG_ENABLE   0x1000U
-#define MII_POWER_DOWN        0x0800U
-#define MII_ISOLATE           0x0400U
-#define MII_FULL_DUPLEX       0x0100U
-#define MII_AUTO_NEG_COMPLETE 0x0020U
-#define MII_LINK_STATUS       0x0004U
+/**
+ *  Register Masks
+ */
+// Basic Control
+#define PHY_RESET_MASK                  0x8000U
+#define PHY_LOOP_BACK_MASK              0x4000U
+#define PHY_SPEED_SELECT_MASK           0x2000U       // Set: 100Mbps; Clear: 10Mbps
+#define PHY_AUTO_NEG_ENABLE_MASK        0x1000U
+#define PHY_POWER_DOWN_MASK             0x0800U
+#define PHY_ISOLATE_MASK                0x0400U
+#define PHY_RESTART_AUTO_NEG_MASK       0x0200U
+#define PHY_DUPLEX_MODE_MASK            0x0100U       // Set: Full-duplex; Clear: Half-duplex
+#define PHY_COLLISION_TEST_MASK         0x0080U
+#define PHY_DISABLE_TRANSMITTER_MASK    0x0001U
+// Basic Status
+#define PHY_100BASE_T4_MASK             0x8000U
+#define PHY_100BASE_FULL_DUPLEX_MASK    0X4000U
+#define PHY_100BASE_HALF_DUPLEX_MASK    0x2000U
+#define PHY_10BASE_FULL_DUPLEX_MASK     0x1000U
+#define PHY_10BASE_HALF_DUPLEX_MASK     0x0800U
+#define PHY_NO_PREAMBLE_MASK            0x0040U
+#define PHY_AUTO_NEG_COMPLETE_MASK      0x0020U
+#define PHY_REMOTE_FAULT_MASK           0x0010U
+#define PHY_AUTO_NEG_ABILITY_MASK       0x0008U
+#define PHY_LINK_STATUS_MASK            0x0004U
+#define PHY_JABBER_DETECT_MASK          0x0002U
+#define PHY_EXTENDED_CAPABILITY_MASK    0x0001U
 
 /**
  *  PHY APIs

@@ -49,7 +49,9 @@ typedef s8_t err_t;
 
 /* Definitions for error constants. */
 
+#ifndef ERR_OK
 #define ERR_OK          0    /* No error, everything OK. */
+#endif
 #define ERR_MEM        -1    /* Out of memory error.     */
 #define ERR_BUF        -2    /* Buffer error.            */
 #define ERR_TIMEOUT    -3    /* Timeout.                 */

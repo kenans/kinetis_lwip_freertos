@@ -461,23 +461,17 @@ u32_t sys_now(void)
  * Outputs:
  *      sys_thread_t            -- Pointer to per-thread timeouts.
  *---------------------------------------------------------------------------*/
-sys_thread_t sys_thread_new( const char *pcName, void( *pxThread )( void *pvParameters ), void *pvArg, int iStackSize, int iPriority )
+sys_thread_t sys_thread_new(const char *pcName, void (*pxThread)(void *pvParameters), void *pvArg, int iStackSize, int iPriority )
 {
 xTaskHandle xCreatedTask;
 portBASE_TYPE xResult;
 sys_thread_t xReturn;
-
-	xResult = xTaskCreate( pxThread, ( signed char * ) pcName, iStackSize, pvArg, iPriority, &xCreatedTask );
-
-	if( xResult == pdPASS )
-	{
+	xResult = xTaskCreate(pxThread, (const char *const)pcName, iStackSize, pvArg, iPriority, &xCreatedTask);
+	if( xResult == pdPASS ) {
 		xReturn = xCreatedTask;
-	}
-	else
-	{
+	} else {
 		xReturn = NULL;
 	}
-
 	return xReturn;
 }
 

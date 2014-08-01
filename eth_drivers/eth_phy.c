@@ -28,20 +28,20 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
     uint16_t Control = 0;
     bool Configured = FALSE;
 
-    MII_Read(eth_device_data, phy_adress, MII_STATUS_REG, &Status);
+    MII_Read(eth_device_data, phy_adress, PHY_REG_BASIC_STATUS, &Status);
     /* Check reserved bits and capabilities bits */
     if (((Status & 0x0780U) != 0) && ((Status & 0x7800U) != 0x7800U)) {
         return FALSE;
     }
     if (config == PHY_AUTO_NEG) {
         /* Perform autonegotiation */
-        MII_Read(eth_device_data, phy_adress, MII_CONTROL_REG, &Control);
-        Control = MII_AUTO_NEG_ENABLE;
-        ETH1_WriteMII(eth_device_data, phy_adress, MII_CONTROL_REG, Control);
+        MII_Read(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, &Control);
+        Control = PHY_AUTO_NEG_ENABLE_MASK;
+        ETH1_WriteMII(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, Control);
         /* Wait for cable connection and autonegotiation completion */
         do {
-            MII_Read(eth_device_data, phy_adress, MII_STATUS_REG, &Status);
-            Configured = Status & (MII_LINK_STATUS | MII_AUTO_NEG_COMPLETE);
+            MII_Read(eth_device_data, phy_adress, PHY_REG_BASIC_STATUS, &Status);
+            Configured = Status & (PHY_LINK_STATUS_MASK|PHY_AUTO_NEG_COMPLETE_MASK);
         } while (!Configured && Timeout++ < PHY_AUTO_NEG_TIMEOUT);
     } else {
         switch (loopback) {
@@ -49,10 +49,10 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
             Control = 0;
             break;
         case PHY_LOOPBACK:
-            Control = MII_LOOP_BACK;
+            Control = PHY_LOOP_BACK_MASK;
             break;
         case PHY_ISOLATE:
-            Control = MII_ISOLATE;
+            Control = PHY_ISOLATE;
             break;
         }
         switch (config) {
@@ -60,19 +60,19 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
             Control |= 0;
             break;
         case PHY_10_MBIT_FULL_DUPLEX:
-            Control |= MII_FULL_DUPLEX;
+            Control |= PHY_DUPLEX_MODE_MASK;
             break;
         case PHY_100_MBIT_HALF_DUPLEX:
-            Control |= MII_SPEED_100_MBIT;
+            Control |= PHY_SPEED_SELECT_MASK;
             break;
         case PHY_100_MBIT_FULL_DUPLEX:
-            Control |= MII_SPEED_100_MBIT | MII_FULL_DUPLEX;
+            Control |= PHY_SPEED_SELECT_MASK | PHY_DUPLEX_MODE_MASK;
             break;
         default:
             // To suppress the PHY_AUTO_NEG not handled warning
             break;
         }
-        MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, Control&(~MII_POWER_DOWN));
+        MII_Write(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, Control);
     }
     return Timeout < MII_TIMEOUT;
 }
@@ -90,10 +90,10 @@ bool PHY_Init(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyConfig c
 bool PHY_IsLinkUp(LDD_TDeviceData *eth_device_data, uint16_t phy_adress)
 {
     uint16_t status = 0;
-    if (!MII_Read(eth_device_data, phy_adress, MII_STATUS_REG, &status)) {
+    if (!MII_Read(eth_device_data, phy_adress, PHY_REG_BASIC_STATUS, &status)) {
         return FALSE;
     }
-    if (!(status & MII_LINK_STATUS)) {
+    if (!(status&PHY_LINK_STATUS_MASK)) {
         return FALSE;
     }
     return TRUE;
@@ -111,12 +111,12 @@ bool PHY_IsLinkUp(LDD_TDeviceData *eth_device_data, uint16_t phy_adress)
 bool PHY_EnterPowerMode(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, PhyPowerMode mode)
 {
     uint16_t control_reg=0;
-    MII_Read(eth_device_data, phy_adress, MII_CONTROL_REG, &control_reg);
+    MII_Read(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, &control_reg);
     switch (mode) {
         case PHY_POWER_ON:
-            return MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, control_reg&(~MII_POWER_DOWN));
+            return MII_Write(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, control_reg&(~PHY_POWER_DOWN_MASK));
         case PHY_POWER_DOWN:
-            return MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, control_reg|(MII_POWER_DOWN));
+            return MII_Write(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, control_reg|(PHY_POWER_DOWN_MASK));
         default:
             break;
     }
@@ -134,7 +134,7 @@ bool PHY_EnterPowerMode(LDD_TDeviceData *eth_device_data, uint16_t phy_adress, P
 bool PHY_Reset(LDD_TDeviceData *eth_device_data, uint16_t phy_adress)
 {
     if (eth_device_data==NULL) return FALSE;
-    return MII_Write(eth_device_data, phy_adress, MII_CONTROL_REG, MII_RESET);
+    return MII_Write(eth_device_data, phy_adress, PHY_REG_BASIC_CONTROL, PHY_RESET_MASK);
 }
 
 
