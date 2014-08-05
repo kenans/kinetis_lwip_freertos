@@ -88,16 +88,16 @@ void HttpServer_Task(void* pvParameters)
                         if(!strncmp(http_url, "/", 2)  ||
                            !strncmp(http_url, "/index.html", 11)) { // If / or /index.html
                             in_buf_ptr = NULL;  // Not used
-                            netconn_write(new_conn, HTTP_HTML_OK, (u16_t)strlen(HTTP_HTML_OK), NETCONN_COPY);
-                            netconn_write(new_conn, web_pilote_html, (u16_t)WEB_PILOTE_HTML_SIZE, NETCONN_COPY);
+                            netconn_write(new_conn, HTTP_HTML_OK, (u16_t)strlen(HTTP_HTML_OK), NETCONN_NOCOPY);
+                            netconn_write(new_conn, web_pilote_html, (u16_t)WEB_PILOTE_HTML_SIZE, NETCONN_NOCOPY);
                         } else if(!strncmp(http_url, "/orpheo.png", 11)) {
                             in_buf_ptr = NULL;	// Not used
-                            netconn_write(new_conn, HTTP_IMAGE_OK, (u16_t)strlen(HTTP_IMAGE_OK), NETCONN_COPY);
-                            netconn_write(new_conn, image_orpheo_png, (u16_t)IMAGE_SIZE_ORPHEO_PNG, NETCONN_COPY);
+                            netconn_write(new_conn, HTTP_IMAGE_OK, (u16_t)strlen(HTTP_IMAGE_OK), NETCONN_NOCOPY);
+                            netconn_write(new_conn, image_orpheo_png, (u16_t)IMAGE_SIZE_ORPHEO_PNG, NETCONN_NOCOPY);
                         } else if(!strncmp(http_url, "/favicon.ico", 12)) {
                             in_buf_ptr = NULL;	// Not used
-                            netconn_write(new_conn, HTTP_IMAGE_OK, (u16_t) strlen(HTTP_IMAGE_OK), NETCONN_COPY);
-                            netconn_write(new_conn, image_favicon_ico, (u16_t)IMAGE_SIZE_FAVICON_ICO, NETCONN_COPY);
+                            netconn_write(new_conn, HTTP_IMAGE_OK, (u16_t) strlen(HTTP_IMAGE_OK), NETCONN_NOCOPY);
+                            netconn_write(new_conn, image_favicon_ico, (u16_t)IMAGE_SIZE_FAVICON_ICO, NETCONN_NOCOPY);
                         } else if (!strncmp(http_url, "/config.txt", 11)) {
                             char *target;
                             char data[16];
@@ -133,7 +133,11 @@ void HttpServer_Task(void* pvParameters)
                                 if (_web_buf[0] != '\0') {
                                     _web_buf[strlen(_web_buf)-1] = '\0';// Remove the last '&'
                                 }
-                                netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_COPY);
+                                netconn_write(new_conn, HTTP_TXT_PLAIN_OK, (u16_t)strlen(HTTP_TXT_PLAIN_OK), NETCONN_NOCOPY);
+                                /**
+                                 *  Here should use NETCONN_COPY, because the _web_buf could probably
+                                 *  be changed before the transmission had completed
+                                 */
                                 netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                             }
                             // Restart IR
@@ -160,6 +164,10 @@ void HttpServer_Task(void* pvParameters)
                                     strcat(_web_buf, target);
                                     strcat(_web_buf, "=");
                                     strcat(_web_buf, data);
+                                    /**
+                                     *  Here should use NETCONN_COPY, because the _web_buf could probably
+                                     *  be changed before the transmission had completed
+                                     */
                                     netconn_write(new_conn, _web_buf, strlen(_web_buf), NETCONN_COPY);
                                 }
                             }
@@ -197,10 +205,10 @@ void HttpServer_Task(void* pvParameters)
  */
 static void Http_SendError404(struct netconn *new_conn)
 {
-    netconn_write(new_conn, HTTP_HTML_OK, (u16_t)strlen(HTTP_HTML_OK), NETCONN_COPY);
-    netconn_write(new_conn, WEB_HTML_START, (u16_t)strlen(WEB_HTML_START), NETCONN_COPY);
-    netconn_write(new_conn, WEB_ERROR_404, (u16_t)strlen(WEB_ERROR_404), NETCONN_COPY);
-    netconn_write(new_conn, WEB_HTML_END, (u16_t)strlen(WEB_HTML_END), NETCONN_COPY);
+    netconn_write(new_conn, HTTP_HTML_OK, (u16_t)strlen(HTTP_HTML_OK), NETCONN_NOCOPY);
+    netconn_write(new_conn, WEB_HTML_START, (u16_t)strlen(WEB_HTML_START), NETCONN_NOCOPY);
+    netconn_write(new_conn, WEB_ERROR_404, (u16_t)strlen(WEB_ERROR_404), NETCONN_NOCOPY);
+    netconn_write(new_conn, WEB_HTML_END, (u16_t)strlen(WEB_HTML_END), NETCONN_NOCOPY);
 }
 /**
  *
@@ -408,6 +416,3 @@ static err_t WebPilote_GetPostBody(struct netbuf *in_netbuf,
 
     return ERR_OK;
 }
-
-
-
