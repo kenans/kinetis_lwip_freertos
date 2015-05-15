@@ -3,3 +3,5 @@ Debug/
 !.git*
 Documentation/
 *~
+*.pe
+*.xml
